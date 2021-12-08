@@ -1,11 +1,16 @@
 package src.business.ssGestEquipamentos;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class GestEquipamentosFacade implements IGestEquipamentos{
     private Map<String,Equipamento> equipamentos;
     
 
+    public GestEquipamentosFacade() {
+        this.equipamentos = new HashMap<>();
+    }
+    
     public GestEquipamentosFacade(Map<String,Equipamento> equipamentos) {
         this.equipamentos = equipamentos;
     }

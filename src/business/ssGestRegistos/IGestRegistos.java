@@ -1,37 +1,35 @@
 package src.business.ssGestRegistos;
 
 import java.util.List;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface IGestRegistos {
 
-    void registarConclusaoReparacao(String codE,String codC);
+    void registarConclusaoReparacao(String codE);
 
     void removerOrcamento(String codO);
 
-    String registarPedidoOrcamento(String codE);
+    void registarPedidoOrcamento(String codE,String codF);
 
-    PlanoTrabalho procuraPlanoTrabalhosEquipamento(String codE);
+    PlanoTrabalhos procuraPlanoTrabalhosEquipamento(String codE);
 
-    String registarOrcamento(String codE);
+    void registarOrcamento(String codE,String codF,List<Passo> passos);
 
-    void armazenarOrcamento(String codO);
+    void aceitarOrcamento(String codO,String codFuncionario);
 
     boolean verificarServicoExpresso();
 
-    void registarServicoExpresso(String codE);
+    void registarServicoExpresso(String codE,String codF,float valor,String descricao);
 
     void registarConclusaoServicoExpresso(String codE);
 
     PedidoOrcamento procuraPedidoOrcamento(String codE);
 
-    String registarPlanoTrabalho(List<Passo> passos,String codE);
+    List<PedidoOrcamento> consultarPedidosOrcamentos();
 
-    List<PedidoOrcamento> consultarPedidosOrcamentos(int criterio);
+    void atualizarReparacao(String codE,Passo p);
 
-    void atualizarPlanoTrabalhos(Passo passo, int hora, int custo);
-
-    void registaContactoCliente(String codF,LocalDate data);
+    void registaContactoCliente(String codF,String codC,LocalDateTime data);
     
     List<ServicoExpresso> consultarServicoExpresso();
 
@@ -39,7 +37,8 @@ public interface IGestRegistos {
 
     List<Orcamento> consultarOrcamentos();
 
-    List<String> consultarListagemIntervencoes() ;
+    //TODO: Fazer os métodos de listagem
+    List<String> consultarListagemIntervencoes();
 
     List<String> consultarListagemTecnicos();
     

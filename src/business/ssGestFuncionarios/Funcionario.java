@@ -1,8 +1,8 @@
-package business.ssGestFuncionarios;
+package src.business.ssGestFuncionarios;
 
 public abstract class Funcionario {
-    public String nome;
-    public String codigo;
+    private String nome;
+    private String codigo;
 
     public Funcionario(String nome,String codigo) {
         this.nome = nome;

@@ -1,0 +1,9 @@
+package src.business.ssGestRegistos;
+
+import java.time.LocalDateTime;
+
+public class PedidoOrcamento extends Registos{
+    public PedidoOrcamento(LocalDateTime data,String codEquipamento,String codFuncionario,int estado) {
+        super(data, codEquipamento, codFuncionario, estado);
+    }
+}

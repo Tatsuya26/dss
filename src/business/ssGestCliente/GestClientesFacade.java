@@ -1,6 +1,7 @@
 package src.business.ssGestCliente;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,10 @@ public class GestClientesFacade implements IGestClientes {
     private Map<String,Cliente> clientes;
     
 
+    public GestClientesFacade() {
+        this.clientes = new HashMap<>();
+    }
+    
     public GestClientesFacade(Map<String,Cliente> clientes) {
         this.clientes = clientes;
     }
