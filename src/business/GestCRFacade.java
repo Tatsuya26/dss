@@ -10,11 +10,13 @@ public class GestCRFacade implements IGestCRLN {
     private IGestEquipamentos gestEquipamentos;
     private IGestFuncionario  gestFuncionario;
     private IGestRegistos     gestRegistos;
+    private String codFuncionario;
 
     public GestCRFacade() {
         this.gestCliente      = new GestClientesFacade();
         this.gestEquipamentos = new GestEquipamentosFacade();
         this.gestFuncionario  = new GestFuncionariosFacade();
         this.gestRegistos     = new GestRegistosFacade();
+        this.codFuncionario = null;
     }
 }

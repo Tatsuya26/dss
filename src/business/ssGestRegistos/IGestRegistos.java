@@ -1,34 +1,15 @@
-package src.business;
+package src.business.ssGestRegistos;
 
+import java.util.List;
 import java.time.LocalDate;
-import java.util.*;
 
-public interface IGestCRLN {
-    boolean autenticarFuncionario(String codF);
-
-    boolean verificaEquipamento(String codE);
-
-    boolean verificaCliente(String codC);
+public interface IGestRegistos {
 
     void registarConclusaoReparacao(String codE,String codC);
 
     void removerOrcamento(String codO);
 
-    void enviarEmail(String codC);
-    
-    String registarEquipamento(String modelo,String descricao); 
-
-    void associarEquipamentoCliente(String codE, String NIF);
-
     String registarPedidoOrcamento(String codE);
-
-    void registarCliente(String NIF, String nome, String email, String numero);
-
-    List<String> consultarEquipamentosCliente(String codC);
-
-    void alterarEstadoEntregue(String codE);
-
-    void baixaEquipamento(String codE);
 
     PlanoTrabalho procuraPlanoTrabalhosEquipamento(String codE);
 
@@ -63,5 +44,4 @@ public interface IGestCRLN {
     List<String> consultarListagemTecnicos();
     
     List<String> consultarListagemFuncionariosBalcao();
-
 }

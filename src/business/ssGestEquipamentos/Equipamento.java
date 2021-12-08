@@ -1,21 +1,20 @@
 package src.business.ssGestEquipamentos;
 
-import src.business.ssGestCliente.Cliente;
 
 public class Equipamento {
     private String codEquipamento;
     private String modelo;
     private String descricao; 
     private int estado;
-    private Cliente cliente;
+    private String cliente;
 
 
-    public Equipamento(String codEquipamento, String modelo, String descricao, int estado, Cliente cliente) {
+    public Equipamento(String codEquipamento, String modelo, String descricao, int estado, String codCliente) {
         this.codEquipamento = codEquipamento;
         this.modelo = modelo;
         this.descricao = descricao;
         this.estado = estado;
-        this.cliente = cliente;
+        this.cliente = codCliente;
     }
     
 
@@ -51,11 +50,11 @@ public class Equipamento {
         this.estado = estado;
     }
 
-    public Cliente getCliente() {
-        return this.cliente.clone();
+    public String getCliente() {
+        return this.cliente;
     }
 
-    public void setCliente(Cliente cliente) {
+    public void setCliente(String cliente) {
         this.cliente = cliente;
     }
 
@@ -75,6 +74,6 @@ public class Equipamento {
     }
 
     public Equipamento clone() {
-        return new Equipamento(this.codEquipamento,this.modelo,this.descricao,this.estado,this.cliente.clone());
+        return new Equipamento(this.codEquipamento,this.modelo,this.descricao,this.estado,this.cliente);
     }
 }

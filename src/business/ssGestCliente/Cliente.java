@@ -1,16 +1,17 @@
 package src.business.ssGestCliente;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import src.business.ssGestEquipamentos.Equipamento;
 
 public class Cliente {
     private String nome;
     private String NIF;
     private String email;
     private String telemovel;
-    private Map<String,Equipamento> equipamentos_cliente;
+    private List<String> equipamentos_cliente;
 
     public Cliente() {
         this.nome = "";
@@ -19,11 +20,12 @@ public class Cliente {
         this.telemovel  = "";
     }
 
-    public Cliente(String nome, String NIF, String email, String telemovel, Map<String,Equipamento> equipamentos_cliente) {
+    public Cliente(String nome, String NIF, String email, String telemovel, List<String> equipamentos_cliente) {
         this.nome = nome;
         this.NIF = NIF;
         this.email = email;
         this.telemovel = telemovel;
+        this.equipamentos_cliente = new ArrayList<>(equipamentos_cliente);
     }
 
 
@@ -38,10 +40,15 @@ public class Cliente {
     public String getNIF() {
         return this.NIF;
     }
+    
+    public List<String> getEquipamentosCliente() {
+        return new ArrayList<>(this.equipamentos_cliente);
+    }
 
     public void setNIF(String NIF) {
         this.NIF = NIF;
     }
+
 
     public String getEmail() {
         return this.email;
@@ -59,10 +66,14 @@ public class Cliente {
         this.telemovel = telemovel;
     }
 
+    public void setEquipamentosCliente(List<String> equipamentos) {
+        this.equipamentos_cliente = new ArrayList<>(equipamentos);
+    }
+
     public Cliente clone() {
-        Map<String,Equipamento> map = new HashMap<>();
-        for(Equipamento e: this.equipamentos_cliente.values()) map.put(e.getCodEquipamento(), e.clone());
-        return new Cliente(this.nome,this.NIF,this.email,this.telemovel,map);
+        List<String> equipamentos = new ArrayList<>();
+        for(String e: this.equipamentos_cliente) equipamentos.add(e);
+        return new Cliente(this.nome,this.NIF,this.email,this.telemovel,equipamentos);
     }
     public boolean equals(Object o) {
         if (o == this)
@@ -80,8 +91,8 @@ public class Cliente {
 
 
     
-    public void adicionaEquipamento(Equipamento e) {
-        this.equipamentos_cliente.put(e.getCodEquipamento(),e);
+    public void adicionaEquipamento(String e) {
+        this.equipamentos_cliente.add(e);
     }
 
 }
