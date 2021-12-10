@@ -11,7 +11,8 @@ public class GestFuncionariosFacade implements IGestFuncionarios{
     }
     // Método que verifica se o código dado pertence a algum funcionário da loja.
     public boolean autenticarFuncionario(String codF) {
-        if (this.funcionarios.containsKey(codF)) return true;
-        return false;
+        boolean existe = this.funcionarios.containsKey(codF);
+        return existe;
     }
+
 }

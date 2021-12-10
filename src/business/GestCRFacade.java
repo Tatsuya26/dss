@@ -1,5 +1,7 @@
 package src.business;
 
+import java.util.Random;
+
 import src.business.ssGestCliente.*;
 import src.business.ssGestEquipamentos.*;
 import src.business.ssGestFuncionarios.*;
@@ -11,37 +13,66 @@ public class GestCRFacade implements IGestCRLN {
     private IGestEquipamentos gestEquipamentos;
     private IGestFuncionarios  gestFuncionario;
     private IGestRegistos     gestRegistos;
-    private String codFuncionario;
+    private String codFLogado;
 
     public GestCRFacade() {
         this.gestCliente      = new GestClientesFacade();
         this.gestEquipamentos = new GestEquipamentosFacade();
         this.gestFuncionario  = new GestFuncionariosFacade();
         this.gestRegistos     = new GestRegistosFacade();
-        this.codFuncionario = null;
+        this.codFLogado = null;
     }
 
 
     //TODO: Fazer os diagramas de sequencia e implementar todos estes métodos.
-    boolean autenticarFuncionario(String codF);
 
-    boolean verificaEquipamento(String codE);
+    public boolean autenticarFuncionario(String codF) {
+        boolean autenticado = this.gestFuncionario.autenticarFuncionario(codF);
+        if (autenticado) {
+            this.codFLogado = codF;
+        }
+        return autenticado;
+    }
 
-    boolean verificaCliente(String codC);
+    public boolean verificaEquipamento(String codE) {
+        return this.gestEquipamentos.verificaEquipamento(codE);
+    }
 
+    public boolean verificaCliente(String codC) {
+        return this.gestCliente.verificaCliente(codC);
+    }
+
+    public String registarEquipamento(String modelo,String descricao) {
+        byte[] bytes = new byte[7];
+        new Random().nextBytes(bytes);
+        String codGerado = new String(bytes);
+        this.gestEquipamentos.registarEquipamento(codGerado, modelo, descricao, 0);
+        return codGerado;
+    }
+
+    public void registarCliente(String NIF, String nome, String email, String numero) {
+        this.gestCliente.registarCliente(NIF, nome, email, numero);
+    }
+    
+    public void registarServicoExpresso(String codE,float preco, String descricao) {
+        this.gestRegistos.registarServicoExpresso(codE, codFLogado, preco, descricao);
+    }
+    
+    void registarConclusaoServicoExpresso(String codE);
+
+    String registarPedidoOrcamento(String codE);
+    
+    //String registarPlanoTrabalho(List<Passo> passos,String codE);
+
+    String registarOrcamento(String codE);
+    
     void registarConclusaoReparacao(String codE,String codC);
-
+    
     void removerOrcamento(String codO);
 
     void enviarEmail(String codC);
     
-    String registarEquipamento(String modelo,String descricao); 
-
     void associarEquipamentoCliente(String codE, String NIF);
-
-    String registarPedidoOrcamento(String codE);
-
-    void registarCliente(String NIF, String nome, String email, String numero);
 
     List<String> consultarEquipamentosCliente(String codC);
 
@@ -51,19 +82,15 @@ public class GestCRFacade implements IGestCRLN {
 
     PlanoTrabalho procuraPlanoTrabalhosEquipamento(String codE);
 
-    String registarOrcamento(String codE);
 
-    void armazenarOrcamento(String codO);
+    void aceitarOrcamento(String codO);
 
     boolean verificarServicoExpresso();
 
-    void registarServicoExpresso(String codE);
 
-    void registarConclusaoServicoExpresso(String codE);
 
     PedidoOrcamento procuraPedidoOrcamento(String codE);
 
-    String registarPlanoTrabalho(List<Passo> passos,String codE);
 
     List<PedidoOrcamento> consultarPedidosOrcamentos(int criterio);
 

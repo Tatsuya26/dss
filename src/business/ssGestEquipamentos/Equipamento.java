@@ -17,7 +17,14 @@ public class Equipamento {
         this.cliente = codCliente;
     }
     
-
+    public Equipamento(String codEquipamento, String modelo, String descricao, int estado) {
+        this.codEquipamento = codEquipamento;
+        this.modelo = modelo;
+        this.descricao = descricao;
+        this.estado = estado;
+        this.cliente = "";
+    }
+    
     public String getCodEquipamento() {
         return this.codEquipamento;
     }

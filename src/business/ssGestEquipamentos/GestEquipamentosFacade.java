@@ -16,8 +16,8 @@ public class GestEquipamentosFacade implements IGestEquipamentos{
     }
     
     // Método que adiciona um equipamento à estrutura de dados
-    public void registarEquipamento(String codEquipamento, String modelo, String descricao, int estado, String codCliente) {
-        Equipamento e = new Equipamento(codEquipamento, modelo, descricao, estado, codCliente);
+    public void registarEquipamento(String codEquipamento, String modelo, String descricao, int estado) {
+        Equipamento e = new Equipamento(codEquipamento, modelo, descricao, estado);
         this.equipamentos.put(e.getCodEquipamento(), e);
     }
 

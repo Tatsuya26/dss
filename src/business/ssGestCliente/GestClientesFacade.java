@@ -19,8 +19,8 @@ public class GestClientesFacade implements IGestClientes {
     
 
     // Método que cria o cliente e o regista na base de dados
-    public void registarCliente(String nome, String email, String telemovel, String NIF){
-        Cliente c = new Cliente(nome, NIF, email, telemovel, new ArrayList<>());
+    public void registarCliente(String NIF, String nome, String email, String numero){
+        Cliente c = new Cliente(nome, NIF, email, numero, new ArrayList<>());
         this.clientes.put(c.getNIF(), c);
     }
     

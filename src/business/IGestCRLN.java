@@ -34,7 +34,7 @@ public interface IGestCRLN {
 
     String registarOrcamento(String codE);
 
-    void armazenarOrcamento(String codO);
+    void aceitarOrcamento(String codO);
 
     boolean verificarServicoExpresso();
 
