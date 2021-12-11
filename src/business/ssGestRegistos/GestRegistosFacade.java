@@ -45,7 +45,7 @@ public class GestRegistosFacade implements IGestRegistos {
 
     public void registarOrcamento(String codE,String codF,List<Passo> passos) {
         PlanoTrabalhos pt = new PlanoTrabalhos(passos);
-        Orcamento o = new Orcamento(LocalDateTime.now(),codE, codF, 0 , pt.getCusto(), pt);
+        Orcamento o = new Orcamento(LocalDateTime.now(),codE, codF, -1 , pt.getCusto(), pt);
         this.orcamentos.put(codE, o);
     }
 
@@ -53,6 +53,7 @@ public class GestRegistosFacade implements IGestRegistos {
         Orcamento o = this.orcamentos.get(codO);
         o.setEstado(1);
         Reparacao r = new Reparacao(LocalDateTime.now(), codO, codFuncionario, 0, o.getValor(), o.getPlanoTrabalhos());
+        this.reparacoes.put(codO, r);
     }
 
     //TODO:: Arranjar forma de verificar a disponibilidade. Talvez verificar se ja existe muitos serviços expressos para aquela semana.
@@ -66,6 +67,7 @@ public class GestRegistosFacade implements IGestRegistos {
     }
 
     public void registarConclusaoServicoExpresso(String codE) {
+        // Mudar estado do registo do serviço para completado.
         ServicoExpresso se = this.expressos.get(codE);
         se.setEstado(1);
     }

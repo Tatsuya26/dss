@@ -10,7 +10,7 @@ public interface IGestCRLN {
 
     boolean verificaCliente(String codC);
 
-    void registarConclusaoReparacao(String codE,String codC);
+    void registarConclusaoReparacao(String codE);
 
     void removerOrcamento(String codO);
 
@@ -20,7 +20,7 @@ public interface IGestCRLN {
 
     void associarEquipamentoCliente(String codE, String NIF);
 
-    String registarPedidoOrcamento(String codE);
+    void registarPedidoOrcamento(String codE);
 
     void registarCliente(String NIF, String nome, String email, String numero);
 
@@ -32,19 +32,17 @@ public interface IGestCRLN {
 
     PlanoTrabalho procuraPlanoTrabalhosEquipamento(String codE);
 
-    String registarOrcamento(String codE);
+    void registarOrcamento(String codE,List<Passo> passos);
 
     void aceitarOrcamento(String codO);
 
     boolean verificarServicoExpresso();
 
-    void registarServicoExpresso(String codE);
+    void registarServicoExpresso(String codE,float preco, String descricao);
 
     void registarConclusaoServicoExpresso(String codE);
 
     PedidoOrcamento procuraPedidoOrcamento(String codE);
-
-    String registarPlanoTrabalho(List<Passo> passos,String codE);
 
     List<PedidoOrcamento> consultarPedidosOrcamentos(int criterio);
 

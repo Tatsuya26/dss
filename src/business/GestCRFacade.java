@@ -1,5 +1,6 @@
 package src.business;
 
+import java.util.List;
 import java.util.Random;
 
 import src.business.ssGestCliente.*;
@@ -41,7 +42,7 @@ public class GestCRFacade implements IGestCRLN {
     public boolean verificaCliente(String codC) {
         return this.gestCliente.verificaCliente(codC);
     }
-
+    
     public String registarEquipamento(String modelo,String descricao) {
         byte[] bytes = new byte[7];
         new Random().nextBytes(bytes);
@@ -49,45 +50,66 @@ public class GestCRFacade implements IGestCRLN {
         this.gestEquipamentos.registarEquipamento(codGerado, modelo, descricao, 0);
         return codGerado;
     }
-
+    
     public void registarCliente(String NIF, String nome, String email, String numero) {
         this.gestCliente.registarCliente(NIF, nome, email, numero);
     }
     
+    public void associarEquipamentoCliente(String codE, String NIF) {
+        this.gestCliente.associarEquipamentoCliente(codE, NIF);
+        this.gestEquipamentos.associarEquipamentoCliente(codE, NIF);
+    }
+
     public void registarServicoExpresso(String codE,float preco, String descricao) {
+        // Mudar o estado do equipamento para que este passe a por reparar.
+        this.gestEquipamentos.alterarEstado(codE, 0);
         this.gestRegistos.registarServicoExpresso(codE, codFLogado, preco, descricao);
     }
     
-    void registarConclusaoServicoExpresso(String codE);
+    public void registarConclusaoServicoExpresso(String codE) {
+        // Mudar o estado do equipamento para que este passe a reparado.
+        this.gestEquipamentos.alterarEstado(codE,1);
+        this.gestRegistos.registarConclusaoReparacao(codE);
+    }
 
-    String registarPedidoOrcamento(String codE);
+    public void registarPedidoOrcamento(String codE) {
+        this.gestRegistos.registarPedidoOrcamento(codE, codFLogado);
+        this.gestEquipamentos.alterarEstado(codE,0);
+    }
     
-    //String registarPlanoTrabalho(List<Passo> passos,String codE);
 
-    String registarOrcamento(String codE);
+    public void registarOrcamento(String codE, List<Passo> passos) {
+        this.gestRegistos.registarOrcamento(codE, codFLogado, passos);
+    }
     
-    void registarConclusaoReparacao(String codE,String codC);
+    public void removerOrcamento(String codO) {
+        this.gestRegistos.removerOrcamento(codO);
+        this.gestEquipamentos.alterarEstado(codO, -1);
+    }
     
-    void removerOrcamento(String codO);
-
+    public void aceitarOrcamento(String codO) {
+        this.gestRegistos.aceitarOrcamento(codO, codFLogado);
+        //TODO: Alterar o estado do equipamento para sinalizar que este foi aceite para reparacao.
+    }
+    
+    public void registarConclusaoReparacao(String codE) {
+        this.gestRegistos.registarConclusaoReparacao(codE);
+        // Alterar estado para indicar que este foi reparado.
+        this.gestEquipamentos.alterarEstado(codE, 3);
+    }
+    
     void enviarEmail(String codC);
     
-    void associarEquipamentoCliente(String codE, String NIF);
-
+    
     List<String> consultarEquipamentosCliente(String codC);
-
+    
     void alterarEstadoEntregue(String codE);
-
+    
     void baixaEquipamento(String codE);
-
+    
     PlanoTrabalho procuraPlanoTrabalhosEquipamento(String codE);
 
-
-    void aceitarOrcamento(String codO);
-
     boolean verificarServicoExpresso();
-
-
 
     PedidoOrcamento procuraPedidoOrcamento(String codE);
 
