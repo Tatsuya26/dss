@@ -1,7 +1,11 @@
 package src.business;
 
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import src.business.ssGestCliente.*;
 import src.business.ssGestEquipamentos.*;
@@ -60,6 +64,11 @@ public class GestCRFacade implements IGestCRLN {
         this.gestEquipamentos.associarEquipamentoCliente(codE, NIF);
     }
 
+    public List<String> consultarEquipamentosCliente(String codC) {
+        return this.gestCliente.consultarEquipamentosCliente(codC);
+    }
+
+
     public void registarServicoExpresso(String codE,float preco, String descricao) {
         // Mudar o estado do equipamento para que este passe a por reparar.
         this.gestEquipamentos.alterarEstado(codE, 0);
@@ -98,33 +107,69 @@ public class GestCRFacade implements IGestCRLN {
         this.gestEquipamentos.alterarEstado(codE, 3);
     }
     
-    void enviarEmail(String codC);
-    
-    
-    List<String> consultarEquipamentosCliente(String codC);
-    
-    void alterarEstadoEntregue(String codE);
-    
-    void baixaEquipamento(String codE);
-    
-    PlanoTrabalho procuraPlanoTrabalhosEquipamento(String codE);
+    public void enviarEmail(String codC,String codE) {
+        //TODO: Ir buscar a informaçcao do cliente e o orçamento a enviar. Provavelmente deveriamos criar um ficheiro do orçamento para dar attach.
+        // Nao fiz diagrama de sequencia pois pareceu me algo complicado de realizar mas o método é para ser assim implementado.
+        final String username = "CRDSS@gmail.com";
+        final String password = "Grupo7DSS";
 
-    boolean verificarServicoExpresso();
+        Properties prop = new Properties();
+		prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.port", "587");
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.starttls.enable", "true");
 
-    PedidoOrcamento procuraPedidoOrcamento(String codE);
+        Session session = Session.getInstance(prop,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
 
+        try {
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress("from@gmail.com"));
+        message.setRecipients(
+                Message.RecipientType.TO,
+                InternetAddress.parse("cliente@gmail.com"));
+        message.setSubject("Orçamento para o equipamento");
 
-    List<PedidoOrcamento> consultarPedidosOrcamentos(int criterio);
+        message.setText("Querido cliente,"
+                + "\n\n Please do not spam my email!");
 
-    void atualizarPlanoTrabalhos(Passo passo, int hora, int custo);
+        Transport.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void baixaEquipamento(String codE) {
+        this.gestEquipamentos.alterarEstado(codE, -2);
+    }
+    
+    public String procuraPlanoTrabalhosEquipamento(String codE) {
+        PlanoTrabalhos pt = this.gestRegistos.procuraPlanoTrabalhosEquipamento(codE);
+        return pt.toString();
+    }
+
+    public String procuraPedidoOrcamento(String codE) {
+        PedidoOrcamento po = this.gestRegistos.procuraPedidoOrcamento(codE);
+        return po.toString();
+    }
+
+    List<String> consultarPedidosOrcamentos(int criterio);
+
+    void atualizarPlanoTrabalhos(String codE,Passo passo, int hora, int custo);
 
     void registaContactoCliente(String codF,LocalDate data);
     
-    List<ServicoExpresso> consultarServicoExpresso();
+    boolean verificarServicoExpresso();
 
-    List<Reparacao> consultarReparacoes();
+    List<String> consultarServicoExpresso();
 
-    List<Orcamento> consultarOrcamentos();
+    List<String> consultarReparacoes();
+
+    List<String> consultarOrcamentos();
 
     List<String> consultarListagemIntervencoes() ;
 

@@ -1,4 +1,4 @@
-package business.ssGestFuncionarios;
+package src.business.ssGestFuncionarios;
 
 public class Gestor extends Funcionario{
     public Gestor(String nome,String codigo) {

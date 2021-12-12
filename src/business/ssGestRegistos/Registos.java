@@ -17,7 +17,7 @@ public abstract class Registos {
         this.estado = estado;
     }
 
-    public String getCodRegisto() {
+    public String getCodRegissto() {
         return this.codRegisto;
     }
 
