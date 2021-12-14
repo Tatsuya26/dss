@@ -1,7 +1,10 @@
 package src.business;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
+
+import src.business.ssGestRegistos.Passo;
 
 public interface IGestCRLN {
     boolean autenticarFuncionario(String codF);
@@ -14,6 +17,10 @@ public interface IGestCRLN {
 
     void removerOrcamento(String codO);
 
+    String registarFuncionario(String nome,int tipo);
+    
+    void removerFuncionario(String codF);
+    
     void enviarEmail(String codC);
     
     String registarEquipamento(String modelo,String descricao); 
@@ -36,8 +43,6 @@ public interface IGestCRLN {
 
     void aceitarOrcamento(String codO);
 
-    boolean verificarServicoExpresso();
-
     void registarServicoExpresso(String codE,float preco, String descricao);
 
     void registarConclusaoServicoExpresso(String codE);
@@ -48,7 +53,7 @@ public interface IGestCRLN {
 
     void atualizarPlanoTrabalhos(String codE,Passo passo, int hora, int custo);
 
-    void registaContactoCliente(String codF,LocalDate data);
+    void registaContactoCliente(String codC,LocalDateTime data);
     
     boolean verificarServicoExpresso();
 

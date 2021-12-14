@@ -68,7 +68,7 @@ public class PlanoTrabalhos {
         this.atualizaCustoHoras();
     }
 
-    public void atualizaCustoHoras() {
+    private void atualizaCustoHoras() {
         this.horas = 0;
         this.custo = 0;
 

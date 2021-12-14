@@ -1,5 +1,7 @@
 package src.business;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
@@ -58,6 +60,16 @@ public class GestCRFacade implements IGestCRLN {
     public void registarCliente(String NIF, String nome, String email, String numero) {
         this.gestCliente.registarCliente(NIF, nome, email, numero);
     }
+
+    //TODO: FALTA DIAGRAMA SEQUENCIA E ACRESCENTAR A API
+    public String registarFuncionario(String nome,int tipo) {
+        return this.gestFuncionario.registarFuncionario(nome, tipo);
+    }
+
+    //TODO: FALTA DIAGRAMA SEQUENCIA E ACRESCENTAR A API
+    public void removerFuncionario(String codF){
+        this.gestFuncionario.removerFuncionario(codF);
+    }
     
     public void associarEquipamentoCliente(String codE, String NIF) {
         this.gestCliente.associarEquipamentoCliente(codE, NIF);
@@ -86,7 +98,6 @@ public class GestCRFacade implements IGestCRLN {
         this.gestEquipamentos.alterarEstado(codE,0);
     }
     
-
     public void registarOrcamento(String codE, List<Passo> passos) {
         this.gestRegistos.registarOrcamento(codE, codFLogado, passos);
     }
@@ -157,13 +168,21 @@ public class GestCRFacade implements IGestCRLN {
         return po.toString();
     }
 
-    List<String> consultarPedidosOrcamentos(int criterio);
-
-    void atualizarPlanoTrabalhos(String codE,Passo passo, int hora, int custo);
-
-    void registaContactoCliente(String codF,LocalDate data);
+    //TODO: FALTA DIAGRAMA SEQUENCIA
+    public void atualizarPlanoTrabalhos(String codE,Passo passo) {
+        PlanoTrabalhos pt = this.gestRegistos.procuraPlanoTrabalhosEquipamento(codE);
+        pt.atualizaPlanoTrabalhos(passo);
+    }
     
-    boolean verificarServicoExpresso();
+    public void registaContactoCliente(String codC,LocalDateTime data) {
+        this.gestRegistos.registaContactoCliente(codFLogado, codC, data);
+    }
+    
+    public boolean verificarServicoExpresso() {
+        return this.gestRegistos.verificarServicoExpresso();
+    }
+
+    List<String> consultarPedidosOrcamentos();
 
     List<String> consultarServicoExpresso();
 
@@ -176,4 +195,19 @@ public class GestCRFacade implements IGestCRLN {
     List<String> consultarListagemTecnicos();
     
     List<String> consultarListagemFuncionariosBalcao();
+
+    private boolean verificaFuncionarioBalcao() {
+        if (this.gestFuncionario.verificaTipoFuncionario(codFLogado) == 1) return true;
+        else return false;
+    }
+
+    private boolean verificaTecnicoReparacoes() {
+        if (this.gestFuncionario.verificaTipoFuncionario(codFLogado) == 2) return true;
+        else return false;
+    }
+
+    private boolean verificaGestor() {
+        if (this.gestFuncionario.verificaTipoFuncionario(codFLogado) == 3) return true;
+        else return false;
+    }
 }
