@@ -1,9 +1,7 @@
-package src.business.ssGestCliente;
+package src.business.SSGestEntidades;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class Cliente {
@@ -75,6 +73,7 @@ public class Cliente {
         for(String e: this.equipamentos_cliente) equipamentos.add(e);
         return new Cliente(this.nome,this.NIF,this.email,this.telemovel,equipamentos);
     }
+    
     public boolean equals(Object o) {
         if (o == this)
             return true;

@@ -9,23 +9,17 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import src.business.ssGestCliente.*;
-import src.business.ssGestEquipamentos.*;
-import src.business.ssGestFuncionarios.*;
+import src.business.SSGestEntidades.*;
 import src.business.ssGestRegistos.*;
 
 
 public class GestCRFacade implements IGestCRLN {
-    private IGestClientes      gestCliente;
-    private IGestEquipamentos gestEquipamentos;
-    private IGestFuncionarios  gestFuncionario;
+    private IGestEntidades gestEntidades;
     private IGestRegistos     gestRegistos;
     private String codFLogado;
 
     public GestCRFacade() {
-        this.gestCliente      = new GestClientesFacade();
-        this.gestEquipamentos = new GestEquipamentosFacade();
-        this.gestFuncionario  = new GestFuncionariosFacade();
+        this.gestEntidades = new GestEntidadesFacade();
         this.gestRegistos     = new GestRegistosFacade();
         this.codFLogado = null;
     }
@@ -34,7 +28,7 @@ public class GestCRFacade implements IGestCRLN {
     //TODO: Fazer os diagramas de sequencia e implementar todos estes métodos.
 
     public boolean autenticarFuncionario(String codF) {
-        boolean autenticado = this.gestFuncionario.autenticarFuncionario(codF);
+        boolean autenticado = this.gestEntidades.autenticarFuncionario(codF);
         if (autenticado) {
             this.codFLogado = codF;
         }
@@ -42,60 +36,59 @@ public class GestCRFacade implements IGestCRLN {
     }
 
     public boolean verificaEquipamento(String codE) {
-        return this.gestEquipamentos.verificaEquipamento(codE);
+        return this.gestEntidades.verificaEquipamento(codE);
     }
 
     public boolean verificaCliente(String codC) {
-        return this.gestCliente.verificaCliente(codC);
+        return this.gestEntidades.verificaCliente(codC);
     }
     
     public String registarEquipamento(String modelo,String descricao) {
         byte[] bytes = new byte[7];
         new Random().nextBytes(bytes);
         String codGerado = new String(bytes);
-        this.gestEquipamentos.registarEquipamento(codGerado, modelo, descricao, 0);
+        this.gestEntidades.registarEquipamento(codGerado, modelo, descricao, 0);
         return codGerado;
     }
     
     public void registarCliente(String NIF, String nome, String email, String numero) {
-        this.gestCliente.registarCliente(NIF, nome, email, numero);
+        this.gestEntidades.registarCliente(NIF, nome, email, numero);
     }
 
     //TODO: FALTA DIAGRAMA SEQUENCIA E ACRESCENTAR A API
     public String registarFuncionario(String nome,int tipo) {
-        return this.gestFuncionario.registarFuncionario(nome, tipo);
+        return this.gestEntidades.registarFuncionario(nome, tipo);
     }
 
     //TODO: FALTA DIAGRAMA SEQUENCIA E ACRESCENTAR A API
     public void removerFuncionario(String codF){
-        this.gestFuncionario.removerFuncionario(codF);
+        this.gestEntidades.removerFuncionario(codF);
     }
     
     public void associarEquipamentoCliente(String codE, String NIF) {
-        this.gestCliente.associarEquipamentoCliente(codE, NIF);
-        this.gestEquipamentos.associarEquipamentoCliente(codE, NIF);
+        this.gestEntidades.associarEquipamentoCliente(codE, NIF);
     }
 
     public List<String> consultarEquipamentosCliente(String codC) {
-        return this.gestCliente.consultarEquipamentosCliente(codC);
+        return this.gestEntidades.consultarEquipamentosCliente(codC);
     }
 
 
     public void registarServicoExpresso(String codE,float preco, String descricao) {
         // Mudar o estado do equipamento para que este passe a por reparar.
-        this.gestEquipamentos.alterarEstado(codE, 0);
+        this.gestEntidades.alterarEstado(codE, 0);
         this.gestRegistos.registarServicoExpresso(codE, codFLogado, preco, descricao);
     }
     
     public void registarConclusaoServicoExpresso(String codE) {
         // Mudar o estado do equipamento para que este passe a reparado.
-        this.gestEquipamentos.alterarEstado(codE,1);
+        this.gestEntidades.alterarEstado(codE,1);
         this.gestRegistos.registarConclusaoReparacao(codE);
     }
 
     public void registarPedidoOrcamento(String codE) {
         this.gestRegistos.registarPedidoOrcamento(codE, codFLogado);
-        this.gestEquipamentos.alterarEstado(codE,0);
+        this.gestEntidades.alterarEstado(codE,0);
     }
     
     public void registarOrcamento(String codE, List<Passo> passos) {
@@ -104,7 +97,7 @@ public class GestCRFacade implements IGestCRLN {
     
     public void removerOrcamento(String codO) {
         this.gestRegistos.removerOrcamento(codO);
-        this.gestEquipamentos.alterarEstado(codO, -1);
+        this.gestEntidades.alterarEstado(codO, -1);
     }
     
     public void aceitarOrcamento(String codO) {
@@ -115,7 +108,7 @@ public class GestCRFacade implements IGestCRLN {
     public void registarConclusaoReparacao(String codE) {
         this.gestRegistos.registarConclusaoReparacao(codE);
         // Alterar estado para indicar que este foi reparado.
-        this.gestEquipamentos.alterarEstado(codE, 3);
+        this.gestEntidades.alterarEstado(codE, 3);
     }
     
     public void enviarEmail(String codC,String codE) {
@@ -155,7 +148,7 @@ public class GestCRFacade implements IGestCRLN {
     }
     
     public void baixaEquipamento(String codE) {
-        this.gestEquipamentos.alterarEstado(codE, -2);
+        this.gestEntidades.alterarEstado(codE, -2);
     }
     
     public String procuraPlanoTrabalhosEquipamento(String codE) {
@@ -197,17 +190,17 @@ public class GestCRFacade implements IGestCRLN {
     List<String> consultarListagemFuncionariosBalcao();
 
     private boolean verificaFuncionarioBalcao() {
-        if (this.gestFuncionario.verificaTipoFuncionario(codFLogado) == 1) return true;
+        if (this.gestEntidades.verificaTipoFuncionario(codFLogado) == 1) return true;
         else return false;
     }
 
     private boolean verificaTecnicoReparacoes() {
-        if (this.gestFuncionario.verificaTipoFuncionario(codFLogado) == 2) return true;
+        if (this.gestEntidades.verificaTipoFuncionario(codFLogado) == 2) return true;
         else return false;
     }
 
     private boolean verificaGestor() {
-        if (this.gestFuncionario.verificaTipoFuncionario(codFLogado) == 3) return true;
+        if (this.gestEntidades.verificaTipoFuncionario(codFLogado) == 3) return true;
         else return false;
     }
 }
