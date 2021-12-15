@@ -106,9 +106,45 @@ public class GestRegistosFacade implements IGestRegistos {
     }
 
     //TODO: Fazer os métodos de listagem
-    public List<String> consultarListagemIntervencoes() {    }
+    //(passos de reparação e reparações expresso de um dado funcionário
+    public List<String> consultarListagemIntervencoes(String codF) {
+        List<String> l = new ArrayList<>();
 
-    public List<String> consultarListagemTecnicos() {    }
+        for(ServicoExpresso r: this.expressos.values()) 
+            if(r.getCodFuncionario().equals(codF)) l.add(r.toString());
+        
+        for(Reparacao r: this.reparacoes.values()) 
+            if(r.getCodFuncionario().equals(codF)) l.add(r.toString());            
+        
+        return l;
+    }
+
+    public List<String> consultarListagemTecnicos(String codF) { 
+
+    }
     
-    public List<String> consultarListagemFuncionariosBalcao() {    };
+
+    public List<String> consultarListagemFuncionariosBalcao(String codF) { 
+        List<String> l = new ArrayList<>();
+        List<String> res = new ArrayList<>();
+        int num_recepcoes = 0;
+        int num_entregas = 0;
+
+        for(PedidoOrcamento p : this.pedidosOrcamentos.values()) 
+            if(p.getCodFuncionario().equals(codF)) {
+                l.add(p.toString());
+                num_recepcoes++;
+            }
+
+        for(Entrega e: this.entregas.values()) 
+            if(e.getCodFuncionario().equals(codF)) {
+                l.add(e.toString());
+                num_entregas++;
+            }
+        
+        String f = "O funcionario" + codF + "fez" + num_entregas + "entregas e fez" + num_recepcoes + "recepções.";
+        res.add(f);
+        res.addAll(l);
+        return res; 
+    }
 }

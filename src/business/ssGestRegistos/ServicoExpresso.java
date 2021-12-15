@@ -27,4 +27,15 @@ public class ServicoExpresso extends Registos{
     public void setDescricao(String desc) {
         this.descricao = desc;
     }
+
+
+    
+    public String toString() {
+        return "{" +
+                super.toString()+
+            " preco='" + getPreco() + "'" +
+            ", descricao='" + getDescricao() + "'" +
+            "}";
+    }
+
 }

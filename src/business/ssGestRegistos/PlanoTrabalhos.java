@@ -78,4 +78,14 @@ public class PlanoTrabalhos {
         }
     }
 
+    public String toString() {
+        return "{" +
+            " horas='" + getHoras() + "'" +
+            ", custo='" + getCusto() + "'" +
+            ", passoAtual='" + getPassoAtual() + "'" +
+            ", passos='" + getPassos().toString() + "'" +
+            "}";
+    }
+
+
 }

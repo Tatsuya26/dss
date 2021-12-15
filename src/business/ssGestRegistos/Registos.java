@@ -17,7 +17,7 @@ public abstract class Registos {
         this.estado = estado;
     }
 
-    public String getCodRegissto() {
+    public String getCodRegisto() {
         return this.codRegisto;
     }
 
@@ -56,5 +56,18 @@ public abstract class Registos {
     public void setEstado(int estado) {
         this.estado = estado;
     }
+    
+
+    public String toString() {
+        return "{" +
+            " codRegisto='" + this.getCodRegisto() + "'" +
+            ", dataCriacao='" + this.getData() + "'" +
+            ", codEquipamento='" + this.getCodEquipamento() + "'" +
+            ", codFuncionario='" + this.getCodFuncionario() + "'" +
+            ", estado='" + this.getEstado() + "'" +
+            "}";
+    }
+
+
 }
 

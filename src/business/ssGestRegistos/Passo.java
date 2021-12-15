@@ -47,4 +47,15 @@ public class Passo {
     public void setSubPassos(List<Passo> passos) {
         this.sub_passos = new ArrayList<>(passos);
     }
+
+    public String toString() {
+        return "{" +
+            " descricao='" + getDescricao() + "'" +
+            ", custo='" + getCusto() + "'" +
+            ", tempo='" + getTempo() + "'" +
+            ", sub_passos='" + getSubPassos() + "'" +
+            "}";
+    }
+
+
 }

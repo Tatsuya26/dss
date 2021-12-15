@@ -27,4 +27,13 @@ public class Reparacao extends Registos{
     public void setPlanoTrabalhos (PlanoTrabalhos pt) {
         this.planoTrabalhos = pt;
     }
+
+    public String toString() {
+        return "{" +
+            " valor='" + getValor() + "'" +
+            ", planoTrabalhos='" + getPlanoTrabalhos().toString() + "'" +
+            "}";
+    }
+
+
 }
