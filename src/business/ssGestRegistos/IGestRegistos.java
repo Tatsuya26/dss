@@ -38,7 +38,7 @@ public interface IGestRegistos {
     List<Orcamento> consultarOrcamentos();
 
     //TODO: Fazer os métodos de listagem
-    List<String> consultarListagemIntervencoes();
+    List<Double> consultarListagemIntervencoes();
 
     List<String> consultarListagemTecnicos();
     
