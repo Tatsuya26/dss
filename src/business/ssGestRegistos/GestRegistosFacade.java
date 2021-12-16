@@ -26,6 +26,7 @@ public class GestRegistosFacade implements IGestRegistos {
 
     public void registarConclusaoReparacao(String codE) {
         Reparacao r = this.reparacoes.get(codE);
+        //FIXME: isto não é meta programação?
         r.setEstado(1);
     }
 

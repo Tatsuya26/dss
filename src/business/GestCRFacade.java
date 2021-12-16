@@ -15,12 +15,12 @@ import src.business.ssGestRegistos.*;
 
 public class GestCRFacade implements IGestCRLN {
     private IGestEntidades gestEntidades;
-    private IGestRegistos     gestRegistos;
+    private IGestRegistos gestRegistos;
     private String codFLogado;
 
     public GestCRFacade() {
         this.gestEntidades = new GestEntidadesFacade();
-        this.gestRegistos     = new GestRegistosFacade();
+        this.gestRegistos = new GestRegistosFacade();
         this.codFLogado = null;
     }
 
