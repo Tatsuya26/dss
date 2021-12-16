@@ -28,14 +28,16 @@ public class ServicoExpresso extends Registos{
         this.descricao = desc;
     }
 
-
-    
     public String toString() {
         return "{" +
                 super.toString()+
             " preco='" + getPreco() + "'" +
             ", descricao='" + getDescricao() + "'" +
             "}";
+    }
+
+    public ServicoExpresso clone(){
+        return new ServicoExpresso(this.getData(), this.getCodEquipamento(), this.getCodFuncionario(), this.getEstado(), this.getPreco(), this.getDescricao());
     }
 
 }

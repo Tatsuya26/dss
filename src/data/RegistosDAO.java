@@ -16,11 +16,7 @@ import src.business.ssGestRegistos.*;
 
 public class RegistosDAO {
     //FIXME: fazer isto de maneira que faça sentido
-    private IGestRegistos igr;
-
-    private RegistosDAO(IGestRegistos igr) {
-        this.igr = igr;
-    }
+    private RegistosDAO() {}
 
     public static void saveInstance(Map<String,Orcamento> orcamentos, Map<String,PedidoOrcamento> pedidosOrcamentos, Map<String,Reparacao> reparacoes, 
                                         Map<String,Entrega> entregas, Map<String,ServicoExpresso> expressos, List<Contacto> contactos) throws FileNotFoundException, IOException{
@@ -48,13 +44,12 @@ public class RegistosDAO {
     }
 
     //FIXME: retornar alguma coisa
-    public static void getInstance() throws FileNotFoundException, IOException, ClassNotFoundException{
+    public static IGestRegistos getInstance() throws FileNotFoundException, IOException, ClassNotFoundException{
         File saveFile = new File("saveFileRegistos");
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(saveFile));
 
         Map<String,Orcamento> orcamentos = new HashMap<String, Orcamento>();
         int toRead = ois.readInt();
-        //FIXME: é o código de registo?
         for(int i = 0; i < toRead; i++){
             Orcamento o = (Orcamento) ois.readObject();
             orcamentos.put(o.getCodRegisto(), o);
@@ -75,7 +70,6 @@ public class RegistosDAO {
         toRead = ois.readInt();
         for(int i = 0; i < toRead; i++){
             Entrega e = (Entrega) ois.readObject();
-            //
             entregas.put(e.getCodRegisto(), e);
         }
         Map<String,ServicoExpresso> expressos = new HashMap<String, ServicoExpresso>();
@@ -90,6 +84,9 @@ public class RegistosDAO {
             Contacto c = (Contacto) ois.readObject();
             contactos.add(c);
         }
+
+        IGestRegistos igr = new GestRegistosFacade(orcamentos, pedidosOrcamentos, reparacoes, entregas, expressos, contactos);
+        return igr;
     }
 
     //Map<String,Orcamento> orcamentos, Map<String,PedidoOrcamento> pedidosOrcamentos, Map<String,Reparacao> reparacoes, 

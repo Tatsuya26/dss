@@ -35,5 +35,8 @@ public class Reparacao extends Registos{
             "}";
     }
 
+    public Reparacao clone(){
+        return new Reparacao(this.getData(), this.getCodEquipamento(), this.getCodFuncionario(), this.getEstado(), this.getValor(), this.getPlanoTrabalhos());
+    }
 
 }

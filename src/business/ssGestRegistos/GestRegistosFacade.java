@@ -25,9 +25,31 @@ public class GestRegistosFacade implements IGestRegistos {
         this.contactos = new ArrayList<>();
     }
 
+    public GestRegistosFacade(Map<String,Orcamento> orcamentos, Map<String,PedidoOrcamento> pedidosOrcamentos, Map<String,Reparacao> reparacoes,
+                                Map<String,Entrega> entregas, Map<String,ServicoExpresso> expressos, List<Contacto> contactos) {
+        this.orcamentos = new HashMap<>();
+        this.pedidosOrcamentos = new HashMap<>();
+        this.reparacoes = new HashMap<>();
+        this.entregas = new HashMap<>();
+        this.expressos = new HashMap<>();
+        this.contactos = new ArrayList<>();
+
+        for(Map.Entry<String, Orcamento> entry: orcamentos.entrySet())
+            this.orcamentos.put(entry.getKey(), entry.getValue().clone());
+        for(Map.Entry<String, PedidoOrcamento> entry: pedidosOrcamentos.entrySet())
+            this.pedidosOrcamentos.put(entry.getKey(), entry.getValue().clone());
+        for(Map.Entry<String, Reparacao> entry: reparacoes.entrySet())
+            this.reparacoes.put(entry.getKey(), entry.getValue().clone());
+        for(Map.Entry<String, Entrega> entry: entregas.entrySet())
+            this.entregas.put(entry.getKey(), entry.getValue().clone());
+        for(Map.Entry<String, ServicoExpresso> entry: expressos.entrySet())
+            this.expressos.put(entry.getKey(), entry.getValue().clone());
+        for(Contacto c: contactos)
+            this.contactos.add(c);
+    }
+
     public void registarConclusaoReparacao(String codE) {
         Reparacao r = this.reparacoes.get(codE);
-        //FIXME: isto não é meta programação?
         r.setEstado(1);
     }
 
