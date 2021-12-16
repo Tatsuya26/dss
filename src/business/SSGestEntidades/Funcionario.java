@@ -24,4 +24,6 @@ public abstract class Funcionario {
     public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
+
+    public abstract Funcionario clone();
 }

@@ -17,7 +17,6 @@ import src.business.SSGestEntidades.*;
 public class EntidadesDAO {
     //TODO: a shit-ton of exceptions
     //FIXME: fazer isto de maneira que faça sentido
-    private IGestEntidades ige;
 
     private EntidadesDAO() {}
 
@@ -37,7 +36,7 @@ public class EntidadesDAO {
     }
 
     //FIXME: retornar alguma coisa
-    public static void getInstance() throws FileNotFoundException, IOException, ClassNotFoundException{
+    public static IGestEntidades getInstance() throws FileNotFoundException, IOException, ClassNotFoundException{
         File saveFile = new File("saveFileEntidades");
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(saveFile));
 
@@ -59,5 +58,8 @@ public class EntidadesDAO {
             Funcionario f = (Funcionario) ois.readObject();
             funcionarios.put(f.getCodigo(), f);
         }
+
+        IGestEntidades ige = new GestEntidadesFacade(equipamentos, clientes, funcionarios);
+        return ige;
     }
 }
