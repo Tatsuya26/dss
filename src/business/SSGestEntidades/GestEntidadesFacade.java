@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 
 public class GestEntidadesFacade implements IGestEntidades{
@@ -101,8 +102,13 @@ public class GestEntidadesFacade implements IGestEntidades{
     }
 
     public String registarFuncionario(String nome,int tipo) {
-        String codGerado = new String("1234");
-        //FIXME: Arranjar de forma a nao ter de instanciar f como funcionario balcao
+        Random rand = new Random();
+        int PIN = 0;
+        while (PIN < 1000) {
+            PIN = rand.nextInt(10000);
+        }
+        //FIXME: Verificar se o código já não está ocupado
+        String codGerado = Integer.toString(PIN);
         Funcionario f = new FuncionarioBalcao(nome,codGerado);
         if (tipo == 1) f = new FuncionarioBalcao(nome, codGerado);
         if (tipo == 2) f = new TecnicoReparacoes(nome, codGerado);

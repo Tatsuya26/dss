@@ -51,12 +51,10 @@ public class GestCRFacade implements IGestCRLN {
         this.gestEntidades.registarCliente(NIF, nome, email, numero);
     }
 
-    //TODO: FALTA DIAGRAMA SEQUENCIA E ACRESCENTAR A API
     public String registarFuncionario(String nome,int tipo) {
         return this.gestEntidades.registarFuncionario(nome, tipo);
     }
 
-    //TODO: FALTA DIAGRAMA SEQUENCIA E ACRESCENTAR A API
     public void removerFuncionario(String codF){
         this.gestEntidades.removerFuncionario(codF);
     }
@@ -98,7 +96,6 @@ public class GestCRFacade implements IGestCRLN {
     
     public void aceitarOrcamento(String codO) {
         this.gestRegistos.aceitarOrcamento(codO, codFLogado);
-        //TODO: Alterar o estado do equipamento para sinalizar que este foi aceite para reparacao.
         this.gestEntidades.alterarEstadoEquipamento(codO, 1);
     }
     
@@ -158,17 +155,18 @@ public class GestCRFacade implements IGestCRLN {
         return po.toString();
     }
 
-    //TODO: FALTA DIAGRAMA SEQUENCIA
     public void atualizarPlanoTrabalhos(String codE,Passo passo) {
         PlanoTrabalhos pt = this.gestRegistos.procuraPlanoTrabalhosEquipamento(codE);
         passo.setFuncionario(codFLogado);
         pt.atualizaPlanoTrabalhos(passo);
     }
     
+    //TODO: Diagrama de sequencia
     public void registaContactoCliente(String codC,LocalDateTime data) {
         this.gestRegistos.registaContactoCliente(codFLogado, codC, data);
     }
     
+    //FIXME: PENSAR DE COMO VERIFICAR
     public boolean verificarServicoExpresso() {
         return this.gestRegistos.verificarServicoExpresso();
     }
