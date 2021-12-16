@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
 public class GestRegistosFacade implements IGestRegistos {
@@ -125,27 +126,37 @@ public class GestRegistosFacade implements IGestRegistos {
     }
     
 
-    public List<String> consultarListagemFuncionariosBalcao(String codF) { 
-        List<String> l = new ArrayList<>();
-        List<String> res = new ArrayList<>();
-        int num_recepcoes = 0;
-        int num_entregas = 0;
-
-        for(PedidoOrcamento p : this.pedidosOrcamentos.values()) 
-            if(p.getCodFuncionario().equals(codF)) {
-                l.add(p.toString());
-                num_recepcoes++;
+    public List<String> consultarListagemFuncionariosBalcao() { 
+        Map<String,List<Integer>> listagem =  new HashMap<>();
+        List<String> listagem_final = new ArrayList<>();
+        for(PedidoOrcamento p : this.pedidosOrcamentos.values()) {
+            String codF = p.getCodFuncionario();
+            if(listagem.containsKey(codF)) {
+                int temp = listagem.get(codF).get(0);
+                listagem.get(codF).set(0,temp++);
+            } else {
+                List<Integer> temp = new ArrayList<>();
+                temp.set(0,0);
+                listagem.put(codF,temp);
             }
-
-        for(Entrega e: this.entregas.values()) 
-            if(e.getCodFuncionario().equals(codF)) {
-                l.add(e.toString());
-                num_entregas++;
+        }          
+        for(Entrega e: this.entregas.values()) {
+            String codF = e.getCodFuncionario();
+            if(listagem.containsKey(codF)) {
+                int temp = listagem.get(codF).get(1);
+                listagem.get(codF).set(1,temp++);
+            } else {
+                List<Integer> temp = new ArrayList<>();
+                temp.set(1,0);
+                listagem.put(codF,temp);
             }
-        
-        String f = "O funcionario" + codF + "fez" + num_entregas + "entregas e fez" + num_recepcoes + "recepções.";
-        res.add(f);
-        res.addAll(l);
-        return res; 
+        }
+        for(Map.Entry<String, List<Integer>> entry: listagem.entrySet()) {
+            String tmp = "Funcionário " + entry.getKey() + 
+                          entry.getValue().get(0) + " recepções," +
+                          entry.getValue().get(1)+ " entregas.";
+            listagem_final.add(tmp);
+        }
+        return listagem_final; 
     }
 }
