@@ -42,5 +42,5 @@ public interface IGestRegistos {
 
     List<String> consultarListagemTecnicos();
     
-    List<String> consultarListagemFuncionariosBalcao();
+    public List<String> consultarListagemFuncionariosBalcao();
 }
