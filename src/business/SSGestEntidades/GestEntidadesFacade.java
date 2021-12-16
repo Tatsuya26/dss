@@ -13,7 +13,24 @@ public class GestEntidadesFacade implements IGestEntidades{
     private int nextEquipamentID;
 
     public GestEntidadesFacade() {
+        this.equipamentos = new HashMap<>();
+        this.clientes = new HashMap<>();
+        this.funcionarios = new HashMap<>();
         this.nextEquipamentID = 0;
+    }
+
+    public GestEntidadesFacade(Map<String,Equipamento> equipamentos, Map<String,Cliente> clientes, Map<String,Funcionario> funcionarios){
+        this.equipamentos = new HashMap<>();
+        this.clientes = new HashMap<>();
+        this.funcionarios = new HashMap<>();
+        this.nextEquipamentID = 0;
+
+        for(Map.Entry<String, Equipamento> entry: equipamentos.entrySet())
+            this.equipamentos.put(entry.getKey(), entry.getValue().clone());
+        for(Map.Entry<String, Cliente> entry: clientes.entrySet())
+            this.clientes.put(entry.getKey(), entry.getValue().clone());
+        for(Map.Entry<String, Funcionario> entry: funcionarios.entrySet())
+            this.funcionarios.put(entry.getKey(), entry.getValue().clone());
     }
 
     // Método que cria o cliente e o regista na base de dados

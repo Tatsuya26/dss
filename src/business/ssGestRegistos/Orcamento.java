@@ -27,4 +27,8 @@ public class Orcamento extends Registos{
     public void setPlanoTrabalhos(PlanoTrabalhos pt) {
         this.planoTrabalhos = pt;
     }
+
+    public Orcamento clone(){
+        return new Orcamento(this.getData(), this.getCodEquipamento(), this.getCodFuncionario(), this.getEstado(), this.getValor(), this.getPlanoTrabalhos());
+    }
 }
