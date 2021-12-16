@@ -1,4 +1,4 @@
-package src.business.ssGestFuncionarios;
+package src.business.SSGestEntidades;
 
 import src.business.ssGestFuncionarios.Funcionario;
 

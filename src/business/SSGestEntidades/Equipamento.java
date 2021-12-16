@@ -1,4 +1,4 @@
-package src.business.ssGestEquipamentos;
+package src.business.SSGestEntidades;
 
 
 public class Equipamento {

@@ -183,7 +183,9 @@ public class GestCRFacade implements IGestCRLN {
 
     List<String> consultarListagemTecnicos();
     
-    List<String> consultarListagemFuncionariosBalcao();
+    public List<String> consultarListagemFuncionariosBalcao() {
+        return this.gestRegistos.consultarListagemFuncionariosBalcao();
+    }
 
     private boolean verificaFuncionarioBalcao() {
         if (this.gestEntidades.verificaTipoFuncionario(codFLogado) == 1) return true;
