@@ -19,9 +19,7 @@ public class EntidadesDAO {
     //FIXME: fazer isto de maneira que faça sentido
     private IGestEntidades ige;
 
-    private EntidadesDAO(IGestEntidades ige) {
-        this.ige = ige;
-    }
+    private EntidadesDAO() {}
 
     public static void saveInstance(Map<String,Equipamento> equipamentos, Map<String,Cliente> clientes, Map<String,Funcionario> funcionarios) throws FileNotFoundException, IOException{
         File saveFile = new File("saveFileEntidades");

@@ -6,7 +6,6 @@ import java.util.List;
 public class PlanoTrabalhos {
     private int horas;
     private float custo;
-    private int passoAtual;
     private List<Passo> passos;
 
     public PlanoTrabalhos(List<Passo> passos) {
@@ -16,13 +15,11 @@ public class PlanoTrabalhos {
             this.horas += p.getTempo();
             this.custo += p.getCusto();
         }
-        this.passoAtual = 0;
     }
 
-    public PlanoTrabalhos(int horas,float custo,int passoAtual,List<Passo> passos) {
+    public PlanoTrabalhos(int horas,float custo,List<Passo> passos) {
         this.horas = horas;
         this.custo = custo;
-        this.passoAtual = passoAtual;
         this.passos = new ArrayList<>(passos);
     }
 
@@ -32,10 +29,6 @@ public class PlanoTrabalhos {
 
     public float getCusto() {
         return this.custo;
-    }
-
-    public int getPassoAtual() {
-        return this.passoAtual;
     }
 
     public List<Passo> getPassos() {
@@ -50,21 +43,17 @@ public class PlanoTrabalhos {
         this.custo = custo;
     }
 
-    public void setPassoAtual(int passo) {
-        this.passoAtual = passo;
-    }
-
     public void setPassos (List<Passo> passos) {
         this.passos = new ArrayList<>(passos);
     }
 
     public void atualizaPlanoTrabalhos (Passo p) {
         for (Passo pa: this.passos) {
-            if (pa.getDescricao().compareTo(p.getDescricao()) == 0)
-                this.passos.remove(pa);
+            if (pa.getDescricao().compareTo(p.getDescricao()) == 0) {
+                p.setEstado(1);
+                pa = p;
+            }
         }
-        this.passos.add(passoAtual, p);
-        this.passoAtual++;
         this.atualizaCustoHoras();
     }
 
@@ -82,7 +71,6 @@ public class PlanoTrabalhos {
         return "{" +
             " horas='" + getHoras() + "'" +
             ", custo='" + getCusto() + "'" +
-            ", passoAtual='" + getPassoAtual() + "'" +
             ", passos='" + getPassos().toString() + "'" +
             "}";
     }

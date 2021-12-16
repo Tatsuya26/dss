@@ -44,11 +44,7 @@ public class GestCRFacade implements IGestCRLN {
     }
     
     public String registarEquipamento(String modelo,String descricao) {
-        byte[] bytes = new byte[7];
-        new Random().nextBytes(bytes);
-        String codGerado = new String(bytes);
-        this.gestEntidades.registarEquipamento(codGerado, modelo, descricao, 0);
-        return codGerado;
+        return this.gestEntidades.registarEquipamento(modelo, descricao, 0);
     }
     
     public void registarCliente(String NIF, String nome, String email, String numero) {
@@ -76,19 +72,19 @@ public class GestCRFacade implements IGestCRLN {
 
     public void registarServicoExpresso(String codE,float preco, String descricao) {
         // Mudar o estado do equipamento para que este passe a por reparar.
-        this.gestEntidades.alterarEstado(codE, 0);
+        this.gestEntidades.alterarEstadoEquipamento(codE, 1);
         this.gestRegistos.registarServicoExpresso(codE, codFLogado, preco, descricao);
     }
     
     public void registarConclusaoServicoExpresso(String codE) {
         // Mudar o estado do equipamento para que este passe a reparado.
-        this.gestEntidades.alterarEstado(codE,1);
+        this.gestEntidades.alterarEstadoEquipamento(codE,2);
         this.gestRegistos.registarConclusaoReparacao(codE);
     }
 
     public void registarPedidoOrcamento(String codE) {
         this.gestRegistos.registarPedidoOrcamento(codE, codFLogado);
-        this.gestEntidades.alterarEstado(codE,0);
+        this.gestEntidades.alterarEstadoEquipamento(codE,0);
     }
     
     public void registarOrcamento(String codE, List<Passo> passos) {
@@ -97,18 +93,19 @@ public class GestCRFacade implements IGestCRLN {
     
     public void removerOrcamento(String codO) {
         this.gestRegistos.removerOrcamento(codO);
-        this.gestEntidades.alterarEstado(codO, -1);
+        this.gestEntidades.alterarEstadoEquipamento(codO, -1);
     }
     
     public void aceitarOrcamento(String codO) {
         this.gestRegistos.aceitarOrcamento(codO, codFLogado);
         //TODO: Alterar o estado do equipamento para sinalizar que este foi aceite para reparacao.
+        this.gestEntidades.alterarEstadoEquipamento(codO, 1);
     }
     
     public void registarConclusaoReparacao(String codE) {
         this.gestRegistos.registarConclusaoReparacao(codE);
         // Alterar estado para indicar que este foi reparado.
-        this.gestEntidades.alterarEstado(codE, 3);
+        this.gestEntidades.alterarEstadoEquipamento(codE, 2);
     }
     
     public void enviarEmail(String codC,String codE) {
@@ -148,7 +145,7 @@ public class GestCRFacade implements IGestCRLN {
     }
     
     public void baixaEquipamento(String codE) {
-        this.gestEntidades.alterarEstado(codE, -2);
+        this.gestEntidades.alterarEstadoEquipamento(codE, -2);
     }
     
     public String procuraPlanoTrabalhosEquipamento(String codE) {
@@ -164,6 +161,7 @@ public class GestCRFacade implements IGestCRLN {
     //TODO: FALTA DIAGRAMA SEQUENCIA
     public void atualizarPlanoTrabalhos(String codE,Passo passo) {
         PlanoTrabalhos pt = this.gestRegistos.procuraPlanoTrabalhosEquipamento(codE);
+        passo.setFuncionario(codFLogado);
         pt.atualizaPlanoTrabalhos(passo);
     }
     

@@ -1,4 +1,4 @@
-package src.business.ssGestFuncionarios;
+package src.business.SSGestEntidades;
 
 public abstract class Funcionario {
     private String nome;
