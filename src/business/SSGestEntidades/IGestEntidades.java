@@ -2,28 +2,35 @@ package src.business.SSGestEntidades;
 
 import java.util.List;
 
+import src.business.ObjetoExistenteException;
+import src.business.ObjetoNaoExistenteException;
+
 public interface IGestEntidades {
     boolean verificaCliente(String NIF);
     
-    void registarCliente(String NIF, String nome, String email, String numero);
+    void registarCliente(String NIF, String nome, String email, String numero) throws ObjetoExistenteException;
     
-    List<String> consultarEquipamentosCliente(String NIF);
+    List<Equipamento> consultarEquipamentosCliente(String NIF) throws ObjetoNaoExistenteException;
+
+    Cliente getClienteByNIF(String NIF) throws ObjetoNaoExistenteException;
     
+    Funcionario getFuncionarioByCod(String codF) throws ObjetoNaoExistenteException;
+
+    Equipamento getEquipamentoByID(int codE) throws ObjetoNaoExistenteException;
+
     boolean autenticarFuncionario(String codF);
 
-    int verificaTipoFuncionario (String codF);
+    int verificaTipoFuncionario (String codF) throws ObjetoNaoExistenteException;
 
-    String registarFuncionario(String nome,int tipo);
+    String registarFuncionario(String nome,int tipo) throws ObjetoExistenteException;
 
-    void removerFuncionario(String cod);
+    void removerFuncionario(String cod) throws ObjetoNaoExistenteException;
 
-    boolean verificaEquipamento(String codE);
+    boolean verificaEquipamento(int idE);
    
-    void alterarEstadoEquipamento(String codE,int estado);
+    void alterarEstadoEquipamento(int idE,int estado) throws ObjetoNaoExistenteException;
     
-    void baixaEquipamento(String codE);
+    void baixaEquipamento(int idE) throws ObjetoNaoExistenteException;
     
-    String registarEquipamento(String modelo, String descricao, int estado);
-    
-    void associarEquipamentoCliente(String codEquipamento, String NIF);
+    int registarEquipamento(String modelo, String descricao, int estado, String NIF) throws ObjetoExistenteException, ObjetoNaoExistenteException;
 }

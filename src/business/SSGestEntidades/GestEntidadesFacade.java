@@ -1,123 +1,177 @@
 package src.business.SSGestEntidades;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
+import org.hibernate.SessionFactory;
+import src.business.ObjetoExistenteException;
+import src.business.ObjetoNaoExistenteException;
+import src.data.ClienteDAO;
+import src.data.DAO;
+import src.data.EquipamentoDAO;
+import src.data.FuncionarioDAO;
+import src.data.IdentifierAlreadyInDBException;
+import src.data.NotFoundInDBException;
 
 
 public class GestEntidadesFacade implements IGestEntidades{
-    private Map<String,Equipamento> equipamentos;
-    private Map<String,Cliente> clientes;
-    private Map<String,Funcionario> funcionarios;
-    private int nextEquipamentID;
+    private DAO<Equipamento> equipamentos;
+    private DAO<Cliente> clientes;
+    private DAO<Funcionario> funcionarios;
 
-    public GestEntidadesFacade() {
-        this.equipamentos = new HashMap<>();
-        this.clientes = new HashMap<>();
-        this.funcionarios = new HashMap<>();
-        this.nextEquipamentID = 0;
-    }
-
-    public GestEntidadesFacade(Map<String,Equipamento> equipamentos, Map<String,Cliente> clientes, Map<String,Funcionario> funcionarios){
-        this.equipamentos = new HashMap<>();
-        this.clientes = new HashMap<>();
-        this.funcionarios = new HashMap<>();
-        this.nextEquipamentID = 0;
-
-        for(Map.Entry<String, Equipamento> entry: equipamentos.entrySet())
-            this.equipamentos.put(entry.getKey(), entry.getValue().clone());
-        for(Map.Entry<String, Cliente> entry: clientes.entrySet())
-            this.clientes.put(entry.getKey(), entry.getValue().clone());
-        for(Map.Entry<String, Funcionario> entry: funcionarios.entrySet())
-            this.funcionarios.put(entry.getKey(), entry.getValue().clone());
+    public GestEntidadesFacade(SessionFactory sf) {
+        this.equipamentos = new EquipamentoDAO(sf);
+        this.clientes = new ClienteDAO(sf);
+        this.funcionarios = new FuncionarioDAO(sf);
     }
 
     // Método que cria o cliente e o regista na base de dados
-    public void registarCliente(String NIF, String nome, String email, String numero){
+    public void registarCliente(String NIF, String nome, String email, String numero) throws ObjetoExistenteException{
         Cliente c = new Cliente(nome, NIF, email, numero, new ArrayList<>());
-        this.clientes.put(c.getNIF(), c);
+        try {
+            this.clientes.save(c);
+        } catch (IdentifierAlreadyInDBException e) {
+            throw new ObjetoExistenteException("Cliente ja existente na base de dados");
+        }
     }
     
     // Método que verifica se o cliente existe na estrutura de dados
     public boolean verificaCliente(String NIF) {
-        if (this.clientes.containsKey(NIF)) return true;
+        if (this.clientes.containsID(NIF)) return true;
         return false;
     }
-
-    // Método que adiciona o equipamento ao cliente com o NIF indicado
-    public void associarEquipamentoCliente(String codEquipamento, String NIF) {
-        Cliente c = this.clientes.get(NIF);
-        Equipamento e = this.equipamentos.get(codEquipamento);
-        c.adicionaEquipamento(codEquipamento);
-        e.setCliente(NIF);
-    }
-
-    // Método que indica os equipamentos de um cliente
-    public List<String> consultarEquipamentosCliente(String NIF) {
-        Cliente c = this.clientes.get(NIF);
-        return c.getEquipamentosCliente();
-    }
-
+    
     // Método que adiciona um equipamento à estrutura de dados
-    public String registarEquipamento(String modelo, String descricao, int estado) {
-        String codEquipamento = Integer.toString(nextEquipamentID);
-        nextEquipamentID++;
-        Equipamento e = new Equipamento(codEquipamento, modelo, descricao, estado);
-        this.equipamentos.put(codEquipamento, e);
-        return codEquipamento;
+    public int registarEquipamento(String modelo, String descricao, int estado,String NIF) throws ObjetoExistenteException,ObjetoNaoExistenteException{
+        Cliente c;
+        int id = 0;
+        try {
+            c = clientes.get(NIF);
+            Equipamento e = new Equipamento(modelo, descricao, estado, c);
+            this.equipamentos.save(e);
+            id = e.getIdEquipamento();
+            return id;
+        } catch (NotFoundInDBException e1) {
+            throw new ObjetoNaoExistenteException("Cliente nao existe na BD.");
+        }
+        catch (IdentifierAlreadyInDBException e2) {
+            throw new ObjetoExistenteException("Equipamento ja existe na base de dados");
+        }
     }
-
-    //Método que verifica se existe um equipamento com o código dado.
-    public boolean verificaEquipamento(String codE) {
-        if (this.equipamentos.containsKey(codE)) return true;
-        return false;
-    }
-
-    // Método que altera o estado do equipamento de forma a indicar que o equipamento foi entregue
-    public void alterarEstadoEquipamento(String codE, int estado) {
-        Equipamento e = this.equipamentos.get(codE);
-        e.setEstado(estado);
-    }
-
-    // Método que altera o estado do equipamento de forma a indicar que foi dada baixa ao equipamento.
-    public void baixaEquipamento(String codE) {
-        Equipamento e = this.equipamentos.get(codE);
-        e.setEstado(2);
-    }
-
-    // Método que verifica se o código dado pertence a algum funcionário da loja.
-    public boolean autenticarFuncionario(String codF) {
-        boolean existe = this.funcionarios.containsKey(codF);
-        return existe;
-    }
-
-    public int verificaTipoFuncionario (String codF) {
-        Funcionario f = this.funcionarios.get(codF);
-        if (f instanceof FuncionarioBalcao) return 1;
-        if (f instanceof TecnicoReparacoes) return 2;
-        if (f instanceof Gestor) return 3;
-        return -1;
-    }
-
-    public String registarFuncionario(String nome,int tipo) {
+    
+    public String registarFuncionario(String nome,int tipo) throws ObjetoExistenteException{
         Random rand = new Random();
         int PIN = 0;
-        while (PIN < 1000) {
+        while (PIN < 1000 && !funcionarios.containsID(Integer.toString(PIN))) {
             PIN = rand.nextInt(10000);
         }
-        //FIXME: Verificar se o código já não está ocupado
         String codGerado = Integer.toString(PIN);
         Funcionario f = new FuncionarioBalcao(nome,codGerado);
         if (tipo == 1) f = new FuncionarioBalcao(nome, codGerado);
         if (tipo == 2) f = new TecnicoReparacoes(nome, codGerado);
         if (tipo == 3) f = new Gestor(nome, codGerado);
-        this.funcionarios.put(codGerado,f);
-        return codGerado;
+        try {
+            this.funcionarios.save(f);
+            return codGerado;
+        } catch (IdentifierAlreadyInDBException e) {
+            throw new ObjetoExistenteException("Funcionario ja existe na BD.");
+        }
+    }
+    
+    public void removerFuncionario(String cod) throws ObjetoNaoExistenteException{
+        try {
+            Funcionario f = this.funcionarios.get(cod);
+            this.funcionarios.delete(f);
+        } catch (NotFoundInDBException e) {
+            throw new ObjetoNaoExistenteException("Funcionario nao existe na BD.");
+        }
+    }
+    
+    // Método que verifica se o código dado pertence a algum funcionário da loja.
+    public boolean autenticarFuncionario(String codF) {
+        boolean existe = this.funcionarios.containsID(codF);
+        return existe;
     }
 
-    public void removerFuncionario(String cod) {
-        this.funcionarios.remove(cod);
+    //Método que verifica se existe um equipamento com o código dado.
+    public boolean verificaEquipamento(int ID) {
+        if (this.equipamentos.containsID(ID)) return true;
+        return false;
     }
+
+    // Método que indica os equipamentos de um cliente
+    public List<Equipamento> consultarEquipamentosCliente(String NIF) throws ObjetoNaoExistenteException{
+        try {
+            Cliente c = this.clientes.get(NIF);
+            return c.getEquipamentos();
+        }
+        catch (NotFoundInDBException e) {
+            throw new ObjetoNaoExistenteException("O cliente pedido não existe");
+        }
+    }
+
+    // Método que altera o estado do equipamento de forma a indicar que o equipamento foi entregue
+    public void alterarEstadoEquipamento(int id, int estado) throws ObjetoNaoExistenteException{
+        Equipamento e;
+        try {
+            e = this.equipamentos.get(id);
+            e.setEstado(estado);
+            equipamentos.update(e);
+        } catch (NotFoundInDBException e1) {
+            throw new ObjetoNaoExistenteException("Equipamento nao existe na BD");
+        }
+    }
+
+    // Método que altera o estado do equipamento de forma a indicar que foi dada baixa ao equipamento.
+    public void baixaEquipamento(int codE) throws ObjetoNaoExistenteException{
+        Equipamento e;
+        try {
+            e = this.equipamentos.get(codE);
+            e.setEstado(2);
+            equipamentos.update(e);
+        } catch (NotFoundInDBException e1) {
+            throw new ObjetoNaoExistenteException("Equipamento nao existe na BD");
+        }
+    }
+
+    public int verificaTipoFuncionario (String codF) throws ObjetoNaoExistenteException{
+        Funcionario f;
+        try {
+            f = this.funcionarios.get(codF);
+            if (f instanceof FuncionarioBalcao) return 1;
+            if (f instanceof TecnicoReparacoes) return 2;
+            if (f instanceof Gestor) return 3;
+            return -1;
+        } catch (NotFoundInDBException e) {
+            throw new ObjetoNaoExistenteException("Funcionario nao existe na base de dados");
+        }
+    }
+
+    public Cliente getClienteByNIF(String NIF) throws ObjetoNaoExistenteException {
+        try {
+            Cliente c = this.clientes.get(NIF);
+            return c;
+        } catch (NotFoundInDBException e) {
+            throw new ObjetoNaoExistenteException("O cliente nao esta na BD");
+        }
+    }
+
+    public Funcionario getFuncionarioByCod(String codF) throws ObjetoNaoExistenteException {
+        try {
+            Funcionario f = this.funcionarios.get(codF);
+            return f;
+        } catch (NotFoundInDBException e) {
+            throw new ObjetoNaoExistenteException("O Funcionario nao esta na BD");
+        }
+    }
+
+    public Equipamento getEquipamentoByID(int codE) throws ObjetoNaoExistenteException {
+        try {
+            Equipamento e = this.equipamentos.get(codE);
+            return e;
+        } catch (NotFoundInDBException e) {
+            throw new ObjetoNaoExistenteException("O Equipamento nao esta na BD");
+        }
+    }
+
 }

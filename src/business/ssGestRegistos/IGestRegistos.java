@@ -1,35 +1,40 @@
 package src.business.ssGestRegistos;
 
 import java.util.List;
+
+import src.business.ObjetoExistenteException;
+import src.business.ObjetoNaoExistenteException;
+import src.business.SSGestEntidades.Cliente;
+import src.business.SSGestEntidades.Equipamento;
+import src.business.SSGestEntidades.Funcionario;
+
 import java.time.LocalDateTime;
 
 public interface IGestRegistos {
 
-    void registarConclusaoReparacao(String codE);
+    void registarConclusaoReparacao(int codR) throws ObjetoNaoExistenteException;
 
-    void removerOrcamento(String codO);
+    int registarEntrega(Equipamento codE,Funcionario codF) throws ObjetoExistenteException;
 
-    void registarPedidoOrcamento(String codE,String codF);
+    void removerOrcamento(int codO) throws ObjetoNaoExistenteException;
 
-    PlanoTrabalhos procuraPlanoTrabalhosEquipamento(String codE);
+    int registarPedidoOrcamento(Equipamento codE,Funcionario codF) throws ObjetoExistenteException;
 
-    void registarOrcamento(String codE,String codF,List<Passo> passos);
+    int registarOrcamento(Equipamento codE,Funcionario codF,List<Passo> passos) throws ObjetoExistenteException;
 
-    void aceitarOrcamento(String codO,String codFuncionario);
+    int aceitarOrcamento(int codO,Funcionario codFuncionario) throws ObjetoExistenteException, ObjetoNaoExistenteException;
 
     boolean verificarServicoExpresso();
 
-    void registarServicoExpresso(String codE,String codF,float valor,String descricao);
+    int registarServicoExpresso(Equipamento codE,Funcionario codF,float valor,String descricao) throws ObjetoExistenteException;
 
-    void registarConclusaoServicoExpresso(String codE);
+    void registarConclusaoServicoExpresso(int codR) throws ObjetoNaoExistenteException;
 
-    PedidoOrcamento procuraPedidoOrcamento(String codE);
-
+    void atualizarReparacao(int codR,Passo p) throws ObjetoNaoExistenteException;
+    
+    void registaContactoCliente(Funcionario codF,Cliente codC,LocalDateTime data);
+    
     List<PedidoOrcamento> consultarPedidosOrcamentos();
-
-    void atualizarReparacao(String codE,Passo p);
-
-    void registaContactoCliente(String codF,String codC,LocalDateTime data);
     
     List<ServicoExpresso> consultarServicoExpresso();
 
@@ -37,10 +42,22 @@ public interface IGestRegistos {
 
     List<Orcamento> consultarOrcamentos();
 
-    //TODO: Fazer os métodos de listagem
-    List<Double> consultarListagemIntervencoes();
+    List<Entrega> consultarEntregas();
 
-    List<String> consultarListagemTecnicos();
+    List<String> consultarListagemIntervencoes(String codF);
+
+    List<Double> consultarListagemTecnicos(String codF);
     
-    public List<String> consultarListagemFuncionariosBalcao();
+    List<String> consultarListagemFuncionariosBalcao();
+
+    PedidoOrcamento getPedidoOrcamentoByID(int codR) throws ObjetoNaoExistenteException;
+
+    Orcamento getOrcamentoByID(int codR) throws ObjetoNaoExistenteException;
+
+    Reparacao getReparacaoByID(int codR) throws ObjetoNaoExistenteException;
+
+    Entrega getEntregaByID(int codR) throws ObjetoNaoExistenteException;
+
+    ServicoExpresso getServicoExpressoByID(int codR) throws ObjetoNaoExistenteException;
+
 }

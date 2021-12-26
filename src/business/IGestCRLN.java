@@ -6,53 +6,47 @@ import java.util.*;
 import src.business.ssGestRegistos.Passo;
 
 public interface IGestCRLN {
-    boolean autenticarFuncionario(String codF);
+    int autenticarFuncionario(String codF) throws ObjetoNaoExistenteException;
 
-    boolean verificaEquipamento(String codE);
+    boolean verificaEquipamento(int codE);
 
     boolean verificaCliente(String codC);
 
-    void registarConclusaoReparacao(String codE);
+    void registarConclusaoReparacao(int codE) throws ObjetoNaoExistenteException;
 
-    void removerOrcamento(String codO);
+    void removerOrcamento(int codO) throws ObjetoNaoExistenteException;
 
-    String registarFuncionario(String nome,int tipo);
+    String registarFuncionario(String nome,int tipo) throws ObjetoExistenteException;
     
-    void removerFuncionario(String codF);
+    int removerFuncionario(String codF) throws ObjetoNaoExistenteException;
     
-    void enviarEmail(String codC);
+    void enviarEmail(String codC,int codE) throws ObjetoNaoExistenteException;
     
-    String registarEquipamento(String modelo,String descricao); 
+    int registarEquipamento(String modelo,String descricao,String NIF) throws ObjetoExistenteException, ObjetoNaoExistenteException; 
 
-    void associarEquipamentoCliente(String codE, String NIF);
+    int registarPedidoOrcamento(int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException;
 
-    void registarPedidoOrcamento(String codE);
+    void registarCliente(String NIF, String nome, String email, String numero) throws ObjetoExistenteException;
 
-    void registarCliente(String NIF, String nome, String email, String numero);
+    List<String> consultarEquipamentosCliente(String codC) throws ObjetoNaoExistenteException;
 
-    List<String> consultarEquipamentosCliente(String codC);
+    void baixaEquipamento(int codE) throws ObjetoNaoExistenteException;
 
-    void alterarEstadoEntregue(String codE);
+    int registarOrcamento(int codE,List<Passo> passos) throws ObjetoNaoExistenteException, ObjetoExistenteException;
 
-    void baixaEquipamento(String codE);
+    int aceitarOrcamento(int codO) throws ObjetoNaoExistenteException, ObjetoExistenteException;
 
-    String procuraPlanoTrabalhosEquipamento(String codE);
+    int registarEntrega(int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException;
 
-    void registarOrcamento(String codE,List<Passo> passos);
+    int registarServicoExpresso(int codE,float preco, String descricao) throws ObjetoNaoExistenteException, ObjetoExistenteException;
 
-    void aceitarOrcamento(String codO);
+    void registarConclusaoServicoExpresso(int codE) throws ObjetoNaoExistenteException;
 
-    void registarServicoExpresso(String codE,float preco, String descricao);
+    List<String> consultarPedidosOrcamentos();
 
-    void registarConclusaoServicoExpresso(String codE);
+    void atualizarReparacao(int codE,Passo passo) throws ObjetoNaoExistenteException;
 
-    String procuraPedidoOrcamento(String codE);
-
-    List<String> consultarPedidosOrcamentos(int criterio);
-
-    void atualizarPlanoTrabalhos(String codE,Passo passo, int hora, int custo);
-
-    void registaContactoCliente(String codC,LocalDateTime data);
+    void registaContactoCliente(String codC,LocalDateTime data) throws ObjetoNaoExistenteException;
     
     boolean verificarServicoExpresso();
 
@@ -64,7 +58,7 @@ public interface IGestCRLN {
 
     List<String> consultarListagemIntervencoes() ;
 
-    List<String> consultarListagemTecnicos();
+    List<Double> consultarListagemTecnicos();
     
     List<String> consultarListagemFuncionariosBalcao();
 

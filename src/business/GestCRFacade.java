@@ -1,41 +1,62 @@
 package src.business;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Properties;
-import java.util.Random;
+import java.util.stream.Collectors;
+
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import src.business.SSGestEntidades.*;
 import src.business.ssGestRegistos.*;
-
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
 
 public class GestCRFacade implements IGestCRLN {
     private IGestEntidades gestEntidades;
     private IGestRegistos gestRegistos;
-    private String codFLogado;
+    public Funcionario funcionario;
 
     public GestCRFacade() {
-        this.gestEntidades = new GestEntidadesFacade();
-        this.gestRegistos = new GestRegistosFacade();
-        this.codFLogado = null;
+        Configuration con = new Configuration().configure();
+        con.addAnnotatedClass(Orcamento.class);
+        con.addAnnotatedClass(PlanoTrabalhos.class);
+        con.addAnnotatedClass(Passo.class);
+        con.addAnnotatedClass(PedidoOrcamento.class);
+        con.addAnnotatedClass(Reparacao.class);
+        con.addAnnotatedClass(Entrega.class);
+        con.addAnnotatedClass(ServicoExpresso.class);
+        con.addAnnotatedClass(Contacto.class);
+        con.addAnnotatedClass(Equipamento.class);
+        con.addAnnotatedClass(Funcionario.class);
+        con.addAnnotatedClass(FuncionarioBalcao.class);
+        con.addAnnotatedClass(TecnicoReparacoes.class);
+        con.addAnnotatedClass(Gestor.class);
+        con.addAnnotatedClass(Cliente.class);
+        StandardServiceRegistry sr = new StandardServiceRegistryBuilder().applySettings(con.getProperties()).build();
+
+        SessionFactory sf = con.buildSessionFactory(sr);
+        this.gestEntidades = new GestEntidadesFacade(sf);
+        this.gestRegistos = new GestRegistosFacade(sf);
+        this.funcionario = null;
     }
 
 
-    //TODO: Fazer os diagramas de sequencia e implementar todos estes métodos.
 
-    public boolean autenticarFuncionario(String codF) {
+    public int autenticarFuncionario(String codF) throws ObjetoNaoExistenteException{
         boolean autenticado = this.gestEntidades.autenticarFuncionario(codF);
         if (autenticado) {
-            this.codFLogado = codF;
+            this.funcionario = this.gestEntidades.getFuncionarioByCod(codF);
+            return this.gestEntidades.verificaTipoFuncionario(codF);
         }
-        return autenticado;
+        return 0;
     }
 
-    public boolean verificaEquipamento(String codE) {
+    public boolean verificaEquipamento(int codE) {
         return this.gestEntidades.verificaEquipamento(codE);
     }
 
@@ -43,73 +64,92 @@ public class GestCRFacade implements IGestCRLN {
         return this.gestEntidades.verificaCliente(codC);
     }
     
-    public String registarEquipamento(String modelo,String descricao) {
-        return this.gestEntidades.registarEquipamento(modelo, descricao, 0);
+    public int registarEquipamento(String modelo,String descricao ,String NIF) throws ObjetoExistenteException,ObjetoNaoExistenteException{
+        return this.gestEntidades.registarEquipamento(modelo, descricao, 0,NIF);
     }
     
-    public void registarCliente(String NIF, String nome, String email, String numero) {
+    public void registarCliente(String NIF, String nome, String email, String numero) throws ObjetoExistenteException{
         this.gestEntidades.registarCliente(NIF, nome, email, numero);
     }
 
-    public String registarFuncionario(String nome,int tipo) {
+    public String registarFuncionario(String nome,int tipo) throws ObjetoExistenteException {
         return this.gestEntidades.registarFuncionario(nome, tipo);
     }
 
-    public void removerFuncionario(String codF){
+    public int removerFuncionario(String codF) throws ObjetoNaoExistenteException {
         this.gestEntidades.removerFuncionario(codF);
+        return 1;
     }
     
-    public void associarEquipamentoCliente(String codE, String NIF) {
-        this.gestEntidades.associarEquipamentoCliente(codE, NIF);
+
+    public List<String> consultarEquipamentosCliente(String codC) throws ObjetoNaoExistenteException {
+        return this.gestEntidades.consultarEquipamentosCliente(codC).stream().map(Equipamento :: toString).collect(Collectors.toList());
+        
     }
 
-    public List<String> consultarEquipamentosCliente(String codC) {
-        return this.gestEntidades.consultarEquipamentosCliente(codC);
+    public int registarEntrega (int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException {
+        Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
+        return this.gestRegistos.registarEntrega(e, funcionario);
     }
 
 
-    public void registarServicoExpresso(String codE,float preco, String descricao) {
+    public int registarServicoExpresso(int codE,float preco, String descricao) throws ObjetoNaoExistenteException, ObjetoExistenteException {
         // Mudar o estado do equipamento para que este passe a por reparar.
         this.gestEntidades.alterarEstadoEquipamento(codE, 1);
-        this.gestRegistos.registarServicoExpresso(codE, codFLogado, preco, descricao);
+        Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
+        return this.gestRegistos.registarServicoExpresso(e, funcionario, preco, descricao);
+        
     }
     
-    public void registarConclusaoServicoExpresso(String codE) {
+    public void registarConclusaoServicoExpresso(int codR) throws ObjetoNaoExistenteException {
         // Mudar o estado do equipamento para que este passe a reparado.
-        this.gestEntidades.alterarEstadoEquipamento(codE,2);
-        this.gestRegistos.registarConclusaoReparacao(codE);
+        Equipamento e = this.gestRegistos.getServicoExpressoByID(codR).getEquipamento();
+        this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(),2);
+        this.gestRegistos.registarConclusaoServicoExpresso(codR);
+    
     }
 
-    public void registarPedidoOrcamento(String codE) {
-        this.gestRegistos.registarPedidoOrcamento(codE, codFLogado);
+    public int registarPedidoOrcamento(int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException {
         this.gestEntidades.alterarEstadoEquipamento(codE,0);
+        Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
+        return this.gestRegistos.registarPedidoOrcamento(e, funcionario);
     }
     
-    public void registarOrcamento(String codE, List<Passo> passos) {
-        this.gestRegistos.registarOrcamento(codE, codFLogado, passos);
+    public int registarOrcamento(int codE, List<Passo> passos) throws ObjetoNaoExistenteException, ObjetoExistenteException {
+        Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
+        int codR = this.gestRegistos.registarOrcamento(e, funcionario, passos);
+        Cliente c = this.gestEntidades.getEquipamentoByID(codE).getCliente();
+        enviarEmail(c.getNIF(), codR);
+        return codR;
     }
     
-    public void removerOrcamento(String codO) {
-        this.gestRegistos.removerOrcamento(codO);
-        this.gestEntidades.alterarEstadoEquipamento(codO, -1);
+    public void removerOrcamento(int codR) throws ObjetoNaoExistenteException {
+        Equipamento e = this.gestRegistos.getOrcamentoByID(codR).getEquipamento();
+        this.gestRegistos.removerOrcamento(codR);
+        this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(), -1);
     }
     
-    public void aceitarOrcamento(String codO) {
-        this.gestRegistos.aceitarOrcamento(codO, codFLogado);
-        this.gestEntidades.alterarEstadoEquipamento(codO, 1);
+    public int aceitarOrcamento(int codO) throws ObjetoNaoExistenteException, ObjetoExistenteException {
+        int codE = this.gestRegistos.getOrcamentoByID(codO).getEquipamento().getIdEquipamento();
+        this.gestEntidades.alterarEstadoEquipamento(codE, 1);
+        return this.gestRegistos.aceitarOrcamento(codO, funcionario);
     }
     
-    public void registarConclusaoReparacao(String codE) {
-        this.gestRegistos.registarConclusaoReparacao(codE);
-        // Alterar estado para indicar que este foi reparado.
-        this.gestEntidades.alterarEstadoEquipamento(codE, 2);
+    public void registarConclusaoReparacao(int codR) throws ObjetoNaoExistenteException {
+        Equipamento e = this.gestRegistos.getReparacaoByID(codR).getEquipamento();
+        this.gestRegistos.registarConclusaoReparacao(codR);
+        this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(), 2);
     }
     
-    public void enviarEmail(String codC,String codE) {
+    public void enviarEmail(String NIF,int codR) throws ObjetoNaoExistenteException {
         //TODO: Ir buscar a informaçcao do cliente e o orçamento a enviar. Provavelmente deveriamos criar um ficheiro do orçamento para dar attach.
         // Nao fiz diagrama de sequencia pois pareceu me algo complicado de realizar mas o método é para ser assim implementado.
-        final String username = "CRDSS@gmail.com";
-        final String password = "Grupo7DSS";
+        Cliente c = this.gestEntidades.getClienteByNIF(NIF);
+        Orcamento o = this.gestRegistos.getOrcamentoByID(codR); 
+            
+
+        final String username = "crdssg7@gmail.com";
+        final String password = "crdssg07";
 
         Properties prop = new Properties();
 		prop.put("mail.smtp.host", "smtp.gmail.com");
@@ -126,79 +166,73 @@ public class GestCRFacade implements IGestCRLN {
 
         try {
         Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress("from@gmail.com"));
+        message.setFrom(new InternetAddress(username));
         message.setRecipients(
                 Message.RecipientType.TO,
-                InternetAddress.parse("cliente@gmail.com"));
+                InternetAddress.parse(c.getEmail()));
         message.setSubject("Orçamento para o equipamento");
 
         message.setText("Querido cliente,"
-                + "\n\n Please do not spam my email!");
+                + "\nNão responda para este email.Para aceitar o orçamento ligue para 919275976 ou envie mail para crdssorcamentos@gmail.com\n\n" + o.toString());
 
         Transport.send(message);
         } catch (MessagingException e) {
-            e.printStackTrace();
+           
         }
     }
     
-    public void baixaEquipamento(String codE) {
+    public void baixaEquipamento(int codE) throws ObjetoNaoExistenteException {
         this.gestEntidades.alterarEstadoEquipamento(codE, -2);
     }
-    
-    public String procuraPlanoTrabalhosEquipamento(String codE) {
-        PlanoTrabalhos pt = this.gestRegistos.procuraPlanoTrabalhosEquipamento(codE);
-        return pt.toString();
-    }
 
-    public String procuraPedidoOrcamento(String codE) {
-        PedidoOrcamento po = this.gestRegistos.procuraPedidoOrcamento(codE);
-        return po.toString();
-    }
-
-    public void atualizarPlanoTrabalhos(String codE,Passo passo) {
-        PlanoTrabalhos pt = this.gestRegistos.procuraPlanoTrabalhosEquipamento(codE);
-        passo.setFuncionario(codFLogado);
-        pt.atualizaPlanoTrabalhos(passo);
+    public void atualizarReparacao(int codE,Passo passo) throws ObjetoNaoExistenteException {
+        passo.setFuncionario(funcionario);
+        this.gestRegistos.atualizarReparacao(codE, passo);
     }
     
-    //TODO: Diagrama de sequencia
-    public void registaContactoCliente(String codC,LocalDateTime data) {
-        this.gestRegistos.registaContactoCliente(codFLogado, codC, data);
+    public void registaContactoCliente(String codC,LocalDateTime data) throws ObjetoNaoExistenteException {
+        Cliente c = this.gestEntidades.getClienteByNIF(codC);
+        this.gestRegistos.registaContactoCliente(funcionario, c, data);
     }
     
-    //FIXME: PENSAR DE COMO VERIFICAR
     public boolean verificarServicoExpresso() {
         return this.gestRegistos.verificarServicoExpresso();
     }
 
-    List<String> consultarPedidosOrcamentos();
+    public List<String> consultarPedidosOrcamentos() {
+        List<PedidoOrcamento> pos = this.gestRegistos.consultarPedidosOrcamentos();
+        return pos.stream().map(PedidoOrcamento :: toString).collect(Collectors.toList());
+    }
 
-    List<String> consultarServicoExpresso();
+    public List<String> consultarServicoExpresso() {
+        List<ServicoExpresso> pos = this.gestRegistos.consultarServicoExpresso();
+        return pos.stream().map(ServicoExpresso :: toString).collect(Collectors.toList());
+    }
 
-    List<String> consultarReparacoes();
+    public List<String> consultarReparacoes() {
+        List<Reparacao> pos = this.gestRegistos.consultarReparacoes();
+        return pos.stream().map(Reparacao :: toString).collect(Collectors.toList());
+    }
 
-    List<String> consultarOrcamentos();
+    public List<String> consultarOrcamentos() {
+        List<Orcamento> pos = this.gestRegistos.consultarOrcamentos();
+        return pos.stream().map(Orcamento :: toString).collect(Collectors.toList());
+    }
 
-    List<String> consultarListagemIntervencoes() ;
+    public List<String> consultarEntregas() {
+        List<Entrega> pos = this.gestRegistos.consultarEntregas();
+        return pos.stream().map(Entrega :: toString).collect(Collectors.toList());
+    }
 
-    List<String> consultarListagemTecnicos();
+    public List<String> consultarListagemIntervencoes() {
+        return this.gestRegistos.consultarListagemIntervencoes("23232");
+    }
+
+    public List<Double> consultarListagemTecnicos() {
+        return this.gestRegistos.consultarListagemTecnicos("3232");
+    }
     
     public List<String> consultarListagemFuncionariosBalcao() {
         return this.gestRegistos.consultarListagemFuncionariosBalcao();
-    }
-
-    private boolean verificaFuncionarioBalcao() {
-        if (this.gestEntidades.verificaTipoFuncionario(codFLogado) == 1) return true;
-        else return false;
-    }
-
-    private boolean verificaTecnicoReparacoes() {
-        if (this.gestEntidades.verificaTipoFuncionario(codFLogado) == 2) return true;
-        else return false;
-    }
-
-    private boolean verificaGestor() {
-        if (this.gestEntidades.verificaTipoFuncionario(codFLogado) == 3) return true;
-        else return false;
     }
 }

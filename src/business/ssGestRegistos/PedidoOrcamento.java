@@ -2,12 +2,20 @@ package src.business.ssGestRegistos;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import src.business.SSGestEntidades.Equipamento;
+import src.business.SSGestEntidades.Funcionario;
+
+@Entity
+@Table(name = "PedidosOrcamento")
 public class PedidoOrcamento extends Registos{
-    public PedidoOrcamento(LocalDateTime data,String codEquipamento,String codFuncionario,int estado) {
-        super(data, codEquipamento, codFuncionario, estado);
+    public PedidoOrcamento(LocalDateTime data,Equipamento Equipamento,Funcionario Funcionario,int estado) {
+        super(data, Equipamento, Funcionario, estado);
     }
 
     public PedidoOrcamento clone(){
-        return new PedidoOrcamento(this.getData(), this.getCodEquipamento(), this.getCodFuncionario(), this.getEstado());
+        return new PedidoOrcamento(this.getDataCriacao(), this.getEquipamento(), this.getFuncionario(), this.getEstado());
     }
 }
