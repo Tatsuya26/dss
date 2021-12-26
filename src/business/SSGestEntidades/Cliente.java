@@ -3,29 +3,53 @@ package src.business.SSGestEntidades;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "Clientes")
 public class Cliente {
-    private String nome;
+
+    @Id
+    @Column (name = "NIF")
     private String NIF;
+    @Column (name = "Nome")
+    private String nome;
+    @Column (name = "Email")
     private String email;
+    @Column (name = "Telemovel")
     private String telemovel;
-    private List<String> equipamentos_cliente;
+    @OneToMany(mappedBy = "cliente")
+    private List<Equipamento> equipamentos;
+
 
     public Cliente() {
+        this.NIF = "0";
         this.nome = "";
-        this.NIF  = "";
-        this.email  = "";
-        this.telemovel  = "";
+        this.email = "";
+        this.telemovel = "";
+        this.equipamentos = new ArrayList<>();
     }
+    
 
-    public Cliente(String nome, String NIF, String email, String telemovel, List<String> equipamentos_cliente) {
+    public Cliente(String nome, String NIF, String email, String telemovel) {
         this.nome = nome;
         this.NIF = NIF;
         this.email = email;
         this.telemovel = telemovel;
-        this.equipamentos_cliente = new ArrayList<>(equipamentos_cliente);
+        this.equipamentos = new ArrayList<>();
     }
 
+    public Cliente(String nome, String NIF, String email, String telemovel,List<Equipamento> Equipamentos) {
+        this.nome = nome;
+        this.NIF = NIF;
+        this.email = email;
+        this.telemovel = telemovel;
+        this.equipamentos = Equipamentos;
+    }
 
     public String getNome() {
         return this.nome;
@@ -37,10 +61,6 @@ public class Cliente {
 
     public String getNIF() {
         return this.NIF;
-    }
-    
-    public List<String> getEquipamentosCliente() {
-        return new ArrayList<>(this.equipamentos_cliente);
     }
 
     public void setNIF(String NIF) {
@@ -64,13 +84,19 @@ public class Cliente {
         this.telemovel = telemovel;
     }
 
-    public void setEquipamentosCliente(List<String> equipamentos) {
-        this.equipamentos_cliente = new ArrayList<>(equipamentos);
+
+    public List<Equipamento> getEquipamentos() {
+        return this.equipamentos;
     }
 
+    public void setEquipamentos(List<Equipamento> equipamentos) {
+        this.equipamentos = equipamentos;
+    }
+
+
     public Cliente clone() {
-        List<String> equipamentos = new ArrayList<>();
-        for(String e: this.equipamentos_cliente) equipamentos.add(e);
+        List<Equipamento> equipamentos = new ArrayList<>();
+        for(Equipamento e: this.equipamentos) equipamentos.add(e);
         return new Cliente(this.nome,this.NIF,this.email,this.telemovel,equipamentos);
     }
     
@@ -85,13 +111,24 @@ public class Cliente {
                 this.NIF.equals(cliente.NIF)             && 
                 this.email.equals(cliente.email)         && 
                 this.telemovel.equals(cliente.telemovel) && 
-                this.equipamentos_cliente.equals(cliente.equipamentos_cliente);
+                this.equipamentos.equals(cliente.equipamentos);
+    }
+
+
+    @Override
+    public String toString() {
+        return "{" +
+            " nome='" + getNome() + "'" +
+            ", NIF='" + getNIF() + "'" +
+            ", email='" + getEmail() + "'" +
+            ", telemovel='" + getTelemovel() + "'" +
+            "}";
     }
 
 
     
-    public void adicionaEquipamento(String e) {
-        this.equipamentos_cliente.add(e);
+    public void adicionaEquipamento(Equipamento e) {
+        this.equipamentos.add(e);
     }
 
 }

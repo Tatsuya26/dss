@@ -2,12 +2,23 @@ package src.business.ssGestRegistos;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import src.business.SSGestEntidades.Equipamento;
+import src.business.SSGestEntidades.Funcionario;
+
+@Entity
+@Table(name = "ServicosExpresso")
 public class ServicoExpresso extends Registos{
+    @Column(name = "Preco")
     private float preco;
+    @Column(name = "Descricao")
     private String descricao;
 
-    public ServicoExpresso(LocalDateTime data,String codEquipamento,String codFuncionario,int estado,float valor,String descricao) {
-        super(data, codEquipamento, codFuncionario, estado);
+    public ServicoExpresso(LocalDateTime data,Equipamento Equipamento,Funcionario Funcionario,int estado,float valor,String descricao) {
+        super(data, Equipamento, Funcionario, estado);
         this.preco = valor;
         this.descricao = descricao;
     }
@@ -37,7 +48,7 @@ public class ServicoExpresso extends Registos{
     }
 
     public ServicoExpresso clone(){
-        return new ServicoExpresso(this.getData(), this.getCodEquipamento(), this.getCodFuncionario(), this.getEstado(), this.getPreco(), this.getDescricao());
+        return new ServicoExpresso(this.getDataCriacao(), this.getEquipamento(), this.getFuncionario(), this.getEstado(), this.getPreco(), this.getDescricao());
     }
 
 }

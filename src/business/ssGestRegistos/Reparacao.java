@@ -2,12 +2,26 @@ package src.business.ssGestRegistos;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import src.business.SSGestEntidades.Equipamento;
+import src.business.SSGestEntidades.Funcionario;
+
+@Entity
+@Table(name = "RegistosReparacao")
 public class Reparacao extends Registos{
+    @Column(name = "Custo")
     private float valor;
+    @OneToOne
+    @JoinColumn(name = "PlanoTrabalhosID")
     private PlanoTrabalhos planoTrabalhos;
 
-    public Reparacao(LocalDateTime data,String codEquipamento,String codFuncionario,int estado,float valor,PlanoTrabalhos pt) {
-        super(data, codEquipamento, codFuncionario, estado);    
+    public Reparacao(LocalDateTime data,Equipamento Equipamento,Funcionario Funcionario,int estado,float valor,PlanoTrabalhos pt) {
+        super(data, Equipamento, Funcionario, estado);    
         this.valor = valor;
         this.planoTrabalhos = pt;
     }
@@ -36,7 +50,7 @@ public class Reparacao extends Registos{
     }
 
     public Reparacao clone(){
-        return new Reparacao(this.getData(), this.getCodEquipamento(), this.getCodFuncionario(), this.getEstado(), this.getValor(), this.getPlanoTrabalhos());
+        return new Reparacao(this.getDataCriacao(), this.getEquipamento(), this.getFuncionario(), this.getEstado(), this.getValor(), this.getPlanoTrabalhos());
     }
 
 }
