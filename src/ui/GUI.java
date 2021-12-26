@@ -1,10 +1,8 @@
+package src.ui;
 import java.awt.*;
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -118,10 +116,10 @@ class GUI {
 
         JButton registo_entrega = new JButton("Registo entrega");
         registo_entrega.setBounds(490,550,165,25);
+        registo_entrega.addActionListener(e -> criarRegistodeEntrega(this.userText.getText()));
 
         JButton registo_pedido_orcamento = new JButton("Registo Pedido Orçamento");
         registo_pedido_orcamento.setBounds(690,550,250,25);
-
         
         panel_operation.add(registo);
         panel_operation.add(this.back_Button);
@@ -135,7 +133,61 @@ class GUI {
         this.frame.repaint();        
     }
 
+    public void criarRegistodeEntrega(String codF) {
+        JFrame f_registo = new JFrame();
+        f_registo.setBounds(0,0,500,300);
+        f_registo.setTitle("Criar registo de entrega");
+        f_registo.getContentPane().setBackground(Color.gray);
+
+        JLabel background = new JLabel();
+        background.setBounds(0,0,500,300);
+        background.setBackground(Color.gray);
+        
+        JLabel codEquipamento = new JLabel("Código de Equipamento: ");
+        codEquipamento.setBounds(50,50,300,25);
+        codEquipamento.setForeground(Color.black);
+        
+        JTextField text_codEquipamento = new JTextField(50);
+        text_codEquipamento.setBounds(50,100,165,25);
+        text_codEquipamento.setBackground(Color.white);
+        
+        JButton registar = new JButton("Registar");
+        registar.setBounds(50,150,165,25);
+        registar.addActionListener(e -> registos_efetuados(1));
+        
+        background.add(codEquipamento);
+        background.add(text_codEquipamento);
+        background.add(registar);
+
+        f_registo.add(background);
     
+        f_registo.setVisible(true);
+    }
+    
+
+    public boolean registos_efetuados(int x) {
+        //registo entrega
+        if(x == 1) {
+            //implementar método, se não for possivel enviar msg erro
+            msg_erro("O equipamento não existe.");
+            return true;
+        }
+        else {
+            
+            return false;  
+        } 
+    }
+
+    public void msg_erro(String msg) {
+        JFrame erro = new JFrame();
+        erro.setBounds(30,0,300,300);
+        erro.setTitle("ERROR");
+        JLabel error_msg = new JLabel(msg);
+        error_msg.setBounds(0,0,300,300);
+        error_msg.setForeground(Color.red);
+        erro.add(error_msg);
+        erro.setVisible(true);
+    }
     public static void main(String[] args) throws IOException {
         GUI g = new GUI();
     }
