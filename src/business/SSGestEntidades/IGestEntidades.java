@@ -19,11 +19,11 @@ public interface IGestEntidades {
 
     boolean verificaEquipamento(String codE);
    
-    void alterarEstado(String codE,int estado);
+    void alterarEstadoEquipamento(String codE,int estado);
     
     void baixaEquipamento(String codE);
     
-    void registarEquipamento(String codEquipamento, String modelo, String descricao, int estado);
+    String registarEquipamento(String modelo, String descricao, int estado);
     
     void associarEquipamentoCliente(String codEquipamento, String NIF);
 }

@@ -5,24 +5,26 @@ import java.util.List;
 
 public class PlanoTrabalhos {
     private int horas;
+    private int horasReais;
     private float custo;
-    private int passoAtual;
+    private float custoReal;
     private List<Passo> passos;
 
     public PlanoTrabalhos(List<Passo> passos) {
         this.passos = new ArrayList<>(passos);
         this.horas = 0; this.custo = 0;
+        this.horasReais = 0; this.custoReal = 0;
         for (Passo p : this.passos) {
             this.horas += p.getTempo();
             this.custo += p.getCusto();
         }
-        this.passoAtual = 0;
     }
 
-    public PlanoTrabalhos(int horas,float custo,int passoAtual,List<Passo> passos) {
+    public PlanoTrabalhos(int horas,int horasReais,float custo,float custoReal,List<Passo> passos) {
         this.horas = horas;
+        this.horasReais = horasReais;
         this.custo = custo;
-        this.passoAtual = passoAtual;
+        this.custoReal = custoReal;
         this.passos = new ArrayList<>(passos);
     }
 
@@ -30,14 +32,17 @@ public class PlanoTrabalhos {
         return this.horas;
     }
 
+    public int getHorasReais() {
+        return this.horasReais;
+    }
+
     public float getCusto() {
         return this.custo;
     }
 
-    public int getPassoAtual() {
-        return this.passoAtual;
+    public float getCustoReal() {
+        return this.custoReal;
     }
-
     public List<Passo> getPassos() {
         return new ArrayList<>(passos);
     }
@@ -46,13 +51,18 @@ public class PlanoTrabalhos {
         this.horas = horas;
     }
 
+    public void setHorasReais(int horasReais) {
+        this.horasReais = horasReais;
+    }
+
     public void setCusto (float custo) {
         this.custo = custo;
     }
 
-    public void setPassoAtual(int passo) {
-        this.passoAtual = passo;
+    public void setCustoReal (float custoReal) {
+        this.custoReal = custoReal;
     }
+
 
     public void setPassos (List<Passo> passos) {
         this.passos = new ArrayList<>(passos);
@@ -60,29 +70,30 @@ public class PlanoTrabalhos {
 
     public void atualizaPlanoTrabalhos (Passo p) {
         for (Passo pa: this.passos) {
-            if (pa.getDescricao().compareTo(p.getDescricao()) == 0)
-                this.passos.remove(pa);
+            if (pa.getDescricao().compareTo(p.getDescricao()) == 0) {
+                p.setEstado(1);
+                pa = p;
+            }
         }
-        this.passos.add(passoAtual, p);
-        this.passoAtual++;
         this.atualizaCustoHoras();
     }
 
     private void atualizaCustoHoras() {
-        this.horas = 0;
-        this.custo = 0;
+        this.horasReais = 0;
+        this.custoReal = 0;
 
         for (Passo p : this.passos) {
-            this.horas += p.getTempo();
-            this.custo += p.getCusto();
+            this.horasReais += p.getTempo();
+            this.custoReal += p.getCusto();
         }
     }
 
     public String toString() {
         return "{" +
             " horas='" + getHoras() + "'" +
+            " horasReais='" + getHorasReais() + "'" +
             ", custo='" + getCusto() + "'" +
-            ", passoAtual='" + getPassoAtual() + "'" +
+            ", custoReal='" + getCustoReal() + "'" +
             ", passos='" + getPassos().toString() + "'" +
             "}";
     }

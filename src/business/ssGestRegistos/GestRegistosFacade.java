@@ -143,8 +143,32 @@ public class GestRegistosFacade implements IGestRegistos {
         return l;
     }
 
-    public List<String> consultarListagemTecnicos(String codF) { 
+    public List<Double> consultarListagemTecnicos(String codF) {
+        int totalSE = 0;
+        for(ServicoExpresso se: this.expressos.values()){
+            if(se.getCodFuncionario().equals(codF))
+                totalSE ++;
+        }
 
+        int totalR = 0, realizadasR = 0;
+        double duracaoTotal = 0, desvios = 0;
+        for(Reparacao r: this.reparacoes.values()){
+            if(r.getCodFuncionario().equals(codF)){
+                totalR ++;
+                if(r.getEstado() == 1){
+                    realizadasR ++;
+                    duracaoTotal += r.getPlanoTrabalhos().getHorasReais();
+                    desvios += Math.abs(r.getPlanoTrabalhos().getHorasReais() - r.getPlanoTrabalhos().getHoras());
+                }
+            }
+        }
+
+        List<Double> l = new ArrayList<>();
+        l.add((double) totalSE + totalR);
+        l.add((double) duracaoTotal / realizadasR);
+        l.add((double) desvios / realizadasR);
+
+        return l;
     }
     
 

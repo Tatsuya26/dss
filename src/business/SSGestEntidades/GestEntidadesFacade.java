@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 
 public class GestEntidadesFacade implements IGestEntidades{
@@ -60,9 +61,12 @@ public class GestEntidadesFacade implements IGestEntidades{
     }
 
     // Método que adiciona um equipamento à estrutura de dados
-    public void registarEquipamento(String codEquipamento, String modelo, String descricao, int estado) {
+    public String registarEquipamento(String modelo, String descricao, int estado) {
+        String codEquipamento = Integer.toString(nextEquipamentID);
+        nextEquipamentID++;
         Equipamento e = new Equipamento(codEquipamento, modelo, descricao, estado);
-        this.equipamentos.put(e.getCodEquipamento(), e);
+        this.equipamentos.put(codEquipamento, e);
+        return codEquipamento;
     }
 
     //Método que verifica se existe um equipamento com o código dado.
@@ -72,7 +76,7 @@ public class GestEntidadesFacade implements IGestEntidades{
     }
 
     // Método que altera o estado do equipamento de forma a indicar que o equipamento foi entregue
-    public void alterarEstado(String codE, int estado) {
+    public void alterarEstadoEquipamento(String codE, int estado) {
         Equipamento e = this.equipamentos.get(codE);
         e.setEstado(estado);
     }
@@ -98,9 +102,13 @@ public class GestEntidadesFacade implements IGestEntidades{
     }
 
     public String registarFuncionario(String nome,int tipo) {
-        String codGerado = Integer.toString(nextEquipamentID);
-        nextEquipamentID++;
-        //FIXME: Arranjar de forma a nao ter de instanciar f como funcionario balcao
+        Random rand = new Random();
+        int PIN = 0;
+        while (PIN < 1000) {
+            PIN = rand.nextInt(10000);
+        }
+        //FIXME: Verificar se o código já não está ocupado
+        String codGerado = Integer.toString(PIN);
         Funcionario f = new FuncionarioBalcao(nome,codGerado);
         if (tipo == 1) f = new FuncionarioBalcao(nome, codGerado);
         if (tipo == 2) f = new TecnicoReparacoes(nome, codGerado);
