@@ -1,5 +1,6 @@
 package src.data;
 
+
 import java.io.Serializable;
 import java.util.List;
 

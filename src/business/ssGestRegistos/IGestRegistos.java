@@ -1,5 +1,6 @@
 package src.business.ssGestRegistos;
 
+
 import java.util.List;
 
 import src.business.ObjetoExistenteException;
@@ -30,7 +31,7 @@ public interface IGestRegistos {
 
     void registarConclusaoServicoExpresso(int codR) throws ObjetoNaoExistenteException;
 
-    void atualizarReparacao(int codR,Passo p) throws ObjetoNaoExistenteException;
+    void atualizarReparacao(int codR,int p,int tempo,float custo) throws ObjetoNaoExistenteException;
     
     void registaContactoCliente(Funcionario codF,Cliente codC,LocalDateTime data);
     

@@ -1,5 +1,6 @@
 package src.business.ssGestRegistos;
 
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -142,12 +143,14 @@ public class GestRegistosFacade implements IGestRegistos {
     }
 
     
-    public void atualizarReparacao(int codR,Passo p) throws ObjetoNaoExistenteException{
+    public void atualizarReparacao(int codR,int p,int tempo,float custo) throws ObjetoNaoExistenteException{
         Reparacao r;
         try {
             r = this.reparacoes.get(codR);
             PlanoTrabalhos pt = r.getPlanoTrabalhos();
-            pt.atualizaPlanoTrabalhos(p);
+            pt.atualizaPlanoTrabalhos(p,tempo,custo);
+            this.reparacoes.update(r);
+            this.planoTrabalhos.update(pt);
         } catch (NotFoundInDBException e) {
             throw new ObjetoNaoExistenteException("Plano de trabalhos da reparacao nao existe na BD.");
         }
@@ -209,8 +212,8 @@ public class GestRegistosFacade implements IGestRegistos {
                 totalR ++;
                 if(r.getEstado() == 1){
                     realizadasR ++;
-                    duracaoTotal += r.getPlanoTrabalhos().getHorasReais();
-                    desvios += Math.abs(r.getPlanoTrabalhos().getHorasReais() - r.getPlanoTrabalhos().getHoras());
+                    duracaoTotal += r.getPlanoTrabalhos().getDuracaoReais().toMinutes();
+                    desvios += Math.abs(r.getPlanoTrabalhos().getDuracaoReais().toMinutes() - r.getPlanoTrabalhos().getDuracao().toMinutes());
                 }
             }
         }
