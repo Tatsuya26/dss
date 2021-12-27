@@ -1,7 +1,10 @@
+//package src.ui;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -19,7 +22,11 @@ public class GestorPanel implements ActionListener{
         buildPanel();
     }
 
-    private void buildPanel(){
+    public JPanel getPanel(){
+        return this.panel;
+    }
+
+    public void buildPanel(){
         this.panel.setBackground(Color.BLACK);
         this.panel.setBounds(400, 400, 450, 450);
         this.panel.setLayout(null);
@@ -27,26 +34,39 @@ public class GestorPanel implements ActionListener{
         this.balcao = new JButton("Consultar listagem relativa aos funcionários de balcão");
         this.balcao.setBounds(100, 100, 250, 100);
         this.balcao.addActionListener(this);
+        this.balcao.setFocusable(false);
 
         this.intervencoes = new JButton("Consultar listagem relativa às intervenções feitas por cada técnico");
         this.intervencoes.setBounds(100, 200, 250, 100);
         this.intervencoes.addActionListener(this);
+        this.intervencoes.setFocusable(false);
 
         this.tecnicos = new JButton("Consultar listagem relativa à performance de cada técnico");
         this.tecnicos.setBounds(100, 300, 250, 100);
         this.tecnicos.addActionListener(this);
+        this.tecnicos.setFocusable(false);
 
         this.panel.add(this.balcao);
         this.panel.add(this.intervencoes);
         this.panel.add(this.tecnicos);
     }
 
-    public JPanel getPanel(){
-        return this.panel;
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == this.balcao){
+            showListFC();
+        }
+        else if (e.getSource() == this.intervencoes){
+            showListI();
+        }
+        else if (e.getSource() == this.tecnicos){
+            showListT();
+        }
     }
 
     // Consultar listagem relativa aos funcionários de balcão
     public void showListFC() {
+        //TODO: show listagem funcionários de balcão UI
         JFrame frame = new JFrame();
         frame.setSize(500,500);
         frame.setResizable(false);
@@ -69,6 +89,7 @@ public class GestorPanel implements ActionListener{
 
     // Consultar listagem relativa às intervenções feitas por cada técnico
     public void showListI() {
+        //TODO: show listagem intervenções UI
         JFrame frame = new JFrame();
         frame.setSize(500,500);
         frame.setResizable(false);
@@ -91,6 +112,7 @@ public class GestorPanel implements ActionListener{
 
     // Consultar listagem relativa à performance de cada técnico
     public void showListT() {
+        //TODO: show listagem técnico UI
         JFrame frame = new JFrame();
         frame.setSize(500,500);
         frame.setResizable(false);
@@ -109,18 +131,5 @@ public class GestorPanel implements ActionListener{
         background.add(list);
         frame.add(background);
         frame.setVisible(true);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == this.balcao){
-            showListFC();
-        }
-        else if (e.getSource() == this.intervencoes){
-            showListI();
-        }
-        else if (e.getSource() == this.tecnicos){
-            showListT();
-        }
     }
 }
