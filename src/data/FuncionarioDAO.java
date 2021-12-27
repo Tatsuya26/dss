@@ -1,5 +1,6 @@
 package src.data;
 
+
 import src.business.SSGestEntidades.Funcionario;
 
 import java.io.Serializable;

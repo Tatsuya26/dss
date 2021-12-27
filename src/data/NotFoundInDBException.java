@@ -1,5 +1,6 @@
 package src.data;
 
+
 public class NotFoundInDBException extends Exception{
     public NotFoundInDBException() {
         super();

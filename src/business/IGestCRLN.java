@@ -1,5 +1,6 @@
 package src.business;
 
+
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -18,9 +19,7 @@ public interface IGestCRLN {
 
     String registarFuncionario(String nome,int tipo) throws ObjetoExistenteException;
     
-    int removerFuncionario(String codF) throws ObjetoNaoExistenteException;
-    
-    void enviarEmail(String codC,int codE) throws ObjetoNaoExistenteException;
+    void enviarEmailOrcamento(String codC,int codE) throws ObjetoNaoExistenteException;
     
     int registarEquipamento(String modelo,String descricao,String NIF) throws ObjetoExistenteException, ObjetoNaoExistenteException; 
 
@@ -44,7 +43,7 @@ public interface IGestCRLN {
 
     List<String> consultarPedidosOrcamentos();
 
-    void atualizarReparacao(int codE,Passo passo) throws ObjetoNaoExistenteException;
+    void atualizarReparacao(int codE,int passo,int tempo,float custo) throws ObjetoNaoExistenteException;
 
     void registaContactoCliente(String codC,LocalDateTime data) throws ObjetoNaoExistenteException;
     

@@ -1,5 +1,6 @@
 package src.business.ssGestRegistos;
 
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -13,6 +14,9 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import src.business.SSGestEntidades.Equipamento;
 import src.business.SSGestEntidades.Funcionario;
@@ -32,6 +36,7 @@ public abstract class Registos {
     private Equipamento equipamento;
     @ManyToOne
     @JoinColumn(name="FuncionarioID", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Funcionario funcionario;
     @Column(name = "Estado")
     private int estado;

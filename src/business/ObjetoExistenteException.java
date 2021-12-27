@@ -1,5 +1,6 @@
 package src.business;
 
+
 public class ObjetoExistenteException extends Exception{
 
     public ObjetoExistenteException() {
