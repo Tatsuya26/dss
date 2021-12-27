@@ -4,11 +4,14 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.FlowLayout;
+import java.awt.Dimension;
 
 
 public class GestorPanel implements ActionListener{
@@ -54,7 +57,7 @@ public class GestorPanel implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == this.balcao){
-            showListFC();
+            showListFB();
         }
         else if (e.getSource() == this.intervencoes){
             showListI();
@@ -65,24 +68,39 @@ public class GestorPanel implements ActionListener{
     }
 
     // Consultar listagem relativa aos funcionários de balcão
-    public void showListFC() {
+    public void showListFB() {
         //TODO: show listagem funcionários de balcão UI
         JFrame frame = new JFrame();
         frame.setSize(500,500);
         frame.setResizable(false);
         frame.setTitle("Lista relativa aos funcionários de balcão");
         frame.getContentPane().setBackground(new Color(255,140,0));
+        frame.setLayout(null);
 
-        JLabel background = new JLabel();
-        background.setBounds(0,0,500,500);
-        background.setLayout(null);
-        
-        JLabel list = new JLabel("Listagem das intervenções...");
-        list.setBounds(150, 150, 250, 100);
+        JPanel background = new JPanel();
+        background.setBounds(100, 100, 300, 300);
+        background.setBackground(Color.DARK_GRAY);
+        background.setLayout(new FlowLayout());
+
+        JLabel list = new JLabel("Lista relativa aos funcionários de balcão");
+        list.setBounds(105, 50, 300, 20);
         list.setForeground(Color.black);
         list.setOpaque(false);
 
-        background.add(list);
+        String[] columnNames = {"Coluna1", "Coluna2", "Coluna3"};
+        String[][] data = {{"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"}, 
+                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
+                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
+                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
+                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
+                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"}};
+        JTable table = new JTable(data, columnNames);
+        table.setPreferredScrollableViewportSize(new Dimension(250, 250));
+        table.setFillsViewportHeight(true);
+
+        JScrollPane sp = new JScrollPane(table);
+        background.add(sp);
+        frame.add(list);
         frame.add(background);
         frame.setVisible(true);
     }
@@ -95,17 +113,33 @@ public class GestorPanel implements ActionListener{
         frame.setResizable(false);
         frame.setTitle("Lista relativa às intervenções feitas por cada técnico");
         frame.getContentPane().setBackground(new Color(255,140,0));
+        frame.setLayout(null);
 
-        JLabel background = new JLabel();
-        background.setBounds(0,0,500,500);
-        background.setLayout(null);
-        
-        JLabel list = new JLabel("Lista relativa às intervenções feitas por cada técnico...");
-        list.setBounds(150, 150, 250, 100);
+        JPanel background = new JPanel();
+        background.setBounds(100, 100, 300, 300);
+        background.setBackground(Color.DARK_GRAY);
+        background.setLayout(new FlowLayout());
+
+        JLabel list = new JLabel("Lista relativa às intervenções feitas por cada técnico");
+        list.setBounds(65, 50, 400, 20);
         list.setForeground(Color.black);
         list.setOpaque(false);
 
-        background.add(list);
+        String[] columnNames = {"Coluna1", "Coluna2", "Coluna3"};
+        String[][] data = {{"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"}, 
+                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
+                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
+                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
+                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
+                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"}};
+
+        JTable table = new JTable(data, columnNames);
+        table.setPreferredScrollableViewportSize(new Dimension(250, 250));
+        table.setFillsViewportHeight(true);
+
+        JScrollPane sp = new JScrollPane(table);
+        background.add(sp);
+        frame.add(list);
         frame.add(background);
         frame.setVisible(true);
     }
@@ -118,17 +152,33 @@ public class GestorPanel implements ActionListener{
         frame.setResizable(false);
         frame.setTitle("Lista relativa à performance de cada técnico");
         frame.getContentPane().setBackground(new Color(255,140,0));
+        frame.setLayout(null);
 
-        JLabel background = new JLabel();
-        background.setBounds(0,0,500,500);
-        background.setLayout(null);
-        
-        JLabel list = new JLabel("Listagem relativa à performance de cada técnico...");
-        list.setBounds(150, 150, 250, 100);
+        JPanel background = new JPanel();
+        background.setBounds(100, 100, 300, 300);
+        background.setBackground(Color.DARK_GRAY);
+        background.setLayout(new FlowLayout());
+
+        JLabel list = new JLabel("Lista relativa à performance de cada técnico");
+        list.setBounds(65, 50, 400, 20);
         list.setForeground(Color.black);
         list.setOpaque(false);
 
-        background.add(list);
+        String[] columnNames = {"Coluna1", "Coluna2", "Coluna3"};
+        String[][] data = {{"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"}, 
+                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
+                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
+                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
+                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
+                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"}};
+
+        JTable table = new JTable(data, columnNames);
+        table.setPreferredScrollableViewportSize(new Dimension(250, 250));
+        table.setFillsViewportHeight(true);
+
+        JScrollPane sp = new JScrollPane(table);
+        background.add(sp);
+        frame.add(list);
         frame.add(background);
         frame.setVisible(true);
     }
