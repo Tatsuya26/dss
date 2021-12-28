@@ -29,7 +29,7 @@ public class PlanoTrabalhos extends Registos{
     private float custo;
     @Column(name = "CustoReal")
     private float custoReal;
-    @ManyToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinTable(name="PassosPlano")
     private List<Passo> passos;
     
@@ -93,11 +93,12 @@ public class PlanoTrabalhos extends Registos{
         this.passos = new ArrayList<>(passos);
     }
 
-    public void atualizaPlanoTrabalhos (int p,int tempo,float custo) {
+    public void atualizaPlanoTrabalhos (int p,int tempo,float custo,Funcionario f) {
         Passo passo = this.passos.get(p);
         passo.setEstado(1);
         passo.setCusto(custo);
         passo.setTempo(tempo);
+        passo.setFuncionario(f);
         this.atualizaCustoDuracao();
     }
 

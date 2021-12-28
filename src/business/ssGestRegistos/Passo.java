@@ -17,9 +17,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import src.business.SSGestEntidades.Funcionario;
 
 @Entity
@@ -38,7 +35,6 @@ public class Passo {
     private int estado;
     @ManyToOne
     @JoinColumn(name="FuncionarioID", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Funcionario funcionario;
     @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(name="Sub_Passos")

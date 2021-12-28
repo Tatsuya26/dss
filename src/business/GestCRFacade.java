@@ -2,7 +2,9 @@ package src.business;
 
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -66,22 +68,24 @@ public class GestCRFacade implements IGestCRLN {
         return this.gestEntidades.verificaCliente(codC);
     }
     
-    //TODO: Throw exception de funcionario errado
-    public int registarEquipamento(String modelo,String descricao ,String NIF) throws ObjetoExistenteException,ObjetoNaoExistenteException{
+    public int registarEquipamento(String modelo,String descricao ,String NIF) throws ObjetoExistenteException,ObjetoNaoExistenteException, FuncionarioTipoErradoException{
         if (this.funcionario instanceof FuncionarioBalcao)
             return this.gestEntidades.registarEquipamento(modelo, descricao, 0,NIF);
-        else return -1;
+        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um funcionario de balcao");
     }
     
-    public void registarCliente(String NIF, String nome, String email, String numero) throws ObjetoExistenteException{
+    public void registarCliente(String NIF, String nome, String email, String numero) throws ObjetoExistenteException, FuncionarioTipoErradoException{
         if (this.funcionario instanceof FuncionarioBalcao)
             this.gestEntidades.registarCliente(NIF, nome, email, numero);
+        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um funcionario de balcao");
+
     }
 
-    public String registarFuncionario(String nome,int tipo) throws ObjetoExistenteException {
+    public String registarFuncionario(String nome,int tipo) throws ObjetoExistenteException, FuncionarioTipoErradoException {
         if (this.funcionario instanceof Gestor)
             return this.gestEntidades.registarFuncionario(nome, tipo);
-        else return "";
+            throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um gestor");
+
     }
 
     public List<String> consultarEquipamentosCliente(String codC) throws ObjetoNaoExistenteException {
@@ -89,44 +93,46 @@ public class GestCRFacade implements IGestCRLN {
         
     }
 
-    public int registarEntrega (int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException {
+    public int registarEntrega (int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException {
         if (this.funcionario instanceof FuncionarioBalcao) {
             Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
             return this.gestRegistos.registarEntrega(e, funcionario);
         }
-        else return -1;
+        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um funcionario de balcao");
     }
 
 
-    public int registarServicoExpresso(int codE,float preco, String descricao) throws ObjetoNaoExistenteException, ObjetoExistenteException {
+    public int registarServicoExpresso(int codE,float preco, String descricao) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException {
         // Mudar o estado do equipamento para que este passe a por reparar.
         if (this.funcionario instanceof FuncionarioBalcao) {
             this.gestEntidades.alterarEstadoEquipamento(codE, 1);
             Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
             return this.gestRegistos.registarServicoExpresso(e, funcionario, preco, descricao);
         }
-        else return -1;
+        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um funcionario de balcao");
     }
     
-    public void registarConclusaoServicoExpresso(int codR) throws ObjetoNaoExistenteException {
+    public void registarConclusaoServicoExpresso(int codR) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException {
         // Mudar o estado do equipamento para que este passe a reparado.
         if (this.funcionario instanceof TecnicoReparacoes) {
             Equipamento e = this.gestRegistos.getServicoExpressoByID(codR).getEquipamento();
             this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(),2);
-            this.gestRegistos.registarConclusaoServicoExpresso(codR);
+            this.gestRegistos.registarConclusaoServicoExpresso(codR,funcionario);
         }
+        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
+
     }
 
-    public int registarPedidoOrcamento(int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException {
+    public int registarPedidoOrcamento(int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException {
         if (this.funcionario instanceof FuncionarioBalcao) {
             this.gestEntidades.alterarEstadoEquipamento(codE,0);
             Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
             return this.gestRegistos.registarPedidoOrcamento(e, funcionario);
         }
-        return -1;
+        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um funcionario de balcao");
     }
     
-    public int registarOrcamento(int codE, List<Passo> passos) throws ObjetoNaoExistenteException, ObjetoExistenteException {
+    public int registarOrcamento(int codE, List<Passo> passos) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException {
         if (this.funcionario instanceof TecnicoReparacoes){
             Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
             int codR = this.gestRegistos.registarOrcamento(e, funcionario, passos);
@@ -134,40 +140,47 @@ public class GestCRFacade implements IGestCRLN {
             enviarEmailOrcamento(c.getNIF(), codR);
             return codR;
         }
-        return -1;
+        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
+
     }
     
-    public void removerOrcamento(int codR) throws ObjetoNaoExistenteException {
+    public void recusarOrcamento(int codR) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException {
         if (this.funcionario instanceof TecnicoReparacoes) {
             Equipamento e = this.gestRegistos.getOrcamentoByID(codR).getEquipamento();
             this.gestRegistos.removerOrcamento(codR);
             this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(), -1);
         }
+        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
+    }
+
+    //TODO: Verificar se é preciso o programa ter conta dos dias.
+    public void arquivarOrcamento(int codO) throws ObjetoNaoExistenteException {
+        Equipamento e = this.gestRegistos.getOrcamentoByID(codO).getEquipamento();
+        this.gestRegistos.arquivarOrcamento(codO);
+        this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(), -1);
     }
     
-    public int aceitarOrcamento(int codO) throws ObjetoNaoExistenteException, ObjetoExistenteException {
+    public int aceitarOrcamento(int codO) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException {
         if (this.funcionario instanceof TecnicoReparacoes) {
             int codE = this.gestRegistos.getOrcamentoByID(codO).getEquipamento().getIdEquipamento();
             this.gestEntidades.alterarEstadoEquipamento(codE, 1);
             return this.gestRegistos.aceitarOrcamento(codO, funcionario);
         }
-        return -1;
+        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
     }
     
-    //TODO: Temos de enviar email ao cliente
-    public void registarConclusaoReparacao(int codR) throws ObjetoNaoExistenteException {
+    public void registarConclusaoReparacao(int codR) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException {
         if (this.funcionario instanceof TecnicoReparacoes) {
             Equipamento e = this.gestRegistos.getReparacaoByID(codR).getEquipamento();
             Cliente c = e.getCliente();
-            this.gestRegistos.registarConclusaoReparacao(codR);
+            this.gestRegistos.registarConclusaoReparacao(codR,funcionario);
             this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(), 2);
             this.enviarEmailReparacao(c.getNIF(), codR);
         }
+        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
     }
     
     public void enviarEmailOrcamento(String NIF,int codR) throws ObjetoNaoExistenteException {
-        //TODO: Ir buscar a informaçcao do cliente e o orçamento a enviar. Provavelmente deveriamos criar um ficheiro do orçamento para dar attach.
-        // Nao fiz diagrama de sequencia pois pareceu me algo complicado de realizar mas o método é para ser assim implementado.
         Cliente c = this.gestEntidades.getClienteByNIF(NIF);
         Orcamento o = this.gestRegistos.getOrcamentoByID(codR); 
             
@@ -206,8 +219,6 @@ public class GestCRFacade implements IGestCRLN {
     }
 
     public void enviarEmailReparacao(String NIF,int codR) throws ObjetoNaoExistenteException {
-        //TODO: Ir buscar a informaçcao do cliente e o orçamento a enviar. Provavelmente deveriamos criar um ficheiro do orçamento para dar attach.
-        // Nao fiz diagrama de sequencia pois pareceu me algo complicado de realizar mas o método é para ser assim implementado.
         Cliente c = this.gestEntidades.getClienteByNIF(NIF);
         Reparacao r = this.gestRegistos.getReparacaoByID(codR); 
             
@@ -249,17 +260,19 @@ public class GestCRFacade implements IGestCRLN {
         this.gestEntidades.alterarEstadoEquipamento(codE, -2);
     }
 
-    public void atualizarReparacao(int codE,int passo,int tempo,float custo) throws ObjetoNaoExistenteException {
+    public void atualizarReparacao(int codR,int passo,int tempo,float custo) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException {
         if (this.funcionario instanceof TecnicoReparacoes) {
-            this.gestRegistos.atualizarReparacao(codE, passo,tempo,custo);
+            this.gestRegistos.atualizarReparacao(codR, passo,tempo,custo,funcionario);
         }
+        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
     }
     
-    public void registaContactoCliente(String codC,LocalDateTime data) throws ObjetoNaoExistenteException {
+    public void registaContactoCliente(String codC,LocalDateTime data) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException {
         if (this.funcionario instanceof TecnicoReparacoes) {
             Cliente c = this.gestEntidades.getClienteByNIF(codC);
             this.gestRegistos.registaContactoCliente(funcionario, c, data);
         }
+        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
     }
     
     public boolean verificarServicoExpresso() {
@@ -291,12 +304,26 @@ public class GestCRFacade implements IGestCRLN {
         return pos.stream().map(Entrega :: toString).collect(Collectors.toList());
     }
 
-    public List<String> consultarListagemIntervencoes() {
-        return this.gestRegistos.consultarListagemIntervencoes("23232");
+    public Map<String,List<String>> consultarListagemIntervencoes() {
+        List<Funcionario> tecnicos = this.gestEntidades.getTecnicosReparacao();
+        Map<String,List<String>> intervencoes = new HashMap<>();
+        for (Funcionario f : tecnicos) {
+            String cod = f.getCodigo();
+            List<String> intf = this.gestRegistos.consultarListagemIntervencoes(cod);
+            intervencoes.put(cod, intf);
+        }
+        return intervencoes;
     }
 
-    public List<Double> consultarListagemTecnicos() {
-        return this.gestRegistos.consultarListagemTecnicos("3232");
+    public Map<String,List<Double>> consultarListagemTecnicos() {
+        List<Funcionario> tecnicos = this.gestEntidades.getTecnicosReparacao();
+        Map<String,List<Double>> dadosTecnico = new HashMap<>();
+        for (Funcionario f : tecnicos) {
+            String codF = f.getCodigo();
+            List<Double> dados = this.gestRegistos.consultarListagemTecnicos(codF);
+            dadosTecnico.put(codF, dados);
+        }
+        return dadosTecnico;
     }
     
     public List<String> consultarListagemFuncionariosBalcao() {

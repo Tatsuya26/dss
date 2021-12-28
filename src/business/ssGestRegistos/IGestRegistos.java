@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 public interface IGestRegistos {
 
-    void registarConclusaoReparacao(int codR) throws ObjetoNaoExistenteException;
+    void registarConclusaoReparacao(int codR,Funcionario f) throws ObjetoNaoExistenteException;
 
     int registarEntrega(Equipamento codE,Funcionario codF) throws ObjetoExistenteException;
 
@@ -29,9 +29,9 @@ public interface IGestRegistos {
 
     int registarServicoExpresso(Equipamento codE,Funcionario codF,float valor,String descricao) throws ObjetoExistenteException;
 
-    void registarConclusaoServicoExpresso(int codR) throws ObjetoNaoExistenteException;
+    void registarConclusaoServicoExpresso(int codR, Funcionario funcionario) throws ObjetoNaoExistenteException;
 
-    void atualizarReparacao(int codR,int p,int tempo,float custo) throws ObjetoNaoExistenteException;
+    void atualizarReparacao(int codR,int p,int tempo,float custo,Funcionario f) throws ObjetoNaoExistenteException;
     
     void registaContactoCliente(Funcionario codF,Cliente codC,LocalDateTime data);
     
@@ -60,5 +60,7 @@ public interface IGestRegistos {
     Entrega getEntregaByID(int codR) throws ObjetoNaoExistenteException;
 
     ServicoExpresso getServicoExpressoByID(int codR) throws ObjetoNaoExistenteException;
+
+    void arquivarOrcamento(int codO) throws ObjetoNaoExistenteException;
 
 }

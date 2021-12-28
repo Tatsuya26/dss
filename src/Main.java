@@ -49,11 +49,10 @@ public class Main {
         
         cr.registaContactoCliente("261594675", LocalDateTime.now());
         cr.registarConclusaoReparacao(r2);
-        
         cr.autenticarFuncionario(f3);
         String f4 = cr.registarFuncionario("Jaquim", 1);
         cr.autenticarFuncionario(f4);
-
+        
         cr.registarEntrega(e2);
 
         }

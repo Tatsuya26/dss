@@ -55,11 +55,12 @@ public class GestRegistosFacade implements IGestRegistos {
         }
     }
 
-    public void registarConclusaoReparacao(int codR) throws ObjetoNaoExistenteException{
+    public void registarConclusaoReparacao(int codR,Funcionario f) throws ObjetoNaoExistenteException{
         Reparacao r;
         try {
             r = this.reparacoes.get(codR);
             r.setEstado(1);
+            r.setFuncionario(f);
             this.reparacoes.update(r);
         } catch (NotFoundInDBException e) {
             throw new ObjetoNaoExistenteException("A reparacao indicada nao existe na BD.");
@@ -98,12 +99,13 @@ public class GestRegistosFacade implements IGestRegistos {
         return se.getCodRegisto();
     }
 
-    public void registarConclusaoServicoExpresso(int codR) throws ObjetoNaoExistenteException{
+    public void registarConclusaoServicoExpresso(int codR,Funcionario f) throws ObjetoNaoExistenteException{
         // Mudar estado do registo do serviço para completado.
         ServicoExpresso se;
         try {
             se = this.expressos.get(codR);
             se.setEstado(1);
+            se.setFuncionario(f);
             this.expressos.update(se);
         } catch (NotFoundInDBException e) {
             throw new ObjetoNaoExistenteException("Servico expresso nao existe na BD");
@@ -114,6 +116,16 @@ public class GestRegistosFacade implements IGestRegistos {
         try {
             Orcamento o = this.orcamentos.get(codO);
             this.orcamentos.delete(o);
+        } catch (NotFoundInDBException e) {
+            throw new ObjetoNaoExistenteException("Orcamento nao existe na BD");
+        }
+    }
+
+    public void arquivarOrcamento(int codO) throws ObjetoNaoExistenteException{
+        try {
+            Orcamento o = this.orcamentos.get(codO);
+            o.setEstado(-1);
+            this.orcamentos.update(o);
         } catch (NotFoundInDBException e) {
             throw new ObjetoNaoExistenteException("Orcamento nao existe na BD");
         }
@@ -143,12 +155,12 @@ public class GestRegistosFacade implements IGestRegistos {
     }
 
     
-    public void atualizarReparacao(int codR,int p,int tempo,float custo) throws ObjetoNaoExistenteException{
+    public void atualizarReparacao(int codR,int p,int tempo,float custo,Funcionario funcionario) throws ObjetoNaoExistenteException{
         Reparacao r;
         try {
             r = this.reparacoes.get(codR);
             PlanoTrabalhos pt = r.getPlanoTrabalhos();
-            pt.atualizaPlanoTrabalhos(p,tempo,custo);
+            pt.atualizaPlanoTrabalhos(p,tempo,custo,funcionario);
             this.reparacoes.update(r);
             this.planoTrabalhos.update(pt);
         } catch (NotFoundInDBException e) {

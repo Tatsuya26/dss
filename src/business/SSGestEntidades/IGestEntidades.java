@@ -33,4 +33,6 @@ public interface IGestEntidades {
     void baixaEquipamento(int idE) throws ObjetoNaoExistenteException;
     
     int registarEquipamento(String modelo, String descricao, int estado, String NIF) throws ObjetoExistenteException, ObjetoNaoExistenteException;
+
+    List<Funcionario> getTecnicosReparacao();
 }
