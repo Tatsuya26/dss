@@ -3,6 +3,8 @@ package src.business.SSGestEntidades;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
+
 import org.hibernate.SessionFactory;
 import src.business.ObjetoExistenteException;
 import src.business.ObjetoNaoExistenteException;
@@ -174,4 +176,7 @@ public class GestEntidadesFacade implements IGestEntidades{
         }
     }
 
+    public List<Funcionario> getTecnicosReparacao() {
+        return this.funcionarios.getAll().stream().filter(tr -> tr instanceof TecnicoReparacoes).collect(Collectors.toList());
+    }
 }

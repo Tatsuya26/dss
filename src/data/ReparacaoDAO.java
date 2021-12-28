@@ -1,5 +1,6 @@
 package src.data;
 
+
 import java.io.Serializable;
 import java.util.List;
 import org.hibernate.Session;
@@ -26,7 +27,7 @@ public class ReparacaoDAO implements DAO<Reparacao> {
 
     public List<Reparacao> getAll() {
         this.s.beginTransaction();
-        List<Reparacao> Reparacaos = s.createSQLQuery("Select * from PedidosOrcamento").addEntity(Reparacao.class).list();
+        List<Reparacao> Reparacaos = s.createSQLQuery("Select * from registosreparacao").addEntity(Reparacao.class).list();
         this.s.getTransaction().commit();
         return Reparacaos;
     }

@@ -1,5 +1,6 @@
 package src.business.ssGestRegistos;
 
+
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;

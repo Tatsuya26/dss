@@ -1,5 +1,6 @@
 package src.business.ssGestRegistos;
 
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -13,7 +14,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 import src.business.SSGestEntidades.Equipamento;
 import src.business.SSGestEntidades.Funcionario;
 

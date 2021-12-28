@@ -1,5 +1,7 @@
 package src.business.ssGestRegistos;
 
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -12,10 +14,12 @@ import src.business.SSGestEntidades.Equipamento;
 import src.business.SSGestEntidades.Funcionario;
 
 @Entity
-@Table(name = "RegistosOrcamento")
+@Table(name = "Orcamentos")
 public class Orcamento extends Registos{
     @Column(name = "Valor")
     private float valor;
+    @Column(name = "DataLimite")
+    private LocalDate dataEntrega;
     @OneToOne
     @JoinColumn(name = "PlanoTrabalhosID")
     private PlanoTrabalhos planoTrabalhos;
@@ -24,6 +28,7 @@ public class Orcamento extends Registos{
         super(data, codEquipamento, codFuncionario, estado);
         this.valor = valor;
         this.planoTrabalhos = pt;
+        this.dataEntrega = LocalDate.now().plusDays(5);
     }
 
     public float getValor() {
@@ -41,6 +46,15 @@ public class Orcamento extends Registos{
     public void setPlanoTrabalhos(PlanoTrabalhos pt) {
         this.planoTrabalhos = pt;
     }
+
+    public LocalDate getDataEntrega() {
+        return this.dataEntrega;
+    }
+
+    public void setDataEntrega(LocalDate dataEntrega) {
+        this.dataEntrega = dataEntrega;
+    }
+
 
     public Orcamento clone(){
         return new Orcamento(this.getDataCriacao(), this.getEquipamento(), this.getFuncionario(), this.getEstado(), this.getValor(), this.getPlanoTrabalhos());

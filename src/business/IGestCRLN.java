@@ -1,5 +1,6 @@
 package src.business;
 
+
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -12,41 +13,39 @@ public interface IGestCRLN {
 
     boolean verificaCliente(String codC);
 
-    void registarConclusaoReparacao(int codE) throws ObjetoNaoExistenteException;
+    void registarConclusaoReparacao(int codE) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException;
 
-    void removerOrcamento(int codO) throws ObjetoNaoExistenteException;
+    void recusarOrcamento(int codO) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException;
 
-    String registarFuncionario(String nome,int tipo) throws ObjetoExistenteException;
+    String registarFuncionario(String nome,int tipo) throws ObjetoExistenteException, FuncionarioTipoErradoException;
     
-    int removerFuncionario(String codF) throws ObjetoNaoExistenteException;
+    void enviarEmailOrcamento(String codC,int codE) throws ObjetoNaoExistenteException;
     
-    void enviarEmail(String codC,int codE) throws ObjetoNaoExistenteException;
-    
-    int registarEquipamento(String modelo,String descricao,String NIF) throws ObjetoExistenteException, ObjetoNaoExistenteException; 
+    int registarEquipamento(String modelo,String descricao,String NIF) throws ObjetoExistenteException, ObjetoNaoExistenteException, FuncionarioTipoErradoException; 
 
-    int registarPedidoOrcamento(int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException;
+    int registarPedidoOrcamento(int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException;
 
-    void registarCliente(String NIF, String nome, String email, String numero) throws ObjetoExistenteException;
+    void registarCliente(String NIF, String nome, String email, String numero) throws ObjetoExistenteException, FuncionarioTipoErradoException;
 
     List<String> consultarEquipamentosCliente(String codC) throws ObjetoNaoExistenteException;
 
     void baixaEquipamento(int codE) throws ObjetoNaoExistenteException;
 
-    int registarOrcamento(int codE,List<Passo> passos) throws ObjetoNaoExistenteException, ObjetoExistenteException;
+    int registarOrcamento(int codE,List<Passo> passos) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException;
 
-    int aceitarOrcamento(int codO) throws ObjetoNaoExistenteException, ObjetoExistenteException;
+    int aceitarOrcamento(int codO) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException;
 
-    int registarEntrega(int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException;
+    int registarEntrega(int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException;
 
-    int registarServicoExpresso(int codE,float preco, String descricao) throws ObjetoNaoExistenteException, ObjetoExistenteException;
+    int registarServicoExpresso(int codE,float preco, String descricao) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException;
 
-    void registarConclusaoServicoExpresso(int codE) throws ObjetoNaoExistenteException;
+    void registarConclusaoServicoExpresso(int codE) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException;
 
     List<String> consultarPedidosOrcamentos();
 
-    void atualizarReparacao(int codE,Passo passo) throws ObjetoNaoExistenteException;
+    void atualizarReparacao(int codE,int passo,int tempo,float custo) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException;
 
-    void registaContactoCliente(String codC,LocalDateTime data) throws ObjetoNaoExistenteException;
+    void registaContactoCliente(String codC,LocalDateTime data) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException;
     
     boolean verificarServicoExpresso();
 
@@ -56,9 +55,9 @@ public interface IGestCRLN {
 
     List<String> consultarOrcamentos();
 
-    List<String> consultarListagemIntervencoes() ;
+    Map<String, List<String>> consultarListagemIntervencoes() ;
 
-    List<Double> consultarListagemTecnicos();
+    Map<String, List<Double>> consultarListagemTecnicos();
     
     List<String> consultarListagemFuncionariosBalcao();
 

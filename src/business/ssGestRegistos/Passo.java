@@ -1,5 +1,7 @@
 package src.business.ssGestRegistos;
 
+
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +30,7 @@ public class Passo {
     @Column(name = "Custo")
     private float custo;
     @Column(name = "Tempo")
-    private int tempo;
+    private Duration tempo;
     @Column(name = "Estado")
     private int estado;
     @ManyToOne
@@ -41,7 +43,7 @@ public class Passo {
     public Passo(String descricao,float custo,int tempo, int estado, Funcionario funcionario, List<Passo> sub_passos) {
         this.descricao = descricao;
         this.custo = custo;
-        this.tempo = tempo;
+        this.tempo = Duration.ofMinutes(tempo);
         this.estado = estado;
         this.funcionario = funcionario;
         this.sub_passos = new ArrayList<>(sub_passos);
@@ -51,7 +53,7 @@ public class Passo {
         this.idPasso = idPasso;
         this.descricao = descricao;
         this.custo = custo;
-        this.tempo = tempo;
+        this.tempo = Duration.ofMinutes(tempo);
         this.estado = estado;
         this.funcionario = funcionario;
         this.sub_passos = sub_passos;
@@ -82,12 +84,12 @@ public class Passo {
         this.custo = custo;
     }
 
-    public int getTempo() {
+    public Duration getTempo() {
         return this.tempo;
     }
 
-    public void setTempo(int tempo) {
-        this.tempo = tempo;
+    public void setTempo(long tempo) {
+        this.tempo = Duration.ofMinutes(tempo);
     }
 
     public int getEstado() {

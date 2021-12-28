@@ -1,5 +1,7 @@
 package src.business.ssGestRegistos;
 
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
@@ -18,44 +21,44 @@ import src.business.SSGestEntidades.Funcionario;
 @Entity
 @Table(name = "PlanosTrabalhos")
 public class PlanoTrabalhos extends Registos{
-    @Column(name = "HorasEsperadas")
-    private int horas;
-    @Column(name = "HorasReais")
-    private int horasReais;
+    @Column(name = "DuracaoEsperadas")
+    private Duration duracao;
+    @Column(name = "DuracaoReais")
+    private Duration duracaoReais;
     @Column(name = "CustoEsperado")
     private float custo;
     @Column(name = "CustoReal")
     private float custoReal;
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinTable(name="PassosPlano")
     private List<Passo> passos;
     
     public PlanoTrabalhos(LocalDateTime data,Equipamento codEquipamento,Funcionario codFuncionario,int estado,List<Passo> passos) {
         super(data, codEquipamento, codFuncionario, estado);
         this.passos = new ArrayList<>(passos);
-        this.horas = 0; this.custo = 0;
-        this.horasReais = 0; this.custoReal = 0;
+        this.duracao = Duration.ZERO; this.custo = 0;
+        this.duracaoReais = Duration.ZERO; this.custoReal = 0;
         for (Passo p : this.passos) {
-            this.horas += p.getTempo();
+            this.duracao = this.duracao.plusMinutes(p.getTempo().toMinutes());
             this.custo += p.getCusto();
         }
     }
 
-    public PlanoTrabalhos(LocalDateTime data,Equipamento codEquipamento,Funcionario codFuncionario,int estado,int horas,int horasReais,float custo,float custoReal,List<Passo> passos) {
+    public PlanoTrabalhos(LocalDateTime data,Equipamento codEquipamento,Funcionario codFuncionario,int estado,int duracao,int duracaoReais,float custo,float custoReal,List<Passo> passos) {
         super(data, codEquipamento, codFuncionario, estado);
-        this.horas = horas;
-        this.horasReais = horasReais;
+        this.duracao = Duration.ofMinutes(duracao);
+        this.duracaoReais = Duration.ofMinutes(duracaoReais);
         this.custo = custo;
         this.custoReal = custoReal;
         this.passos = new ArrayList<>(passos);
     }
 
-    public int getHoras() {
-        return this.horas;
+    public Duration getDuracao() {
+        return this.duracao;
     }
 
-    public int getHorasReais() {
-        return this.horasReais;
+    public Duration getDuracaoReais() {
+        return this.duracaoReais;
     }
 
     public float getCusto() {
@@ -69,12 +72,12 @@ public class PlanoTrabalhos extends Registos{
         return new ArrayList<>(passos);
     }
 
-    public void setHoras(int horas) {
-        this.horas = horas;
+    public void setduracao(int duracao) {
+        this.duracao = Duration.ofMinutes(duracao);
     }
 
-    public void setHorasReais(int horasReais) {
-        this.horasReais = horasReais;
+    public void setduracaoReais(int duracaoReais) {
+        this.duracaoReais = Duration.ofMinutes(duracaoReais);
     }
 
     public void setCusto (float custo) {
@@ -90,30 +93,30 @@ public class PlanoTrabalhos extends Registos{
         this.passos = new ArrayList<>(passos);
     }
 
-    public void atualizaPlanoTrabalhos (Passo p) {
-        for (Passo pa: this.passos) {
-            if (pa.getDescricao().compareTo(p.getDescricao()) == 0) {
-                pa.setEstado(1);
-                pa.setCusto(p.getCusto());
-                pa.setTempo(p.getTempo());
-            }
-        }
-        this.atualizaCustoHoras();
+    public void atualizaPlanoTrabalhos (int p,int tempo,float custo,Funcionario f) {
+        Passo passo = this.passos.get(p);
+        passo.setEstado(1);
+        passo.setCusto(custo);
+        passo.setTempo(tempo);
+        passo.setFuncionario(f);
+        this.atualizaCustoDuracao();
     }
 
-    private void atualizaCustoHoras() {
-        this.horasReais = 0;
+    private void atualizaCustoDuracao() {
+        this.duracaoReais = Duration.ZERO;
         this.custoReal = 0;
 
         for (Passo p : this.passos) {
-            this.horasReais += p.getTempo();
-            this.custoReal += p.getCusto();
+            if (p.getEstado() == 1) {
+                this.duracaoReais = this.duracaoReais.plusMinutes(p.getTempo().toMinutes());
+                this.custoReal += p.getCusto();
+            }
         }
     }
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(" Horas='" + getHoras() + "'" + "\n" + ",Custo='" + getCusto() + "'" + "\n");
+        sb.append("Duracao='" + getDuracao().toString() + "'" + "\n" + ",Custo='" + getCusto() + "'" + "\n");
         sb.append("Passos : [\n");
         for (Passo p : this.passos) {
             sb.append(p.toString());
