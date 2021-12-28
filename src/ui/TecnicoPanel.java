@@ -1,4 +1,3 @@
-package src.ui;
 //package src.ui;
 
 import java.awt.Color;
@@ -93,10 +92,6 @@ public class TecnicoPanel implements ActionListener{
         }
     }
 
-    public void registarPlano(){
-        //TODO: registar plano de trabalhos UI
-    }
-
     public void registarConclusaoReparacao(){
         JFrame frame = new JFrame();
         frame.setSize(500, 500);
@@ -134,21 +129,12 @@ public class TecnicoPanel implements ActionListener{
         background.setLayout(null);
 
         JLabel text = new JLabel();
-        text.setFont(new Font("Calibri", Font.PLAIN, 15));
 
         if (userText.equals("123")) {
-            frame.setTitle("Sucesso");
-            frame.getContentPane().setBackground(new Color(51, 255, 128));
-            
-            text.setBounds(120, 220, 260, 20);
-            text.setText("Conclusão registada com sucesso!");
+            showSucesso(frame, text, 1);
         }
         else{
-            frame.setTitle("Erro");
-            frame.getContentPane().setBackground(new Color(255, 51, 51));
-
-            text.setBounds(35, 220, 430, 20);
-            text.setText("Erro: essa reparação não consta na nossa base de dados!");
+            showErro(frame, text, "Erro: essa reparação não consta na nossa base de dados!");
         }
 
         background.add(text);
@@ -193,21 +179,12 @@ public class TecnicoPanel implements ActionListener{
         background.setLayout(null);
 
         JLabel text = new JLabel();
-        text.setFont(new Font("Calibri", Font.PLAIN, 15));
 
         if (userText.equals("123")) {
-            frame.setTitle("Sucesso");
-            frame.getContentPane().setBackground(new Color(51, 255, 128));
-            
-            text.setBounds(120, 220, 260, 20);
-            text.setText("Conclusão registada com sucesso!");
+            showSucesso(frame, text, 1);
         }
         else{
-            frame.setTitle("Erro");
-            frame.getContentPane().setBackground(new Color(255, 51, 51));
-
-            text.setBounds(35, 220, 430, 20);
-            text.setText("Erro: esse serviço não consta na nossa base de dados!");
+            showErro(frame, text, "Erro: esse serviço não consta na nossa base de dados!");
         }
 
         background.add(text);
@@ -215,9 +192,70 @@ public class TecnicoPanel implements ActionListener{
         frame.setVisible(true);
     }
 
+    private void showErro(JFrame frame, JLabel text, String msg){
+        frame.setTitle("Erro");
+        frame.getContentPane().setBackground(new Color(255, 51, 51));
+
+        text.setFont(new Font("Calibri", Font.PLAIN, 15));
+        text.setBounds(35, 220, 430, 20);
+        text.setText(msg);
+    }
+
+    private void showSucesso(JFrame frame, JLabel text, int idMsg){
+        frame.setTitle("Sucesso");
+        frame.getContentPane().setBackground(new Color(51, 255, 128));
+        
+        text.setFont(new Font("Calibri", Font.PLAIN, 15));
+        switch(idMsg){
+            case 1: text.setText("Conclusão registada com sucesso!"); 
+                    text.setBounds(120, 220, 260, 20);
+                    break;
+
+            case 2: text.setText("Conclusão assinalada com sucesso!");
+                    text.setBounds(120, 220, 280, 20);
+                    break;
+        }
+    }
+
+
     public void registarOrcamento(){
         //TODO: registar orçamento UI
-        //grid layout para os passos?
+        JFrame frame = new JFrame();
+        frame.setSize(500, 500);
+        frame.setResizable(false);
+        frame.setTitle("Registar Orçamento");
+        frame.getContentPane().setBackground(new Color(0, 51, 51));
+
+        JLabel background = new JLabel();
+        background.setBounds(0,0,500,500);
+        background.setLayout(null);
+
+        JTextField codE = new JTextField(50);
+        codE.setBounds(100, 160, 300, 25);
+        codE.setBackground(Color.white);
+        codE.setText("Inserir código do equipamento");
+
+        JTextField passos = new JTextField(50);
+        passos.setBounds(100, 195, 300, 25);
+        passos.setBackground(Color.white);
+        passos.setText("Inserir número de passos a executar");
+
+        JButton button = new JButton();
+        button.setBounds(100, 255, 300, 25);
+        button.setBackground(Color.white);
+        button.setText("Criar plano de trabalhos");
+        button.addActionListener(e -> registarPlano());
+
+        background.add(button);
+        background.add(passos);
+        background.add(codE);
+        frame.add(background);
+        frame.setVisible(true);
+    }
+
+    public void registarPlano(){
+        //TODO: registar plano de trabalhos UI
+        new PlanoTrabalhosPanel();
     }
 
     public void assinalarPasso(){
@@ -256,7 +294,7 @@ public class TecnicoPanel implements ActionListener{
 
         JLabel background = new JLabel();
         if (userText.equals("123")) {
-            background.setBounds(80, 60, 350, 350);
+            background.setBounds(25, 15, 450, 350);
             background.setLayout(new FlowLayout());
 
             List<Integer> ids = new ArrayList<Integer>(); ids.add(1);
@@ -291,11 +329,52 @@ public class TecnicoPanel implements ActionListener{
         String[][] data = buildDataFromPlanoTrabalhos(ids, descricoes, custos, tempo);
 
         JTable table = new JTable(data, columnNames);
-        table.setPreferredScrollableViewportSize(new Dimension(350, 350));
+        table.setPreferredScrollableViewportSize(new Dimension(450, 350));
         table.setFillsViewportHeight(true);
+
+        JLabel background2 = new JLabel();
+        background2.setBounds(0,0,500,500);
+        background2.setLayout(null);
+
+        JTextField userText = new JTextField(50);
+        userText.setBounds(100, 395, 300, 25);
+        userText.setBackground(Color.white);
+
+        JButton button = new JButton();
+        button.setBounds(100, 425, 300, 25);
+        button.setBackground(Color.white);
+        button.setText("Insira o identificador do passo a assinalar");
+        button.addActionListener(e-> showPlanoTrabalhosResult(userText.getText()));
+
+        background2.add(button);
+        background2.add(userText);
+        frame.add(background2);
 
         JScrollPane sp = new JScrollPane(table);
         background.add(sp);
+    }
+
+    private void showPlanoTrabalhosResult(String userText) {
+        JFrame frame = new JFrame();
+        frame.setSize(500, 500);
+        frame.setResizable(false);
+
+        JLabel background = new JLabel();
+        background.setBounds(0,0,500, 500);
+        background.setLayout(null);
+
+        JLabel text = new JLabel();
+
+        if (userText.equals("123")) {
+            showSucesso(frame, text, 2);
+        }
+        else{
+            showErro(frame, text, "Erro: esse passo não consta na nossa base de dados");
+        }
+
+        background.add(text);
+        frame.add(background);
+        frame.setVisible(true);
     }
 
     private String[][] buildDataFromPlanoTrabalhos(List<Integer> ids, List<String> descricoes, List<Float> custos, List<Long> tempo){
