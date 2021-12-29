@@ -37,7 +37,7 @@ public class GUI {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.frame      = new JFrame();
         this.panel_codF = new JPanel();
-        this.image      = ImageIO.read(new File("SRGR.png"));
+        this.image      = ImageIO.read(new File("src/ui/SRGR.png"));
         this.label_Image = new JLabel(new ImageIcon(this.image));   
         this.label_Image.setBounds(500,-50,400,500);
         frame.setBounds(0,0,screenSize.width, screenSize.height);
@@ -67,7 +67,8 @@ public class GUI {
             this.frame.repaint();
             this.frame.revalidate();
         } 
-        else {
+        if(x == 1) {
+            
             this.frame.remove(this.panel_codF);
             this.frame.add(this.label_Image);
             this.frame.add(this.back_Button);

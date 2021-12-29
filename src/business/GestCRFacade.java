@@ -77,14 +77,14 @@ public class GestCRFacade implements IGestCRLN {
     public void registarCliente(String NIF, String nome, String email, String numero) throws ObjetoExistenteException, FuncionarioTipoErradoException{
         if (this.funcionario instanceof FuncionarioBalcao)
             this.gestEntidades.registarCliente(NIF, nome, email, numero);
-        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um funcionario de balcao");
+        else throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um funcionario de balcao");
 
     }
 
     public String registarFuncionario(String nome,int tipo) throws ObjetoExistenteException, FuncionarioTipoErradoException {
         if (this.funcionario instanceof Gestor)
             return this.gestEntidades.registarFuncionario(nome, tipo);
-            throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um gestor");
+        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um gestor");
 
     }
 
@@ -119,7 +119,7 @@ public class GestCRFacade implements IGestCRLN {
             this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(),2);
             this.gestRegistos.registarConclusaoServicoExpresso(codR,funcionario);
         }
-        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
+        else throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
 
     }
 
@@ -150,7 +150,7 @@ public class GestCRFacade implements IGestCRLN {
             this.gestRegistos.removerOrcamento(codR);
             this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(), -1);
         }
-        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
+        else throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
     }
 
     //TODO: Verificar se é preciso o programa ter conta dos dias.
@@ -177,7 +177,7 @@ public class GestCRFacade implements IGestCRLN {
             this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(), 2);
             this.enviarEmailReparacao(c.getNIF(), codR);
         }
-        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
+        else throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
     }
     
     public void enviarEmailOrcamento(String NIF,int codR) throws ObjetoNaoExistenteException {
@@ -264,7 +264,7 @@ public class GestCRFacade implements IGestCRLN {
         if (this.funcionario instanceof TecnicoReparacoes) {
             this.gestRegistos.atualizarReparacao(codR, passo,tempo,custo,funcionario);
         }
-        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
+        else throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
     }
     
     public void registaContactoCliente(String codC,LocalDateTime data) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException {
@@ -272,7 +272,7 @@ public class GestCRFacade implements IGestCRLN {
             Cliente c = this.gestEntidades.getClienteByNIF(codC);
             this.gestRegistos.registaContactoCliente(funcionario, c, data);
         }
-        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
+        else throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
     }
     
     public boolean verificarServicoExpresso() {
