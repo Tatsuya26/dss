@@ -7,8 +7,16 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import src.business.GestCRFacade;
+import src.business.IGestCRLN;
+import src.business.ObjetoNaoExistenteException;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Stack;
 
 public class GUI {
+    private IGestCRLN business;
     
     private JFrame frame;
     private JLabel user_label;
@@ -33,7 +41,9 @@ public class GUI {
 
 
 
-    public GUI() throws IOException {
+    public GUI(IGestCRLN business) throws IOException {
+        this.business = business;
+
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.frame      = new JFrame();
         this.panel_codF = new JPanel();
@@ -56,7 +66,6 @@ public class GUI {
 
         frame.setVisible(true);
         showMainFrame();
-
     }
 
     public void switchPanes(int x) {
@@ -68,14 +77,19 @@ public class GUI {
             this.frame.revalidate();
         } 
         if(x == 1) {
-            
-            this.frame.remove(this.panel_codF);
-            this.frame.add(this.label_Image);
-            this.frame.add(this.back_Button);
-            this.fun_balcao.showFuncionarioBalcao("123");
-            this.frame.repaint();
-            this.frame.revalidate();
-        }
+            try {
+                this.business.autenticarFuncionario(this.userText.getText());
+                this.frame.remove(this.panel_codF);
+                this.frame.add(this.label_Image);
+                this.frame.add(this.back_Button);
+                this.fun_balcao.showFuncionarioBalcao(this.userText.getText());
+                this.frame.repaint();
+                this.frame.revalidate();
+            } catch (ObjetoNaoExistenteException e) {
+                System.out.println(this.userText.getText());
+                msg_erro("O funcionário não existe na base de dados");
+            }
+        } else return;
     }
 
     public void showMainFrame() {
@@ -96,6 +110,10 @@ public class GUI {
         this.panel_codF.setBackground(Color.black);
         this.panel_codF.setOpaque(true);
         this.panel_codF.add(this.label_Image);
+
+        //TecnicoPanel p = new TecnicoPanel(this.business);
+        //GestorPanel p = new GestorPanel(this.business);
+        //this.frame.add(p.getPanel());
         
         //configurar butao
         this.button = new JButton("Login Here");
@@ -110,8 +128,30 @@ public class GUI {
         this.frame.repaint();
     }
     
-    
-
    
-    
+    public void msg_sucesso(String msg) {
+        JFrame sucesso = new JFrame();
+        sucesso.setBounds(30,0,300,300);
+        sucesso.setTitle("SUCESS");
+        JLabel sucesso_msg = new JLabel(msg);
+        sucesso_msg.setBounds(0,0,300,300);
+        sucesso_msg.setForeground(Color.green);
+        sucesso.add(sucesso_msg);
+        sucesso.setVisible(true);
+    }
+
+    public void msg_erro(String msg) {
+        JFrame erro = new JFrame();
+        erro.setBounds(30,0,300,300);
+        erro.setTitle("ERROR");
+        JLabel error_msg = new JLabel(msg);
+        error_msg.setBounds(0,0,300,300);
+        error_msg.setForeground(Color.red);
+        erro.add(error_msg);
+        erro.setVisible(true);
+    }
+
+
+
+
 }

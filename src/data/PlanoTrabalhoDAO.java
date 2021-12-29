@@ -27,7 +27,7 @@ public class PlanoTrabalhoDAO implements DAO<PlanoTrabalhos>{
 
     public List<PlanoTrabalhos> getAll() {
         this.s.beginTransaction();
-        List<PlanoTrabalhos> PlanoTrabalhoss = s.createSQLQuery("Select * from planostrabalhos").addEntity(PlanoTrabalhos.class).list();
+        List<PlanoTrabalhos> PlanoTrabalhoss = s.createSQLQuery("Select * from PlanosTrabalhos").addEntity(PlanoTrabalhos.class).list();
         this.s.getTransaction().commit();
         return PlanoTrabalhoss;
     }

@@ -51,13 +51,14 @@ public class GestCRFacade implements IGestCRLN {
 
 
 
-    public int autenticarFuncionario(String codF) throws ObjetoNaoExistenteException{
+    public int autenticarFuncionario(String codF) throws ObjetoNaoExistenteException {
         boolean autenticado = this.gestEntidades.autenticarFuncionario(codF);
+        System.out.println(autenticado);
         if (autenticado) {
             this.funcionario = this.gestEntidades.getFuncionarioByCod(codF);
             return this.gestEntidades.verificaTipoFuncionario(codF);
         }
-        return 0;
+        else throw new ObjetoNaoExistenteException("O funcionário não existe na base de dados.");
     }
 
     public boolean verificaEquipamento(int codE) {

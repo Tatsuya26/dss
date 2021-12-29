@@ -18,15 +18,21 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
+import src.business.IGestCRLN;
+import src.business.ObjetoNaoExistenteException;
+import src.business.FuncionarioTipoErradoException;
+
+
 public class TecnicoPanel implements ActionListener{
+    private IGestCRLN business;
     private JPanel panel;
-    private JButton plano;
     private JButton conclusao_reparacao;
     private JButton conclusao_expresso;
     private JButton orcamento;
     private JButton assinalar_passos;
 
-    public TecnicoPanel(){
+    public TecnicoPanel(IGestCRLN business){
+        this.business = business;
         this.panel = new JPanel();
         buildPanel();
     }
@@ -40,11 +46,6 @@ public class TecnicoPanel implements ActionListener{
         this.panel.setBounds(400, 400, 600, 600);
         this.panel.setLayout(null);
         this.panel.setOpaque(false);
-        
-        this.plano = new JButton("Registar Plano de Trabalhos");
-        this.plano.setBounds(100, 100, 250, 100);
-        this.plano.addActionListener(this);
-        this.plano.setFocusable(false);
 
         this.conclusao_reparacao = new JButton("Registar Conclusão de Reparação");
         this.conclusao_reparacao.setBounds(100, 200, 250, 100);
@@ -66,7 +67,6 @@ public class TecnicoPanel implements ActionListener{
         this.assinalar_passos.addActionListener(this);
         this.assinalar_passos.setFocusable(false);
 
-        this.panel.add(this.plano);
         this.panel.add(this.conclusao_reparacao);
         this.panel.add(this.conclusao_expresso);
         this.panel.add(this.orcamento);
@@ -75,10 +75,7 @@ public class TecnicoPanel implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == this.plano){
-            registarPlano();
-        }
-        else if (e.getSource() == this.conclusao_reparacao){
+        if (e.getSource() == this.conclusao_reparacao){
             registarConclusaoReparacao();
         }
         else if (e.getSource() == this.conclusao_expresso){
@@ -98,6 +95,7 @@ public class TecnicoPanel implements ActionListener{
         frame.setResizable(false);
         frame.setTitle("Registar Conclusão de Reparação");
         frame.getContentPane().setBackground(new Color(0, 51, 51));
+        frame.setLayout(null);
 
         JLabel background = new JLabel();
         background.setBounds(0,0,500,500);
@@ -111,7 +109,7 @@ public class TecnicoPanel implements ActionListener{
         button.setBounds(100, 255, 300, 25);
         button.setBackground(Color.white);
         button.setText("Insira o código da reparação");
-        button.addActionListener(e-> registarConclusaoReparacaoResult(userText.getText()));
+        button.addActionListener(e-> registarConclusaoReparacaoResult(frame, userText.getText()));
 
         background.add(button);
         background.add(userText);
@@ -119,27 +117,32 @@ public class TecnicoPanel implements ActionListener{
         frame.setVisible(true);
     }
 
-    private void registarConclusaoReparacaoResult(String userText) {
-        JFrame frame = new JFrame();
-        frame.setSize(500, 500);
-        frame.setResizable(false);
-
-        JLabel background = new JLabel();
-        background.setBounds(0,0,500, 500);
-        background.setLayout(null);
-
-        JLabel text = new JLabel();
-
-        if (userText.equals("123")) {
-            showSucesso(frame, text, 1);
+    private void registarConclusaoReparacaoResult(JFrame oldFrame, String userText) {
+        JLabel erro = new JLabel();
+        
+        try{
+            int input = Integer.parseInt(userText);
+            this.business.registarConclusaoReparacao(input);
+            oldFrame.setVisible(false);
+            SignalUI.sucess("Conclusão registada com sucesso!");
         }
-        else{
-            showErro(frame, text, "Erro: essa reparação não consta na nossa base de dados!");
-        }
+        catch(NumberFormatException nfe){
+            SignalUI.printError(erro, "Não inseriu um número inteiro", 110, 300, 280, 25, 16);
 
-        background.add(text);
-        frame.add(background);
-        frame.setVisible(true);
+            oldFrame.add(erro);
+            oldFrame.revalidate();
+            oldFrame.repaint();
+        }
+        catch(ObjetoNaoExistenteException onee){
+            oldFrame.setVisible(false);
+            SignalUI.error("Erro: essa reparação não consta na nossa base de dados!");
+            registarConclusaoReparacao();
+        }
+        catch(FuncionarioTipoErradoException ftee){
+            oldFrame.setVisible(false);
+            SignalUI.error("Erro: não tem acesso a estas funcionalidades do sistema!");
+            registarConclusaoReparacao();
+        }
     }
 
     public void registarConclusaoExpresso(){
@@ -148,6 +151,7 @@ public class TecnicoPanel implements ActionListener{
         frame.setResizable(false);
         frame.setTitle("Registar Conclusão de Serviço Expresso");
         frame.getContentPane().setBackground(new Color(0, 51, 51));
+        frame.setLayout(null);
 
         JLabel background = new JLabel();
         background.setBounds(0,0,500,500);
@@ -161,7 +165,7 @@ public class TecnicoPanel implements ActionListener{
         button.setBounds(100, 255, 300, 25);
         button.setBackground(Color.white);
         button.setText("Insira o código do serviço");
-        button.addActionListener(e -> registarConclusaoExpressoResult(userText.getText()));
+        button.addActionListener(e -> registarConclusaoExpressoResult(frame, userText.getText()));
 
         background.add(button);
         background.add(userText);
@@ -169,37 +173,35 @@ public class TecnicoPanel implements ActionListener{
         frame.setVisible(true);
     }
 
-    private void registarConclusaoExpressoResult(String userText) {
-        JFrame frame = new JFrame();
-        frame.setSize(500, 500);
-        frame.setResizable(false);
-
-        JLabel background = new JLabel();
-        background.setBounds(0,0,500, 500);
-        background.setLayout(null);
-
-        JLabel text = new JLabel();
-
-        if (userText.equals("123")) {
-            showSucesso(frame, text, 1);
+    private void registarConclusaoExpressoResult(JFrame oldFrame, String userText) {
+        JLabel erro = new JLabel();
+        
+        try{
+            int input = Integer.parseInt(userText);
+            this.business.registarConclusaoServicoExpresso(input);
+            oldFrame.setVisible(false);
+            SignalUI.sucess("Conclusão registada com sucesso!");
         }
-        else{
-            showErro(frame, text, "Erro: esse serviço não consta na nossa base de dados!");
-        }
+        catch(NumberFormatException nfe){
+            SignalUI.printError(erro, "Não inseriu um número inteiro", 110, 300, 280, 25, 16);
 
-        background.add(text);
-        frame.add(background);
-        frame.setVisible(true);
+            oldFrame.add(erro);
+            oldFrame.revalidate();
+            oldFrame.repaint();
+        }
+        catch(ObjetoNaoExistenteException onee){
+            oldFrame.setVisible(false);
+            SignalUI.error("Erro: esse serviço não consta na nossa base de dados!");
+            registarConclusaoExpresso();
+        }
+        catch(FuncionarioTipoErradoException ftee){
+            oldFrame.setVisible(false);
+            SignalUI.error("Erro: não tem acesso a estas funcionalidades do sistema!");
+            registarConclusaoExpresso();
+        }
     }
 
-    private void showErro(JFrame frame, JLabel text, String msg){
-        frame.setTitle("Erro");
-        frame.getContentPane().setBackground(new Color(255, 51, 51));
-
-        text.setFont(new Font("Calibri", Font.PLAIN, 15));
-        text.setBounds(35, 220, 430, 20);
-        text.setText(msg);
-    }
+    
 
     private void showSucesso(JFrame frame, JLabel text, int idMsg){
         frame.setTitle("Sucesso");
@@ -225,6 +227,7 @@ public class TecnicoPanel implements ActionListener{
         frame.setResizable(false);
         frame.setTitle("Registar Orçamento");
         frame.getContentPane().setBackground(new Color(0, 51, 51));
+        frame.setLayout(null);
 
         JLabel background = new JLabel();
         background.setBounds(0,0,500,500);
@@ -244,7 +247,7 @@ public class TecnicoPanel implements ActionListener{
         button.setBounds(100, 255, 300, 25);
         button.setBackground(Color.white);
         button.setText("Criar plano de trabalhos");
-        button.addActionListener(e -> registarPlano());
+        button.addActionListener(e -> registarPlano(frame, passos.getText()));
 
         background.add(button);
         background.add(passos);
@@ -253,9 +256,26 @@ public class TecnicoPanel implements ActionListener{
         frame.setVisible(true);
     }
 
-    public void registarPlano(){
+    public void registarPlano(JFrame frame, String passos){
         //TODO: registar plano de trabalhos UI
-        new PlanoTrabalhosPanel();
+        JLabel erro = new JLabel();
+        try{
+            int nr_passos = Integer.parseInt(passos);
+            PlanoTrabalhosPanel ptp = new PlanoTrabalhosPanel(nr_passos);
+        }
+        catch(NumberFormatException nfe){
+            erro = new JLabel();
+            erro.setBounds(110, 300, 280, 25);
+            erro.setOpaque(true);
+            erro.setBackground(new Color(0, 51, 51));
+            erro.setForeground(Color.RED);
+            erro.setText("Erro: não inseriu um número inteiro");
+            erro.setFont(new Font("Calibri", Font.PLAIN, 16));
+
+            frame.add(erro);
+            frame.revalidate();
+            frame.repaint();
+        }
     }
 
     public void assinalarPasso(){
@@ -369,7 +389,7 @@ public class TecnicoPanel implements ActionListener{
             showSucesso(frame, text, 2);
         }
         else{
-            showErro(frame, text, "Erro: esse passo não consta na nossa base de dados");
+            //showErro(frame, text, "Erro: esse passo não consta na nossa base de dados");
         }
 
         background.add(text);

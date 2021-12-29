@@ -16,7 +16,7 @@ public class Main {
         //this.run da interface
         GestCRFacade cr = new GestCRFacade();
         try {
-            GUI g = new GUI();
+            GUI g = new GUI(cr);
         } catch (IOException e4) {
             // TODO Auto-generated catch block
             e4.printStackTrace();

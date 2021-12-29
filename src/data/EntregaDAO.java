@@ -27,7 +27,7 @@ public class EntregaDAO implements DAO<Entrega> {
 
     public List<Entrega> getAll() {
         this.s.beginTransaction();
-        List<Entrega> Entregas = s.createSQLQuery("Select * from registosentrega").addEntity(Entrega.class).list();
+        List<Entrega> Entregas = s.createSQLQuery("Select * from Entregas").addEntity(Entrega.class).list();
         this.s.getTransaction().commit();
         return Entregas;
     }
