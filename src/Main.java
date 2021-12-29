@@ -2,17 +2,25 @@ package src;
 
 
 import java.time.LocalDateTime;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import src.business.GestCRFacade;
 import src.business.ssGestRegistos.Passo;
+import src.ui.*;
 
 public class Main {
     public static void main(String[] args) {
         //this.run da interface
         GestCRFacade cr = new GestCRFacade();
+        try {
+            GUI g = new GUI();
+        } catch (IOException e4) {
+            // TODO Auto-generated catch block
+            e4.printStackTrace();
+        }
         try{
         String f1 = cr.registarFuncionario("Ricardo Gama", 1);
         String f2 = cr.registarFuncionario("Pedro Miguel",2);
