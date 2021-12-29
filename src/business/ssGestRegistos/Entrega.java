@@ -12,6 +12,11 @@ import src.business.SSGestEntidades.Funcionario;
 @Entity
 @Table(name = "Entregas")
 public class Entrega extends Registos{
+
+
+    public Entrega() {
+    }
+
     public Entrega(LocalDateTime data,Equipamento equipamento,Funcionario funcionario,int estado) {
         super(data, equipamento, funcionario, estado);
     }

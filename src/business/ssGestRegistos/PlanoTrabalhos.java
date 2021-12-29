@@ -33,6 +33,10 @@ public class PlanoTrabalhos extends Registos{
     @JoinTable(name="PassosPlano")
     private List<Passo> passos;
     
+
+    public PlanoTrabalhos() {
+    }
+
     public PlanoTrabalhos(LocalDateTime data,Equipamento codEquipamento,Funcionario codFuncionario,int estado,List<Passo> passos) {
         super(data, codEquipamento, codFuncionario, estado);
         this.passos = new ArrayList<>(passos);

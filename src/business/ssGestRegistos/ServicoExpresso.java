@@ -18,6 +18,11 @@ public class ServicoExpresso extends Registos{
     @Column(name = "Descricao")
     private String descricao;
 
+
+
+    public ServicoExpresso() {
+    }
+
     public ServicoExpresso(LocalDateTime data,Equipamento Equipamento,Funcionario Funcionario,int estado,float valor,String descricao) {
         super(data, Equipamento, Funcionario, estado);
         this.preco = valor;

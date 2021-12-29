@@ -57,7 +57,7 @@ public class GestCRFacade implements IGestCRLN {
             this.funcionario = this.gestEntidades.getFuncionarioByCod(codF);
             return this.gestEntidades.verificaTipoFuncionario(codF);
         }
-        return 0;
+        else throw new ObjetoNaoExistenteException("O funcionario nao esta na BD");
     }
 
     public boolean verificaEquipamento(int codE) {
