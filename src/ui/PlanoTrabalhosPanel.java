@@ -1,3 +1,5 @@
+package src.ui;
+
 import java.awt.Color;
 import java.awt.Font;
 
@@ -8,15 +10,22 @@ import javax.swing.JTextField;
 
 public class PlanoTrabalhosPanel{
     private int nrPassos;
+    private int passoAtual;
     private JFrame frame;
     private JLabel erro;
     private Color back;
 
-    public PlanoTrabalhosPanel(){
+    public PlanoTrabalhosPanel(int nrPassos){
+        this.nrPassos = nrPassos;
+        this.passoAtual = 1;
+        inserirPasso();
+    }
+
+    private void inserirPasso(){
         this.frame = new JFrame();
         this.frame.setSize(500, 500);
         this.frame.setResizable(false);
-        this.frame.setTitle("Criar Plano de Trabalhos");
+        this.frame.setTitle("Registar Passo " + passoAtual);
         this.frame.setLayout(null);
         this.back = new Color(0, 51, 51);
         this.frame.getContentPane().setBackground(this.back);
@@ -25,27 +34,54 @@ public class PlanoTrabalhosPanel{
         background.setBounds(0, 0, 500, 500);
         background.setLayout(null);
 
-        JTextField userText = new JTextField(50);
-        userText.setBounds(100, 195, 300, 25);
-        userText.setBackground(Color.white);
+        JTextField descricao = new JTextField(50);
+        descricao.setBounds(100, 195, 300, 25);
+        descricao.setBackground(Color.white);
+        descricao.setText("Insira uma descrição");
+
+        JTextField tempo = new JTextField(50);
+        tempo.setBounds(100, 165, 300, 25);
+        tempo.setBackground(Color.white);
+        tempo.setText("Insira o tempo requerido");
+
+        JTextField custo = new JTextField(50);
+        custo.setBounds(100, 135, 300, 25);
+        custo.setBackground(Color.white);
+        custo.setText("Insira o custo (€)");
+
+        JButton subpassos = new JButton();
+        subpassos.setBounds(100, 255, 300, 25);
+        subpassos.setBackground(Color.white);
+        subpassos.setText("Adicionar Subpassos");
+        subpassos.addActionListener(e -> addSubpassos());
 
         JButton button = new JButton();
-        button.setBounds(100, 255, 300, 25);
+        button.setBounds(100, 295, 300, 25);
         button.setBackground(Color.white);
-        button.setText("Insira o número total de passos");
-        button.addActionListener(e -> inputNrPassos(userText.getText()));
+        button.setText("Próximo Passo");
+        button.addActionListener(e -> addPasso(descricao.getText()));
 
         background.add(button);
-        background.add(userText);
+        background.add(subpassos);
+        background.add(descricao);
+        background.add(custo);
+        background.add(tempo);
         this.frame.add(background);
         this.frame.setVisible(true);
     }
 
-    public void inputNrPassos(String input){
+    public void addSubpassos(){
+        //TODO adicionar subpassos UI
+    }
+
+    public void addPasso(String input){
         try{
             this.nrPassos = Integer.parseInt(input);
+            this.passoAtual++;
             this.frame.setVisible(false);
-            inserirPasso();
+            if(this.passoAtual <= this.nrPassos)
+                inserirPasso();
+            
         }
         catch(NumberFormatException nfe){
             this.erro = new JLabel();
@@ -62,13 +98,19 @@ public class PlanoTrabalhosPanel{
         }
     }
 
+    /*
     public void inserirPasso(){
         this.frame = new JFrame();
         this.frame.setSize(500, 500);
-        this.frame.setResizable(false);
+        this.frame.getContentPane().setBackground(Color.GREEN);
         this.frame.setTitle("Criar Plano de Trabalhos");
         this.frame.setLayout(null);
-        this.frame.getContentPane().setBackground(Color.CYAN);
+        this.frame.setVisible(true);
+        
+        /*
+        this.frame = new JFrame();
+        this.frame.setSize(500, 500);
+        this.frame.setResizable(false);
 
         JLabel background = new JLabel();
         background.setBounds(0, 0, 500, 500);
@@ -78,5 +120,7 @@ public class PlanoTrabalhosPanel{
 
         this.frame.add(background);
         this.frame.setVisible(true);
+        
     }
+    */
 }

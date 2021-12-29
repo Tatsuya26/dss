@@ -7,11 +7,16 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import src.business.GestCRFacade;
+import src.business.IGestCRLN;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Stack;
 
-class GUI {
+public class GUI {
+    private IGestCRLN business;
     
     private JFrame frame;
     private JLabel user_label;
@@ -25,16 +30,17 @@ class GUI {
 
     private BufferedImage image ;
     private JLabel label_Image;
-
     
     private int tipo_funcionario;
     private String codF = "42";
 
-    public GUI() throws IOException {
+    public GUI(IGestCRLN business) throws IOException {
+        this.business = business;
+
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.frame      = new JFrame();
         this.panel_codF = new JPanel();
-        this.image      = ImageIO.read(new File("SRGR.png"));
+        this.image      = ImageIO.read(new File("src/ui/SRGR.png"));
         this.label_Image = new JLabel(new ImageIcon(this.image));
 
         this.label_Image.setBounds(500,0,400,500);
@@ -51,7 +57,6 @@ class GUI {
         this.tipo_funcionario = 0;
         frame.setVisible(true);
         showMainFrame();
-
     }
 
     public void switchPanes(int x) {
@@ -66,7 +71,6 @@ class GUI {
     }
 
     public void showMainFrame() {
-        
         this.panel_codF.setBounds(300,300,250,25);
         this.user_label = new JLabel("Código Funcionário : " );
         this.user_label.setBounds(500,470,250,25);
@@ -84,18 +88,21 @@ class GUI {
         this.panel_codF.setBackground(Color.black);
         this.panel_codF.setOpaque(true);
         this.panel_codF.add(this.label_Image);
+
+        //TecnicoPanel p = new TecnicoPanel(this.business);
+        GestorPanel p = new GestorPanel(this.business);
+        this.frame.add(p.getPanel());
         
-        //configurar butao
-        
+        //configurar botão
         this.button = new JButton("Login Here");
         this.button.setBounds(600,520,165,25);
         this.button.setBackground(Color.white);
         this.button.setBorder(BorderFactory.createEtchedBorder());
         this.button.addActionListener(e -> switchPanes(1));
         this.panel_codF.add(this.button);
-        this.frame.repaint();
-        this.frame.revalidate();
         this.frame.add(this.panel_codF);
+        this.frame.revalidate();
+        this.frame.repaint();
     }
     
     
@@ -189,7 +196,9 @@ class GUI {
         erro.add(error_msg);
         erro.setVisible(true);
     }
+    /*
     public static void main(String[] args) throws IOException {
-        GUI g = new GUI();
-    }
+        IGestCRLN cr = new GestCRFacade();
+        GUI g = new GUI(cr);
+    }*/
 }

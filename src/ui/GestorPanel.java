@@ -1,4 +1,4 @@
-//package src.ui;
+package src.ui;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -11,18 +11,25 @@ import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 
+import src.business.IGestCRLN;
 
 public class GestorPanel implements ActionListener{
+    private IGestCRLN business;
     private JPanel panel;
     private JButton balcao;
     private JButton intervencoes;
     private JButton tecnicos;
 
-    public GestorPanel(){
+    public GestorPanel(IGestCRLN business){
+        this.business = business;
         this.panel = new JPanel();
         buildPanel();
     }
@@ -90,6 +97,18 @@ public class GestorPanel implements ActionListener{
         list.setForeground(Color.black);
         list.setFont(new Font("Calibri", Font.BOLD, 20));
 
+        List<String> list2 = new ArrayList<>();
+        Thread t = new Thread(new ThreadTest(list2, this.business));
+        t.start();
+        try{
+            t.join();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        //List<String> list2 = this.business.consultarListagemFuncionariosBalcao();
+
         String[] columnNames = {"Funcionário", "Recepções", "Entregas"};
         String[][] data = {{"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"}, 
                             {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
@@ -127,6 +146,8 @@ public class GestorPanel implements ActionListener{
         list.setFont(new Font("Calibri", Font.BOLD, 20));
         list.setBounds(450, 43, 300, 20);
         list.setForeground(Color.black);
+
+        Map<String, List<Double>> map = this.business.consultarListagemTecnicos();
 
         String[] columnNames = {"Funcionário", "Total de Reparações e Serviços Expresso", "Duração Média das Reparações", "Média do Desvio das Durações Previstas"};
         String[][] data = {{"nome1", "oi", "lol", "lmao"}, {"nome2", "ok", "cool", "aight"}, {"nome3", "teste1", "teste2", "teste3"}, {"nome4", "ok", "cool", "aight"}, 
@@ -177,12 +198,16 @@ public class GestorPanel implements ActionListener{
         //button.addActionListener(e-> registarConclusaoReparacaoResult(userText.getText()));
 
         String[] columnNames = {"Funcionário"};
+        /*
         String[][] data = {{"oi"}, {"ok"}, {"teste3"}, {"cool"}, 
                             {"oi"}, {"ok"}, {"teste3"}, {"cool"},
                             {"oi"}, {"ok"}, {"teste3"}, {"cool"},
                             {"oi"}, {"ok"}, {"teste3"}, {"cool"},
                             {"oi"}, {"ok"}, {"teste3"}, {"cool"},
-                            {"oi"}, {"ok"}, {"teste3"}, {"cool"}};
+                            {"oi"}, {"ok"}, {"teste3"}, {"cool"}};*/
+
+        Map<String, List<String>> map = this.business.consultarListagemIntervencoes();
+        String[][] data = buildDataFromSet(map.keySet());
         
         JTable table = new JTable(data, columnNames);
         table.setPreferredScrollableViewportSize(new Dimension(240, 485));
@@ -195,5 +220,19 @@ public class GestorPanel implements ActionListener{
         frame.add(tabela);
         frame.add(opcao);
         frame.setVisible(true);
+    }
+
+    private String[][] buildDataFromMap(Map<String, List<String>> map){
+        return null;
+    }
+
+    private String[][] buildDataFromSet(Set<String> set){
+        String[][] res = new String[set.size()][1];
+        int i = 0;
+        for(String s: set){
+            res[i][0] = s;
+            i++;
+        }
+        return res;
     }
 }
