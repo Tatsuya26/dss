@@ -35,7 +35,7 @@ public interface IGestCRLN {
     
     void registarConclusaoReparacao(int codE) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException;
     
-    int registarEntrega(int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException;
+    int registarEntrega(int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException, EquipamentoNaoEstaProntoParaEntregaException ;
 
     void baixaEquipamento(int codE) throws ObjetoNaoExistenteException;
 
