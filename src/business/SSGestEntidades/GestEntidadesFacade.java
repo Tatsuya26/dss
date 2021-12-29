@@ -179,4 +179,8 @@ public class GestEntidadesFacade implements IGestEntidades{
     public List<Funcionario> getTecnicosReparacao() {
         return this.funcionarios.getAll().stream().filter(tr -> tr instanceof TecnicoReparacoes).collect(Collectors.toList());
     }
+
+    public List<Funcionario> getFuncionariosBalcao() {
+        return this.funcionarios.getAll().stream().filter(fb -> fb instanceof FuncionarioBalcao).collect(Collectors.toList());
+    }
 }

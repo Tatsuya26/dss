@@ -127,7 +127,7 @@ public class TecnicoPanel implements ActionListener{
             SignalUI.sucess("Conclusão registada com sucesso!");
         }
         catch(NumberFormatException nfe){
-            SignalUI.printError(erro, "Não inseriu um número inteiro", 110, 300, 280, 25, 16);
+            SignalUI.printError(erro, "Não inseriu um número inteiro", 110, 300, 280, 25, 16, new Color(0, 51, 51));
 
             oldFrame.add(erro);
             oldFrame.revalidate();
@@ -183,7 +183,7 @@ public class TecnicoPanel implements ActionListener{
             SignalUI.sucess("Conclusão registada com sucesso!");
         }
         catch(NumberFormatException nfe){
-            SignalUI.printError(erro, "Não inseriu um número inteiro", 110, 300, 280, 25, 16);
+            SignalUI.printError(erro, "Não inseriu um número inteiro", 110, 300, 280, 25, 16, new Color(0, 51, 51));
 
             oldFrame.add(erro);
             oldFrame.revalidate();

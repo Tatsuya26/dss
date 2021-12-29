@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.mail.*;
@@ -46,6 +47,7 @@ public class GestCRFacade implements IGestCRLN {
         SessionFactory sf = con.buildSessionFactory(sr);
         this.gestRegistos = new GestRegistosFacade(sf);
         this.gestEntidades = new GestEntidadesFacade(sf);
+        //FIXME: somos melhores que isto
         this.funcionario = new Gestor("Manel", "1111");
     }
 
@@ -304,12 +306,28 @@ public class GestCRFacade implements IGestCRLN {
         return pos.stream().map(Entrega :: toString).collect(Collectors.toList());
     }
 
-    public Map<String,List<String>> consultarListagemIntervencoes() {
+    public Map<String, String> getNomesFromFuncionariosId(Set<String> ids){
+        Map<String, String> nomeAndId = new HashMap<String, String>();
+
+        for(String id: ids){
+            try{
+                Funcionario f = this.gestEntidades.getFuncionarioByCod(id);
+                nomeAndId.put(f.getNome(), id);
+            }
+            catch(ObjetoNaoExistenteException oee){
+                //ignorar
+            }
+        }
+
+        return nomeAndId;
+    }
+
+    public Map<String, Map<String, List<String>>> consultarListagemIntervencoes() {
         List<Funcionario> tecnicos = this.gestEntidades.getTecnicosReparacao();
-        Map<String,List<String>> intervencoes = new HashMap<>();
+        Map<String, Map<String, List<String>>> intervencoes = new HashMap<>();
         for (Funcionario f : tecnicos) {
             String cod = f.getCodigo();
-            List<String> intf = this.gestRegistos.consultarListagemIntervencoes(cod);
+            Map<String, List<String>> intf = this.gestRegistos.consultarListagemIntervencoes(cod);
             intervencoes.put(cod, intf);
         }
         return intervencoes;
@@ -320,13 +338,22 @@ public class GestCRFacade implements IGestCRLN {
         Map<String,List<Double>> dadosTecnico = new HashMap<>();
         for (Funcionario f : tecnicos) {
             String codF = f.getCodigo();
+            String nome = f.getNome();
             List<Double> dados = this.gestRegistos.consultarListagemTecnicos(codF);
-            dadosTecnico.put(codF, dados);
+            dadosTecnico.put(nome, dados);
         }
         return dadosTecnico;
     }
     
-    public List<String> consultarListagemFuncionariosBalcao() {
-        return this.gestRegistos.consultarListagemFuncionariosBalcao();
+    public Map<String, List<Integer>> consultarListagemFuncionariosBalcao() {
+        List<Funcionario> fBalcao = this.gestEntidades.getFuncionariosBalcao();
+        Map<String,List<Integer>> dadosFuncionario = new HashMap<>();
+        for (Funcionario f : fBalcao) {
+            String codF = f.getCodigo();
+            String nome = f.getNome();
+            List<Integer> dados = this.gestRegistos.consultarListagemFuncionariosBalcao(codF);
+            dadosFuncionario.put(nome, dados);
+        }
+        return dadosFuncionario;
     }
 }

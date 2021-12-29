@@ -49,12 +49,12 @@ public class SignalUI {
         frame.setVisible(true);
     }
 
-    public static void printError(JLabel erro, String msg, int x, int y, int width, int height, int fontSize){
+    public static void printError(JLabel erro, String msg, int x, int y, int width, int height, int fontSize, Color background){
         erro.setBounds(x, y, width, height);
         erro.setOpaque(true);
-        erro.setBackground(new Color(0, 51, 51));
+        erro.setBackground(background);
         erro.setForeground(Color.RED);
-        erro.setText("Erro: não inseriu um número inteiro");
+        erro.setText(msg);
         erro.setFont(new Font("Calibri", Font.PLAIN, fontSize));
         erro.setVisible(true);
     }

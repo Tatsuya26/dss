@@ -2,6 +2,7 @@ package src.business.ssGestRegistos;
 
 
 import java.util.List;
+import java.util.Map;
 
 import src.business.ObjetoExistenteException;
 import src.business.ObjetoNaoExistenteException;
@@ -45,11 +46,11 @@ public interface IGestRegistos {
 
     List<Entrega> consultarEntregas();
 
-    List<String> consultarListagemIntervencoes(String codF);
+    Map<String, List<String>> consultarListagemIntervencoes(String codF);
 
     List<Double> consultarListagemTecnicos(String codF);
     
-    List<String> consultarListagemFuncionariosBalcao();
+    List<Integer> consultarListagemFuncionariosBalcao(String codF);
 
     PedidoOrcamento getPedidoOrcamentoByID(int codR) throws ObjetoNaoExistenteException;
 

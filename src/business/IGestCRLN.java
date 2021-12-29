@@ -55,10 +55,12 @@ public interface IGestCRLN {
 
     List<String> consultarOrcamentos();
 
-    Map<String, List<String>> consultarListagemIntervencoes() ;
+    Map<String, String> getNomesFromFuncionariosId(Set<String> ids);
+
+    Map<String, Map<String, List<String>>> consultarListagemIntervencoes();
 
     Map<String, List<Double>> consultarListagemTecnicos();
     
-    List<String> consultarListagemFuncionariosBalcao();
+    Map<String, List<Integer>> consultarListagemFuncionariosBalcao();
 
 }

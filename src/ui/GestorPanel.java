@@ -79,7 +79,6 @@ public class GestorPanel implements ActionListener{
 
     // Consultar listagem relativa aos funcionários de balcão
     public void showListFB() {
-        //TODO: show listagem funcionários de balcão UI
         JFrame frame = new JFrame();
         frame.setSize(600,600);
         frame.setResizable(false);
@@ -97,25 +96,9 @@ public class GestorPanel implements ActionListener{
         list.setForeground(Color.black);
         list.setFont(new Font("Calibri", Font.BOLD, 20));
 
-        List<String> list2 = new ArrayList<>();
-        Thread t = new Thread(new ThreadTest(list2, this.business));
-        t.start();
-        try{
-            t.join();
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-
-        //List<String> list2 = this.business.consultarListagemFuncionariosBalcao();
-
         String[] columnNames = {"Funcionário", "Recepções", "Entregas"};
-        String[][] data = {{"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"}, 
-                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
-                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
-                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
-                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"},
-                            {"oi", "lol", "lmao"}, {"ok", "cool", "aight"}, {"teste1", "teste2", "teste3"}, {"ok", "cool", "aight"}};
+        Map<String, List<Integer>> map = this.business.consultarListagemFuncionariosBalcao();
+        String[][] data = buildDataFromMapWithLists(map, 2, true);
         JTable table = new JTable(data, columnNames);
         table.setPreferredScrollableViewportSize(new Dimension(465, 365));
         table.setFillsViewportHeight(true);
@@ -129,7 +112,6 @@ public class GestorPanel implements ActionListener{
 
     // Consultar listagem relativa à performance de cada técnico
     public void showListT() {
-        //TODO: show listagem técnico UI
         JFrame frame = new JFrame();
         frame.setSize(1200,600);
         frame.setResizable(false);
@@ -148,13 +130,8 @@ public class GestorPanel implements ActionListener{
         list.setForeground(Color.black);
 
         Map<String, List<Double>> map = this.business.consultarListagemTecnicos();
-
+        String[][] data = buildDataFromMapWithLists(map, 3, true);
         String[] columnNames = {"Funcionário", "Total de Reparações e Serviços Expresso", "Duração Média das Reparações", "Média do Desvio das Durações Previstas"};
-        String[][] data = {{"nome1", "oi", "lol", "lmao"}, {"nome2", "ok", "cool", "aight"}, {"nome3", "teste1", "teste2", "teste3"}, {"nome4", "ok", "cool", "aight"}, 
-                            {"nome1", "oi", "lol", "lmao"}, {"nome2", "ok", "cool", "aight"}, {"nome3", "teste1", "teste2", "teste3"}, {"nome4", "ok", "cool", "aight"},
-                            {"nome1", "oi", "lol", "lmao"}, {"nome2", "ok", "cool", "aight"}, {"nome3", "teste1", "teste2", "teste3"}, {"nome4", "ok", "cool", "aight"}, 
-                            {"nome1", "oi", "lol", "lmao"}, {"nome2", "ok", "cool", "aight"}, {"nome3", "teste1", "teste2", "teste3"}, {"nome4", "ok", "cool", "aight"}, 
-                            {"nome1", "oi", "lol", "lmao"}, {"nome2", "ok", "cool", "aight"}, {"nome3", "teste1", "teste2", "teste3"}, {"nome4", "ok", "cool", "aight"}};
 
         JTable table = new JTable(data, columnNames);
         table.setPreferredScrollableViewportSize(new Dimension(980, 367));
@@ -168,6 +145,7 @@ public class GestorPanel implements ActionListener{
     }
 
     // Consultar listagem relativa às intervenções feitas por cada técnico
+    //TODO: private em vez de public quase todo o que é método de UI
     public void showListI() {
         //TODO: show listagem intervenções UI
         JFrame frame = new JFrame();
@@ -191,23 +169,17 @@ public class GestorPanel implements ActionListener{
         userText.setBounds(10, 15, 340, 25);
         userText.setBackground(Color.white);
 
+        Map<String, Map<String, List<String>>> intervencoes = this.business.consultarListagemIntervencoes();
+        Map<String, String> nomeAndId = this.business.getNomesFromFuncionariosId(intervencoes.keySet());
+
         JButton button = new JButton();
         button.setBounds(10, 60, 340, 25);
         button.setBackground(Color.white);
         button.setText("Insira o nome do Funcionário");
-        //button.addActionListener(e-> registarConclusaoReparacaoResult(userText.getText()));
+        button.addActionListener(e-> showIntervencoes(frame, intervencoes, nomeAndId, userText.getText()));
 
         String[] columnNames = {"Funcionário"};
-        /*
-        String[][] data = {{"oi"}, {"ok"}, {"teste3"}, {"cool"}, 
-                            {"oi"}, {"ok"}, {"teste3"}, {"cool"},
-                            {"oi"}, {"ok"}, {"teste3"}, {"cool"},
-                            {"oi"}, {"ok"}, {"teste3"}, {"cool"},
-                            {"oi"}, {"ok"}, {"teste3"}, {"cool"},
-                            {"oi"}, {"ok"}, {"teste3"}, {"cool"}};*/
-
-        Map<String, List<String>> map = this.business.consultarListagemIntervencoes();
-        String[][] data = buildDataFromSet(map.keySet());
+        String[][] data = buildDataFromSet(nomeAndId.keySet());
         
         JTable table = new JTable(data, columnNames);
         table.setPreferredScrollableViewportSize(new Dimension(240, 485));
@@ -222,8 +194,87 @@ public class GestorPanel implements ActionListener{
         frame.setVisible(true);
     }
 
-    private String[][] buildDataFromMap(Map<String, List<String>> map){
-        return null;
+    public void showIntervencoes(JFrame oldFrame, Map<String, Map<String, List<String>>> map, Map<String, String> nomeAndId, String input){
+        JLabel erro = new JLabel();
+        String id;
+        if((id = nomeAndId.get(input)) != null){
+            Map<String, List<String>> dataMap;
+            if((dataMap = map.get(id)) != null){
+                oldFrame.setVisible(false);
+
+                JFrame frame = new JFrame();
+                frame.setSize(1200,600);
+                frame.setResizable(false);
+                //TODO: ver headers
+                frame.setTitle("LISTA DE INTERVENÇÕES DO TÉCNICO");
+                frame.getContentPane().setBackground(new Color(255,140,0));
+                frame.setLayout(null);
+
+                JLabel list = new JLabel("Intervenções do Técnico: " + input);
+                list.setBounds(340, 50, 470, 20);
+                list.setForeground(Color.black);
+                list.setFont(new Font("Calibri", Font.BOLD, 20));
+
+                JPanel tabela = new JPanel();
+                tabela.setBounds(100, 100, 1000, 400);
+                tabela.setBackground(Color.DARK_GRAY);
+                tabela.setLayout(new FlowLayout());
+
+                String[] columnNames = {"Intervenção", "ID do Equipamento", "Descrição", "Modelo", "Custo"};
+                String[][] data = buildDataFromMapWithLists(dataMap, 5, false);
+
+                JTable table = new JTable(data, columnNames);
+                table.setPreferredScrollableViewportSize(new Dimension(980, 367));
+                table.setFillsViewportHeight(true);
+
+                JScrollPane sp = new JScrollPane(table);
+                tabela.add(sp);
+                frame.add(list);
+                frame.add(tabela);
+                frame.setVisible(true);
+            }
+            else{
+                SignalUI.printError(erro, "Erro: Funcionário inserido não existe", 345, 355, 300, 30, 16, Color.DARK_GRAY);
+    
+                oldFrame.add(erro);
+                oldFrame.revalidate();
+                oldFrame.repaint();
+            }
+        }
+        else{
+            SignalUI.printError(erro, "Erro: Funcionário inserido não existe", 345, 355, 300, 30, 16, Color.DARK_GRAY);
+
+            oldFrame.add(erro);
+            oldFrame.revalidate();
+            oldFrame.repaint();
+        }
+    }
+
+    private <K> String[][] buildDataFromMapWithLists(Map<String, List<K>> map, int sizeList, boolean useKey){
+        String[][] res;
+        if(useKey)
+            res = new String[map.size()][sizeList + 1];
+        else
+            res = new String[map.size()][sizeList];
+
+        int k = 0;
+        if(useKey){
+            for(Map.Entry<String, List<K>> entry: map.entrySet()){
+                res[k][0] = entry.getKey();
+                for(int i = 0; i < sizeList; i++)
+                    res[k][i + 1] = entry.getValue().get(i).toString();
+                k++;
+            }
+        }
+        else{
+            for(Map.Entry<String, List<K>> entry: map.entrySet()){
+                for(int i = 0; i < sizeList; i++)
+                    res[k][i] = entry.getValue().get(i).toString();
+                k++;
+            }
+        }
+
+        return res;
     }
 
     private String[][] buildDataFromSet(Set<String> set){
