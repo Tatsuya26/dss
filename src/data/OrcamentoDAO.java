@@ -29,7 +29,7 @@ public class OrcamentoDAO implements DAO<Orcamento> {
 
     public List<Orcamento> getAll() {
         this.s.beginTransaction();
-        List<Orcamento> Orcamentos = s.createSQLQuery("Select * from RegistosOrcamento").addEntity(Orcamento.class).list();
+        List<Orcamento> Orcamentos = s.createSQLQuery("Select * from Orcamentos").addEntity(Orcamento.class).list();
         this.s.getTransaction().commit();
         return Orcamentos;
     }

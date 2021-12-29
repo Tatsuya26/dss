@@ -28,7 +28,7 @@ public class ServicoExpressoDAO implements DAO<ServicoExpresso>{
 
     public List<ServicoExpresso> getAll() {
         this.s.beginTransaction();
-        List<ServicoExpresso> ServicoExpressos = s.createSQLQuery("Select * from servicosexpresso").addEntity(ServicoExpresso.class).list();
+        List<ServicoExpresso> ServicoExpressos = s.createSQLQuery("Select * from ServicosExpresso").addEntity(ServicoExpresso.class).list();
         this.s.getTransaction().commit();
         return ServicoExpressos;
     }
