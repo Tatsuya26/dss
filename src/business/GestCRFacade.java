@@ -87,7 +87,7 @@ public class GestCRFacade implements IGestCRLN {
 
     public String registarFuncionario(String nome,String codigo,int tipo) throws ObjetoExistenteException, FuncionarioTipoErradoException {
         if (this.funcionario instanceof Gestor)
-            return this.gestEntidades.registarFuncionario(nome,codigo,tipo);
+            return this.gestEntidades.registarFuncionario(nome,codigo, tipo);
         throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um gestor");
 
     }
@@ -97,10 +97,14 @@ public class GestCRFacade implements IGestCRLN {
         
     }
 
-    public int registarEntrega (int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException {
+    public int registarEntrega (int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException, EquipamentoNaoEstaProntoParaEntregaException {
         if (this.funcionario instanceof FuncionarioBalcao) {
             Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
-            return this.gestRegistos.registarEntrega(e, funcionario);
+            if (e.getEstado() == Equipamento.Reparado ||e.getEstado() == Equipamento.NaoAceite) {
+                e.setEstado(Equipamento.Entregue);
+                return this.gestRegistos.registarEntrega(e, funcionario);
+            }
+            else throw new EquipamentoNaoEstaProntoParaEntregaException();
         }
         throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um funcionario de balcao");
     }
@@ -110,7 +114,7 @@ public class GestCRFacade implements IGestCRLN {
         // Mudar o estado do equipamento para que este passe a por reparar.
         if (this.funcionario instanceof FuncionarioBalcao) {
             if (this.verificarServicoExpresso()) {
-                this.gestEntidades.alterarEstadoEquipamento(codE, 1);
+                this.gestEntidades.alterarEstadoEquipamento(codE, Equipamento.PorReparar);
                 Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
                 return this.gestRegistos.registarServicoExpresso(e, funcionario, preco, descricao);
             }
@@ -123,7 +127,7 @@ public class GestCRFacade implements IGestCRLN {
         // Mudar o estado do equipamento para que este passe a reparado.
         if (this.funcionario instanceof TecnicoReparacoes) {
             Equipamento e = this.gestRegistos.getServicoExpressoByID(codR).getEquipamento();
-            this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(),2);
+            this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(),Equipamento.Reparado);
             this.gestRegistos.registarConclusaoServicoExpresso(codR,funcionario);
         }
         else throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
@@ -132,7 +136,7 @@ public class GestCRFacade implements IGestCRLN {
 
     public int registarPedidoOrcamento(int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException {
         if (this.funcionario instanceof FuncionarioBalcao) {
-            this.gestEntidades.alterarEstadoEquipamento(codE,0);
+            this.gestEntidades.alterarEstadoEquipamento(codE,Equipamento.EmEspera);
             Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
             return this.gestRegistos.registarPedidoOrcamento(e, funcionario);
         }
@@ -155,7 +159,7 @@ public class GestCRFacade implements IGestCRLN {
         if (this.funcionario instanceof TecnicoReparacoes) {
             Equipamento e = this.gestRegistos.getOrcamentoByID(codR).getEquipamento();
             this.gestRegistos.removerOrcamento(codR);
-            this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(), -1);
+            this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(), Equipamento.NaoAceite);
         }
         else throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
     }
@@ -164,13 +168,13 @@ public class GestCRFacade implements IGestCRLN {
     public void arquivarOrcamento(int codO) throws ObjetoNaoExistenteException {
         Equipamento e = this.gestRegistos.getOrcamentoByID(codO).getEquipamento();
         this.gestRegistos.arquivarOrcamento(codO);
-        this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(), -1);
+        this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(), Equipamento.NaoAceite);
     }
     
     public int aceitarOrcamento(int codO) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException {
         if (this.funcionario instanceof TecnicoReparacoes) {
             int codE = this.gestRegistos.getOrcamentoByID(codO).getEquipamento().getIdEquipamento();
-            this.gestEntidades.alterarEstadoEquipamento(codE, 1);
+            this.gestEntidades.alterarEstadoEquipamento(codE, Equipamento.PorReparar);
             return this.gestRegistos.aceitarOrcamento(codO, funcionario);
         }
         throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
@@ -181,7 +185,7 @@ public class GestCRFacade implements IGestCRLN {
             Equipamento e = this.gestRegistos.getReparacaoByID(codR).getEquipamento();
             Cliente c = e.getCliente();
             this.gestRegistos.registarConclusaoReparacao(codR,funcionario);
-            this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(), 2);
+            this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(), Equipamento.Reparado);
             this.enviarEmailReparacao(c.getNIF(), codR);
         }
         else throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
@@ -264,7 +268,7 @@ public class GestCRFacade implements IGestCRLN {
     }
     
     public void baixaEquipamento(int codE) throws ObjetoNaoExistenteException {
-        this.gestEntidades.alterarEstadoEquipamento(codE, -2);
+        this.gestEntidades.alterarEstadoEquipamento(codE, Equipamento.Baixa);
     }
 
     public void atualizarReparacao(int codR,int passo,int tempo,float custo) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException {
