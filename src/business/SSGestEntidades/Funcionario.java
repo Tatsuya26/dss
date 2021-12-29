@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Column;
 
 @Entity
@@ -14,6 +15,12 @@ import javax.persistence.Column;
 @DiscriminatorColumn(name = "TipoFuncionario",discriminatorType = DiscriminatorType.INTEGER,columnDefinition = "TINYINT(1)")
 @Table(name = "Funcionarios")
 public abstract class Funcionario {
+    @Transient
+    public static int Balcao = 1;
+    @Transient
+    public static int Tecnico = 2;
+    @Transient
+    public static int Gestor = 3;
 
     @Id
     @Column (name = "Codigo")

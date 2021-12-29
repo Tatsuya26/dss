@@ -7,11 +7,24 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.JoinColumn;
 
 @Entity
 @Table(name = "Equipamentos")
 public class Equipamento {
+    @Transient
+    public static int Entregue = 3;
+    @Transient
+    public static int Reparado = 2;
+    @Transient
+    public static int PorReparar = 1;
+    @Transient
+    public static int EmEspera = 0;
+    @Transient
+    public static int NaoAceite = -1;
+    @Transient
+    public static int Baixa = -2;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

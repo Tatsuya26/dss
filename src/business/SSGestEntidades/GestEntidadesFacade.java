@@ -2,7 +2,6 @@ package src.business.SSGestEntidades;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.hibernate.SessionFactory;
@@ -61,32 +60,20 @@ public class GestEntidadesFacade implements IGestEntidades{
         }
     }
     
-    public String registarFuncionario(String nome,int tipo) throws ObjetoExistenteException{
-        Random rand = new Random();
-        int PIN = 0;
-        while (PIN < 1000 && !funcionarios.containsID(Integer.toString(PIN))) {
-            PIN = rand.nextInt(10000);
+    public String registarFuncionario(String nome,String codigo,int tipo) throws ObjetoExistenteException{
+        if (codigo.length() == 4) {
+            Funcionario f = new FuncionarioBalcao(nome,codigo);
+            if (tipo == Funcionario.Balcao) f = new FuncionarioBalcao(nome, codigo);
+            if (tipo == Funcionario.Tecnico) f = new TecnicoReparacoes(nome, codigo);
+            if (tipo == Funcionario.Gestor) f = new Gestor(nome, codigo);
+            try {
+                this.funcionarios.save(f);
+                return codigo;
+            } catch (IdentifierAlreadyInDBException e) {
+                throw new ObjetoExistenteException("Funcionario ja existe na BD.");
+            }
         }
-        String codGerado = Integer.toString(PIN);
-        Funcionario f = new FuncionarioBalcao(nome,codGerado);
-        if (tipo == 1) f = new FuncionarioBalcao(nome, codGerado);
-        if (tipo == 2) f = new TecnicoReparacoes(nome, codGerado);
-        if (tipo == 3) f = new Gestor(nome, codGerado);
-        try {
-            this.funcionarios.save(f);
-            return codGerado;
-        } catch (IdentifierAlreadyInDBException e) {
-            throw new ObjetoExistenteException("Funcionario ja existe na BD.");
-        }
-    }
-    
-    public void removerFuncionario(String cod) throws ObjetoNaoExistenteException{
-        try {
-            Funcionario f = this.funcionarios.get(cod);
-            this.funcionarios.delete(f);
-        } catch (NotFoundInDBException e) {
-            throw new ObjetoNaoExistenteException("Funcionario nao existe na BD.");
-        }
+        else throw new ObjetoExistenteException("Codigo de funcionario nao e valido");
     }
     
     // Método que verifica se o código dado pertence a algum funcionário da loja.
@@ -140,9 +127,9 @@ public class GestEntidadesFacade implements IGestEntidades{
         Funcionario f;
         try {
             f = this.funcionarios.get(codF);
-            if (f instanceof FuncionarioBalcao) return 1;
-            if (f instanceof TecnicoReparacoes) return 2;
-            if (f instanceof Gestor) return 3;
+            if (f instanceof FuncionarioBalcao) return Funcionario.Balcao;
+            if (f instanceof TecnicoReparacoes) return Funcionario.Tecnico;
+            if (f instanceof Gestor) return Funcionario.Gestor;
             return -1;
         } catch (NotFoundInDBException e) {
             throw new ObjetoNaoExistenteException("Funcionario nao existe na base de dados");

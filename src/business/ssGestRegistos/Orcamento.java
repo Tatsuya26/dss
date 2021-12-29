@@ -24,6 +24,9 @@ public class Orcamento extends Registos{
     @JoinColumn(name = "PlanoTrabalhosID")
     private PlanoTrabalhos planoTrabalhos;
 
+    public Orcamento() {
+    }
+
     public Orcamento(LocalDateTime data,Equipamento codEquipamento,Funcionario codFuncionario,int estado,float valor,PlanoTrabalhos pt) {
         super(data, codEquipamento, codFuncionario, estado);
         this.valor = valor;
