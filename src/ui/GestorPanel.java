@@ -37,7 +37,7 @@ public class GestorPanel implements ActionListener{
         return this.panel;
     }
 
-    public void buildPanel(){
+    private void buildPanel(){
         this.panel.setBackground(Color.BLACK);
         this.panel.setBounds(600, 600, 550, 450);
         this.panel.setLayout(null);
@@ -144,7 +144,6 @@ public class GestorPanel implements ActionListener{
     }
 
     // Consultar listagem relativa às intervenções feitas por cada técnico
-    //TODO: private em vez de public quase todo o que é método de UI
     public void showListI() {
         JFrame frame = new JFrame();
         frame.setSize(700,600);
@@ -203,7 +202,6 @@ public class GestorPanel implements ActionListener{
                 JFrame frame = new JFrame();
                 frame.setSize(1200,600);
                 frame.setResizable(false);
-                //TODO: ver headers
                 frame.setTitle("LISTA DE INTERVENÇÕES DO TÉCNICO");
                 frame.getContentPane().setBackground(new Color(255,140,0));
                 frame.setLayout(null);
@@ -248,7 +246,7 @@ public class GestorPanel implements ActionListener{
         }
     }
 
-    private <K> String[][] buildDataFromMapWithLists(Map<String, List<K>> map, int sizeList, boolean useKey){
+    public <K> String[][] buildDataFromMapWithLists(Map<String, List<K>> map, int sizeList, boolean useKey){
         String[][] res;
         if(useKey)
             res = new String[map.size()][sizeList + 1];
@@ -275,7 +273,7 @@ public class GestorPanel implements ActionListener{
         return res;
     }
 
-    private String[][] buildDataFromSet(Set<String> set){
+    public String[][] buildDataFromSet(Set<String> set){
         String[][] res = new String[set.size()][1];
         int i = 0;
         for(String s: set){

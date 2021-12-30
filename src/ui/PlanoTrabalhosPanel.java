@@ -230,7 +230,6 @@ public class PlanoTrabalhosPanel{
         catch(FuncionarioTipoErradoException ftee){
             this.frame.setVisible(false);
             SignalUI.error("Erro: não tem acesso a estas funcionalidades do sistema!");
-            inserirPasso();
         }
     }
 
@@ -269,21 +268,5 @@ public class PlanoTrabalhosPanel{
         oldFrame.revalidate();
         oldFrame.repaint();
     }
-    /*
-    catch(ObjetoNaoExistenteException onee){
-        oldFrame.setVisible(false);
-        SignalUI.error("Erro: esse equipamento não consta na base de dados!");
-        inserirSubpasso();
-    }
-    catch(ObjetoExistenteException oee){
-        oldFrame.setVisible(false);
-        SignalUI.error("Erro: esse equipamento já existe na base de dados!");
-        inserirSubpasso();
-    }
-    catch(FuncionarioTipoErradoException ftee){
-        oldFrame.setVisible(false);
-        SignalUI.error("Erro: não tem acesso a estas funcionalidades do sistema!");
-        inserirSubpasso();
-    }*/
    }
 }

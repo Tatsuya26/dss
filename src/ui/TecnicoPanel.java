@@ -203,7 +203,6 @@ public class TecnicoPanel implements ActionListener{
         catch(FuncionarioTipoErradoException ftee){
             oldFrame.setVisible(false);
             SignalUI.error("Erro: não tem acesso a estas funcionalidades do sistema!");
-            registarConclusaoExpresso();
         }
     }
 
