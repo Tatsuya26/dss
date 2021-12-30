@@ -2,6 +2,12 @@ package src.ui;
 import java.awt.*;
 import javax.swing.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import src.business.IGestCRLN;
+
 
 public class Funcionario_UI {
     //funcionário 
@@ -11,7 +17,12 @@ public class Funcionario_UI {
     private JButton consultar_orcamento;
     private JButton consultar_pedido_orcamento;
 
-    public Funcionario_UI(JPanel j) {
+    private JTextField text_codEquipamento;
+
+    private IGestCRLN business;
+
+    public Funcionario_UI(JPanel j, IGestCRLN business) {
+        this.business = business;
         this.painel_fun_base = new JLabel("Consultas");
         this.painel_fun_base.setForeground(Color.CYAN);
         this.painel_fun_base.setBounds(650,550,300,25);
@@ -60,16 +71,61 @@ public class Funcionario_UI {
         
         JButton registar = new JButton("Consultar");
         registar.setBounds(50,150,165,25);
-       //registar.addActionListener(e -> registos_efetuados(2));
+        registar.addActionListener(e -> consultas(1));
         
         background.add(codEquipamento);
         background.add(text_codEquipamento);
         background.add(registar);
 
-        f_registo.add(background);    
+        f_registo.add(background);
         f_registo.setVisible(true);
         //efetuar logica através de op
     }
 
+    public void consultas(int consulta) {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        JFrame listagem = new JFrame();
+        listagem.setBounds(0,0,1000,500);
+        listagem.getContentPane().setBackground(new Color(255,140,0));
 
+        String[][] data = buildDataFromMapWithLists(this.business.consultarPedidosOrcamentos(), 4, true);
+        String[] columnNames = {"Registo","Data","Estado","EquipamentoID", "Funcionário"};
+
+        JTable table = new JTable(data, columnNames);
+        table.setPreferredScrollableViewportSize(new Dimension(450, 350));
+        table.setFillsViewportHeight(true);
+
+        JScrollPane sp = new JScrollPane(table);
+        listagem.getContentPane().setBackground(Color.gray);
+        listagem.add(sp);
+        listagem.setVisible(true);
+    }
+
+
+    private <K> String[][] buildDataFromMapWithLists(Map<String, List<K>> map, int sizeList, boolean useKey){
+        String[][] res;
+        if(useKey)
+            res = new String[map.size()][sizeList + 1];
+        else
+            res = new String[map.size()][sizeList];
+
+        int k = 0;
+        if(useKey){
+            for(Map.Entry<String, List<K>> entry: map.entrySet()){
+                res[k][0] = entry.getKey();
+                for(int i = 0; i < sizeList; i++)
+                    res[k][i + 1] = entry.getValue().get(i).toString();
+                k++;
+            }
+        }
+        else{
+            for(Map.Entry<String, List<K>> entry: map.entrySet()){
+                for(int i = 0; i < sizeList; i++)
+                    res[k][i] = entry.getValue().get(i).toString();
+                k++;
+            }
+        }
+
+        return res;
+    }
 }

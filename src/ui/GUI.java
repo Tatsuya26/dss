@@ -34,9 +34,9 @@ public class GUI {
 
     private BufferedImage image ;
     private JLabel label_Image;
-    private JLabel label_funcionario;
     
     private String codF;
+    private int tipo_funcionario;
 
 
 
@@ -56,8 +56,8 @@ public class GUI {
         frame.getContentPane().setBackground(new Color(255,140,0));
 
         this.panel_operation = new JPanel(); 
-        this.fun_base = new Funcionario_UI(this.panel_operation);
-        this.fun_balcao = new FuncionarioBalcaoPanel(this.frame,this.panel_operation);
+        this.fun_base = new Funcionario_UI(this.panel_operation, this.business);
+        this.fun_balcao = new FuncionarioBalcaoPanel(this.frame,this.panel_operation, this.business);
 
         this.back_Button = new JButton("Back");
         this.back_Button.setBounds(600,700,165,25);
@@ -75,20 +75,30 @@ public class GUI {
             this.frame.add(this.panel_codF);
             this.frame.repaint();
             this.frame.revalidate();
+            this.tipo_funcionario = 0;
         } 
         if(x == 1) {
             try {
-                this.business.autenticarFuncionario(this.userText.getText());
+                this.tipo_funcionario = this.business.autenticarFuncionario(this.userText.getText());
+            } catch (ObjetoNaoExistenteException e) {
+                msg_erro("O funcionário não existe na base de dados");
+            }
+            
+            if(this.tipo_funcionario == 1) {
                 this.frame.remove(this.panel_codF);
                 this.frame.add(this.label_Image);
                 this.frame.add(this.back_Button);
                 this.fun_balcao.showFuncionarioBalcao(this.userText.getText());
                 this.frame.repaint();
                 this.frame.revalidate();
-            } catch (ObjetoNaoExistenteException e) {
-                System.out.println(this.userText.getText());
-                msg_erro("O funcionário não existe na base de dados");
             }
+            if(this.tipo_funcionario == 2) {
+                msg_erro("Ainda não está implementado");
+            }
+            if(this.tipo_funcionario == 3) {
+                msg_erro("Ainda não está implementado");
+            }
+
         } else return;
     }
 

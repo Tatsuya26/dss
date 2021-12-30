@@ -13,6 +13,10 @@
       
       <!-- Assume test is the database name -->
       
+      <property name = "hibernate.temp.use_jdbc_metadata_defaults">
+       TRUE
+      </property>
+      
       <property name = "hibernate.connection.url">
          jdbc:mysql://localhost:3306/sgr?createDatabaseIfNotExist=TRUE
       </property>
@@ -26,7 +30,7 @@
       </property>
 
       <property name="hbm2ddl.auto">
-         create
+         update
       </property>
       
       <!-- List of XML mapping files -->

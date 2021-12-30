@@ -9,14 +9,34 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import src.business.FuncionarioTipoErradoException;
+import src.business.IGestCRLN;
+import src.business.ObjetoExistenteException;
+import src.business.ObjetoNaoExistenteException;
+
 public class FuncionarioBalcaoPanel {
     private JPanel funcionario_balcao;
     private JFrame frame;
+    private IGestCRLN business;
+
+    private JTextField codigo_registo;
+    private JTextField preco;
+    private JTextField descricao;
+    private JTextField modelo;
+    private JTextField NIF;
+    private JTextField Nome;
+    private JTextField email;
+    private JTextField numero;
+
+    private String precoSExpresso;
+    private String desc_SExpresso;
 
 
-    public FuncionarioBalcaoPanel(JFrame frame, JPanel panel ) {
+    public FuncionarioBalcaoPanel(JFrame frame, JPanel panel, IGestCRLN business) {
         this.frame = frame;
         this.funcionario_balcao = panel;
+        this.business = business;
+        this.codigo_registo = new JTextField(50);
     }
 
     public void showFuncionarioBalcao(String codF) {
@@ -72,16 +92,15 @@ public class FuncionarioBalcaoPanel {
         codEquipamento.setBounds(50,50,300,25);
         codEquipamento.setForeground(Color.black);
         
-        JTextField text_codEquipamento = new JTextField(50);
-        text_codEquipamento.setBounds(50,100,165,25);
-        text_codEquipamento.setBackground(Color.white);
+        this.codigo_registo.setBounds(50,100,165,25);
+        this.codigo_registo.setBackground(Color.white);
         
         JButton registar = new JButton("Registar");
         registar.setBounds(50,150,165,25);
         registar.addActionListener(e -> registos_efetuados(1));
         
         background.add(codEquipamento);
-        background.add(text_codEquipamento);
+        background.add(this.codigo_registo);
         background.add(registar);
         f_registo.add(background);
         f_registo.setVisible(true);
@@ -133,16 +152,36 @@ public class FuncionarioBalcaoPanel {
         codEquipamento.setBounds(50,50,300,25);
         codEquipamento.setForeground(Color.black);
         
-        JTextField text_codEquipamento = new JTextField(50);
-        text_codEquipamento.setBounds(50,100,165,25);
-        text_codEquipamento.setBackground(Color.white);
+        this.codigo_registo = new JTextField(50);
+        this.codigo_registo.setBounds(250,50,165,25);
+        this.codigo_registo.setBackground(Color.white);
         
         JButton registar = new JButton("Registar");
-        registar.setBounds(50,150,165,25);
+        registar.setBounds(50,200,165,25);
         registar.addActionListener(e -> registos_efetuados(3));
+
+        JLabel descricao_exp = new JLabel("Descrição: ");
+        descricao_exp.setBounds(50,100,300,25);
+        descricao_exp.setForeground(Color.black);
+
+        this.descricao = new JTextField(150);
+        this.descricao.setBounds(250,100,200,25);
+        this.descricao.setForeground(Color.black);
+
+        JLabel preco_exp = new JLabel("Preço: ");
+        preco_exp.setBounds(50,150,300,25);
+        preco_exp.setForeground(Color.black);
+
+        this.preco = new JTextField(50);
+        this.preco.setBounds(250,150,165,25);
+        this.preco.setForeground(Color.black);
         
         background.add(codEquipamento);
-        background.add(text_codEquipamento);
+        background.add(preco_exp);
+        background.add(descricao_exp);
+        background.add(this.descricao);
+        background.add(this.preco);
+        background.add(this.codigo_registo);
         background.add(registar);
 
         f_registo.add(background);
@@ -165,38 +204,38 @@ public class FuncionarioBalcaoPanel {
         modelo.setBounds(50,50,300,25);
         modelo.setForeground(Color.black);
         
-        JTextField text_modelo = new JTextField(50);
-        text_modelo.setBounds(150,50,165,25);
-        text_modelo.setBackground(Color.white);
+        this.modelo = new JTextField(50);
+        this.modelo.setBounds(150,50,165,25);
+        this.modelo.setBackground(Color.white);
 
         //adicionar descrição
         JLabel desc = new JLabel("Descrição : ");
         desc.setBounds(50,100,300,25);
         desc.setForeground(Color.black);
         
-        JTextField text_desc = new JTextField(250);
-        text_desc.setBounds(150,100,165,50);
-        text_desc.setBackground(Color.white);
+        this.descricao = new JTextField(250);
+        this.descricao.setBounds(150,100,165,50);
+        this.descricao.setBackground(Color.white);
 
         //adicionar NIF
         JLabel nif = new JLabel("NIF : ");
         nif.setBounds(50,200,300,25);
         nif.setForeground(Color.black);
         
-        JTextField text_nif = new JTextField(250);
-        text_nif.setBounds(150,200,165,25);
-        text_nif.setBackground(Color.white);
+        this.NIF = new JTextField(250);
+        this.NIF.setBounds(150,200,165,25);
+        this.NIF.setBackground(Color.white);
         
         JButton registar = new JButton("Registar");
         registar.setBounds(50,300,165,25);
         registar.addActionListener(e -> registos_efetuados(4));
         
         background.add(modelo);
-        background.add(text_modelo);
+        background.add(this.modelo);
         background.add(desc);
-        background.add(text_desc);
+        background.add(this.descricao);
         background.add(nif);
-        background.add(text_nif);
+        background.add(this.NIF);
         background.add(registar);
 
         f_registo.add(background);
@@ -218,18 +257,18 @@ public class FuncionarioBalcaoPanel {
         nome.setBounds(50,50,300,25);
         nome.setForeground(Color.black);
         
-        JTextField text_nome = new JTextField(50);
-        text_nome.setBounds(150,50,165,25);
-        text_nome.setBackground(Color.white);
+        this.Nome = new JTextField(50);
+        this.Nome.setBounds(150,50,165,25);
+        this.Nome.setBackground(Color.white);
 
         //adicionar email
         JLabel email = new JLabel("email : ");
         email.setBounds(50,100,300,25);
         email.setForeground(Color.black);
         
-        JTextField text_email = new JTextField(250);
-        text_email.setBounds(150,100,200,25);
-        text_email.setBackground(Color.white);
+        this.email = new JTextField(250);
+        this.email.setBounds(150,100,200,25);
+        this.email.setBackground(Color.white);
         
         //adicionar telemovel
         JLabel telefone = new JLabel("Telefone : ");
@@ -237,18 +276,18 @@ public class FuncionarioBalcaoPanel {
         telefone.setForeground(Color.black);
         
         //adicionar contacto telefónico
-        JTextField text_telefone = new JTextField(250);
-        text_telefone.setBounds(150,150,165,25);
-        text_telefone.setBackground(Color.white);
+        this.numero = new JTextField(250);
+        this.numero.setBounds(150,150,165,25);
+        this.numero.setBackground(Color.white);
         
         //adicionar NIF
         JLabel nif = new JLabel("NIF : ");
         nif.setBounds(50,200,300,25);
         nif.setForeground(Color.black);
         
-        JTextField text_nif = new JTextField(250);
-        text_nif.setBounds(150,200,165,25);
-        text_nif.setBackground(Color.white);
+        this.NIF = new JTextField(250);
+        this.NIF.setBounds(150,200,165,25);
+        this.NIF.setBackground(Color.white);
         
         //butão registar 
         JButton registar = new JButton("Registar");
@@ -256,38 +295,81 @@ public class FuncionarioBalcaoPanel {
         registar.addActionListener(e -> registos_efetuados(5));
         
         background.add(nome);
-        background.add(text_nome);
+        background.add(this.Nome);
         background.add(email);
-        background.add(text_email);
+        background.add(this.email);
         background.add(nif);
-        background.add(text_nif);
+        background.add(this.NIF);
         background.add(telefone);
-        background.add(text_telefone);
+        background.add(this.numero);
         background.add(registar);
         f_registo.add(background);
         f_registo.setVisible(true);
     }
     
     public void registos_efetuados(int x) {
+        //registo entrega
         if(x == 1) {
-            //registo entrega
-            //implementar método, se não for possivel enviar msg erro
-            msg_erro("O equipamento não existe.");
+            try {
+                Integer codigo = Integer.parseInt(this.codigo_registo.getText());
+                try {
+                    this.business.registarEntrega(codigo);
+                    SignalUI.sucess("O equipamento " + this.codigo_registo.getText() + " foi entregue com sucesso");
+                } catch (ObjetoNaoExistenteException | ObjetoExistenteException | FuncionarioTipoErradoException e) {
+                    SignalUI.error("O equipamente não existe.");
+                }
+
+            }
+            catch(NumberFormatException e) {
+                SignalUI.error("O código introduzido não é válido.");
+            }
         }
         if(x == 2) {
-            //registo de pedido orçamento
-            msg_erro("O equipamento não existe.");
+            try {
+                Integer codigo = Integer.parseInt(this.codigo_registo.getText());
+                try {
+                    int reg = this.business.registarPedidoOrcamento(codigo);
+                    SignalUI.sucess("O equipamento" + this.codigo_registo.getText() + "\n" + "foi registado como pedidod orçamento\n Com codigo de registo:\n" + reg);
+                } catch (ObjetoNaoExistenteException | ObjetoExistenteException | FuncionarioTipoErradoException e) {
+                    SignalUI.error("Código de equipamento errado.");
+                }
+            }
+            catch(NumberFormatException e) {
+                SignalUI.error("O código introduzido não é válido.");
+            }
         }
+
         if(x == 3) {
-            //registo expresso
-            msg_erro("O equipamento não existe.");
+            try {
+                Integer codigo = Integer.parseInt(this.codigo_registo.getText());
+                Float preco = Float.parseFloat(this.preco.getText());
+                try {
+                    int reg = this.business.registarServicoExpresso(codigo, preco, this.descricao.getText());
+                    SignalUI.sucess("O equipamento" + this.codigo_registo.getText() + "\n" + "foi registado como pedidod orçamento\n Com codigo de registo:\n" + reg);
+                } catch (ObjetoNaoExistenteException | ObjetoExistenteException | FuncionarioTipoErradoException e) {
+                    SignalUI.error("Este código é associado a outro equipamento.");
+                }
+            }
+            catch(NumberFormatException e) {
+                SignalUI.error("O código introduzido não é válido.");
+            }
         }
         if(x == 4) {
             //registar equipamento
-            msg_sucesso("Boa Garoto!");
+            try {
+                int reg = this.business.registarEquipamento(this.modelo.getText(), this.descricao.getText(), this.NIF.getText());
+                SignalUI.sucess("Equipamento registado com código " + reg + "\n");
+            } catch (ObjetoExistenteException | ObjetoNaoExistenteException | FuncionarioTipoErradoException e) {
+                SignalUI.error("Este código é associado a outro equipamento.");
+            }
         }
         if(x == 5) {
-            msg_sucesso("Cliente Registado com sucesso!");
+            try {
+                this.business.registarCliente(this.NIF.getText(),this.Nome.getText(),this.email.getText(),this.numero.getText());
+                SignalUI.sucess("Cliente com NIF "+ this.NIF.getText() + "registado");
+            } catch (ObjetoExistenteException | FuncionarioTipoErradoException e) {
+                SignalUI.error("Cliente já existente.");
+            }
         }
     }
 
@@ -311,6 +393,10 @@ public class FuncionarioBalcaoPanel {
         error_msg.setForeground(Color.red);
         erro.add(error_msg);
         erro.setVisible(true);
+    }
+
+    public void CriaRegistoHandler(String fun) {
+
     }
 
 

@@ -40,6 +40,9 @@ public class Passo {
     @JoinTable(name="Sub_Passos")
     private List<Passo> sub_passos;
 
+    public Passo() {
+    }
+
     public Passo(String descricao,float custo,int tempo, int estado, Funcionario funcionario, List<Passo> sub_passos) {
         this.descricao = descricao;
         this.custo = custo;

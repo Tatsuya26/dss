@@ -2,6 +2,7 @@ package src.business;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,11 @@ public class GestCRFacade implements IGestCRLN {
             this.funcionario = this.gestEntidades.getFuncionarioByCod(codF);
             return this.gestEntidades.verificaTipoFuncionario(codF);
         }
-        else throw new ObjetoNaoExistenteException("O funcionário não existe na base de dados.");
+        else throw new ObjetoNaoExistenteException("O funcionario nao esta na BD");
+    }
+
+    public void logoutFuncionario() {
+        this.funcionario = null;
     }
 
     public boolean verificaEquipamento(int codE) {
@@ -82,9 +87,9 @@ public class GestCRFacade implements IGestCRLN {
 
     }
 
-    public String registarFuncionario(String nome,int tipo) throws ObjetoExistenteException, FuncionarioTipoErradoException {
+    public String registarFuncionario(String nome,String codigo,int tipo) throws ObjetoExistenteException, FuncionarioTipoErradoException {
         if (this.funcionario instanceof Gestor)
-            return this.gestEntidades.registarFuncionario(nome, tipo);
+            return this.gestEntidades.registarFuncionario(nome,codigo,tipo);
         throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um gestor");
 
     }
@@ -106,9 +111,12 @@ public class GestCRFacade implements IGestCRLN {
     public int registarServicoExpresso(int codE,float preco, String descricao) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException {
         // Mudar o estado do equipamento para que este passe a por reparar.
         if (this.funcionario instanceof FuncionarioBalcao) {
-            this.gestEntidades.alterarEstadoEquipamento(codE, 1);
-            Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
-            return this.gestRegistos.registarServicoExpresso(e, funcionario, preco, descricao);
+            if (this.verificarServicoExpresso()) {
+                this.gestEntidades.alterarEstadoEquipamento(codE, 1);
+                Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
+                return this.gestRegistos.registarServicoExpresso(e, funcionario, preco, descricao);
+            }
+            else return -1;
         }
         throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um funcionario de balcao");
     }
@@ -181,7 +189,7 @@ public class GestCRFacade implements IGestCRLN {
         else throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
     }
     
-    public void enviarEmailOrcamento(String NIF,int codR) throws ObjetoNaoExistenteException {
+    private void enviarEmailOrcamento(String NIF,int codR) throws ObjetoNaoExistenteException {
         Cliente c = this.gestEntidades.getClienteByNIF(NIF);
         Orcamento o = this.gestRegistos.getOrcamentoByID(codR); 
             
@@ -219,7 +227,7 @@ public class GestCRFacade implements IGestCRLN {
         }
     }
 
-    public void enviarEmailReparacao(String NIF,int codR) throws ObjetoNaoExistenteException {
+    private void enviarEmailReparacao(String NIF,int codR) throws ObjetoNaoExistenteException {
         Cliente c = this.gestEntidades.getClienteByNIF(NIF);
         Reparacao r = this.gestRegistos.getReparacaoByID(codR); 
             
@@ -276,13 +284,27 @@ public class GestCRFacade implements IGestCRLN {
         else throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
     }
     
-    public boolean verificarServicoExpresso() {
+    private boolean verificarServicoExpresso() {
         return this.gestRegistos.verificarServicoExpresso();
     }
 
-    public List<String> consultarPedidosOrcamentos() {
+    public Map<String,List<String>> consultarPedidosOrcamentos() {
         List<PedidoOrcamento> pos = this.gestRegistos.consultarPedidosOrcamentos();
-        return pos.stream().map(PedidoOrcamento :: toString).collect(Collectors.toList());
+        Map<String,List<String>> pos_map = new HashMap<>(); 
+        for(PedidoOrcamento o: pos) {
+            String cod           = Integer.toString(o.getCodRegisto());
+            String estado        = Integer.toString(o.getEstado());
+            String data          = o.getDataCriacao().toString();
+            String equipamentoID = Integer.toString(o.getEquipamento().getIdEquipamento());
+            String funcionario   = o.getFuncionario().getCodigo();
+            List<String> aux     = new ArrayList<>();
+            aux.add(data);
+            aux.add(estado);
+            aux.add(equipamentoID);
+            aux.add(funcionario);
+            pos_map.putIfAbsent(cod,aux);
+        }
+        return pos_map;
     }
 
     public List<String> consultarServicoExpresso() {

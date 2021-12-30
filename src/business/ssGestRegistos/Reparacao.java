@@ -20,6 +20,10 @@ public class Reparacao extends Registos{
     @JoinColumn(name = "PlanoTrabalhosID")
     private PlanoTrabalhos planoTrabalhos;
 
+
+    public Reparacao() {
+    }
+
     public Reparacao(LocalDateTime data,Equipamento Equipamento,Funcionario Funcionario,int estado,float valor,PlanoTrabalhos pt) {
         super(data, Equipamento, Funcionario, estado);    
         this.valor = valor;

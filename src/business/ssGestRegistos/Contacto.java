@@ -29,6 +29,9 @@ public class Contacto {
     private Funcionario codFuncionario;
     @Column (name = "Data")
     private LocalDateTime data;
+
+    public Contacto() {
+    }
     
     public Contacto(Cliente codC,Funcionario codF,LocalDateTime data,int estado) {
         this.codCliente = codC;
