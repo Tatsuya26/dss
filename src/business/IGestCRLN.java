@@ -49,7 +49,7 @@ public interface IGestCRLN {
     
     List<String> consultarEquipamentosCliente(String codC) throws ObjetoNaoExistenteException;
     
-    List<String> consultarPedidosOrcamentos();
+    Map<String,List<String>> consultarPedidosOrcamentos();
     
     List<String> consultarServicoExpresso();
     

@@ -48,14 +48,15 @@ public class GestCRFacade implements IGestCRLN {
         SessionFactory sf = con.buildSessionFactory(sr);
         this.gestRegistos = new GestRegistosFacade(sf);
         this.gestEntidades = new GestEntidadesFacade(sf);
-        //FIXME: somos melhores que isto
+        //FIXME: somos melhores que isto. Isto muda-se na aplicacao final
         this.funcionario = new Gestor("Manel", "1111");
     }
 
 
 
-    public int autenticarFuncionario(String codF) throws ObjetoNaoExistenteException{
+    public int autenticarFuncionario(String codF) throws ObjetoNaoExistenteException {
         boolean autenticado = this.gestEntidades.autenticarFuncionario(codF);
+        System.out.println(autenticado);
         if (autenticado) {
             this.funcionario = this.gestEntidades.getFuncionarioByCod(codF);
             return this.gestEntidades.verificaTipoFuncionario(codF);
@@ -104,7 +105,7 @@ public class GestCRFacade implements IGestCRLN {
         if (this.funcionario instanceof FuncionarioBalcao) {
             Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
             if (e.getEstado() == Equipamento.Reparado ||e.getEstado() == Equipamento.NaoAceite) {
-                e.setEstado(Equipamento.Entregue);
+                this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(), Equipamento.Entregue);
                 return this.gestRegistos.registarEntrega(e, funcionario);
             }
             else throw new EquipamentoNaoEstaProntoParaEntregaException();
@@ -304,9 +305,23 @@ public class GestCRFacade implements IGestCRLN {
         return this.gestRegistos.verificarServicoExpresso();
     }
 
-    public List<String> consultarPedidosOrcamentos() {
+    public Map<String,List<String>> consultarPedidosOrcamentos() {
         List<PedidoOrcamento> pos = this.gestRegistos.consultarPedidosOrcamentos();
-        return pos.stream().map(PedidoOrcamento :: toString).collect(Collectors.toList());
+        Map<String,List<String>> pos_map = new HashMap<>(); 
+        for(PedidoOrcamento o: pos) {
+            String cod           = Integer.toString(o.getCodRegisto());
+            String estado        = Integer.toString(o.getEstado());
+            String data          = o.getDataCriacao().toString();
+            String equipamentoID = Integer.toString(o.getEquipamento().getIdEquipamento());
+            String funcionario   = o.getFuncionario().getCodigo();
+            List<String> aux     = new ArrayList<>();
+            aux.add(data);
+            aux.add(estado);
+            aux.add(equipamentoID);
+            aux.add(funcionario);
+            pos_map.putIfAbsent(cod,aux);
+        }
+        return pos_map;
     }
 
     public List<String> consultarServicoExpresso() {
