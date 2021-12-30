@@ -210,7 +210,6 @@ public class PlanoTrabalhosPanel{
             
         }
         catch(NumberFormatException nfe){
-            nfe.printStackTrace();
             this.erro = new JLabel();
             SignalUI.printError(this.erro, "Erro: não inseriu um número no tempo e/ou no custo", 40, 350, 420, 25, 16, new Color(0, 51, 51));
             this.frame.add(this.erro);
@@ -242,13 +241,6 @@ public class PlanoTrabalhosPanel{
         this.subpassosAtuais.add(descricao); 
         this.subpassosAtuais.add(tempo); 
         this.subpassosAtuais.add(custo);
-
-        int i = 0;
-        for(String s: this.subpassosAtuais){
-            System.out.println(i + ": " + s);
-            i++;
-        }
-
         this.subpassoAtual++;
 
         oldFrame.setVisible(false);
