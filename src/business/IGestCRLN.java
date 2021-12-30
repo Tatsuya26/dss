@@ -35,7 +35,7 @@ public interface IGestCRLN {
     
     void registarConclusaoReparacao(int codE) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException;
     
-    int registarEntrega(int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException;
+    int registarEntrega(int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException, EquipamentoNaoEstaProntoParaEntregaException ;
 
     void baixaEquipamento(int codE) throws ObjetoNaoExistenteException;
 
@@ -54,11 +54,13 @@ public interface IGestCRLN {
     List<String> consultarReparacoes();
     
     List<String> consultarOrcamentos();
-    
-    Map<String, List<String>> consultarListagemIntervencoes() ;
+
+    Map<String, String> getNomesFromFuncionariosId(Set<String> ids);
+
+    Map<String, Map<String, List<String>>> consultarListagemIntervencoes();
 
     Map<String, List<Double>> consultarListagemTecnicos();
     
-    List<String> consultarListagemFuncionariosBalcao();
+    Map<String, List<Integer>> consultarListagemFuncionariosBalcao();
 
 }

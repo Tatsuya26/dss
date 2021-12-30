@@ -63,9 +63,9 @@ public class GestEntidadesFacade implements IGestEntidades{
     public String registarFuncionario(String nome,String codigo,int tipo) throws ObjetoExistenteException{
         if (codigo.length() == 4) {
             Funcionario f = new FuncionarioBalcao(nome,codigo);
-            if (tipo == 1) f = new FuncionarioBalcao(nome, codigo);
-            if (tipo == 2) f = new TecnicoReparacoes(nome, codigo);
-            if (tipo == 3) f = new Gestor(nome, codigo);
+            if (tipo == Funcionario.Balcao) f = new FuncionarioBalcao(nome, codigo);
+            if (tipo == Funcionario.Tecnico) f = new TecnicoReparacoes(nome, codigo);
+            if (tipo == Funcionario.Gestor) f = new Gestor(nome, codigo);
             try {
                 this.funcionarios.save(f);
                 return codigo;
@@ -127,9 +127,9 @@ public class GestEntidadesFacade implements IGestEntidades{
         Funcionario f;
         try {
             f = this.funcionarios.get(codF);
-            if (f instanceof FuncionarioBalcao) return 1;
-            if (f instanceof TecnicoReparacoes) return 2;
-            if (f instanceof Gestor) return 3;
+            if (f instanceof FuncionarioBalcao) return Funcionario.Balcao;
+            if (f instanceof TecnicoReparacoes) return Funcionario.Tecnico;
+            if (f instanceof Gestor) return Funcionario.Gestor;
             return -1;
         } catch (NotFoundInDBException e) {
             throw new ObjetoNaoExistenteException("Funcionario nao existe na base de dados");
@@ -165,5 +165,9 @@ public class GestEntidadesFacade implements IGestEntidades{
 
     public List<Funcionario> getTecnicosReparacao() {
         return this.funcionarios.getAll().stream().filter(tr -> tr instanceof TecnicoReparacoes).collect(Collectors.toList());
+    }
+
+    public List<Funcionario> getFuncionariosBalcao() {
+        return this.funcionarios.getAll().stream().filter(fb -> fb instanceof FuncionarioBalcao).collect(Collectors.toList());
     }
 }

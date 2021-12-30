@@ -33,4 +33,6 @@ public interface IGestEntidades {
     List<Equipamento> consultarEquipamentosCliente(String NIF) throws ObjetoNaoExistenteException;
 
     List<Funcionario> getTecnicosReparacao();
+
+    List<Funcionario> getFuncionariosBalcao();
 }

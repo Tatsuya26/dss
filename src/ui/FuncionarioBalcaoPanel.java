@@ -9,6 +9,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import src.business.EquipamentoNaoEstaProntoParaEntregaException;
 import src.business.FuncionarioTipoErradoException;
 import src.business.IGestCRLN;
 import src.business.ObjetoExistenteException;
@@ -315,7 +316,7 @@ public class FuncionarioBalcaoPanel {
                 try {
                     this.business.registarEntrega(codigo);
                     SignalUI.sucess("O equipamento " + this.codigo_registo.getText() + " foi entregue com sucesso");
-                } catch (ObjetoNaoExistenteException | ObjetoExistenteException | FuncionarioTipoErradoException e) {
+                } catch (ObjetoNaoExistenteException | ObjetoExistenteException | FuncionarioTipoErradoException | EquipamentoNaoEstaProntoParaEntregaException e) {
                     SignalUI.error("O equipamente não existe.");
                 }
 

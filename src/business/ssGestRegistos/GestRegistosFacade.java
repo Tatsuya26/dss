@@ -68,13 +68,13 @@ public class GestRegistosFacade implements IGestRegistos {
     }
     
     public int registarPedidoOrcamento(Equipamento codE,Funcionario codF) throws ObjetoExistenteException{
-        PedidoOrcamento po = new PedidoOrcamento(LocalDateTime.now(), codE, codF, 0);
         try {
+            PedidoOrcamento po = new PedidoOrcamento(LocalDateTime.now(), codE, codF, 0);
             this.pedidosOrcamentos.save(po);
+            return po.getCodRegisto();
         } catch (IdentifierAlreadyInDBException e) {
             throw new ObjetoExistenteException("O pedido de orcamento ja existe na BD");
         }
-        return po.getCodRegisto();
     }
 
     public int registarOrcamento(Equipamento codE,Funcionario codF,List<Passo> passos) throws ObjetoExistenteException{
@@ -197,17 +197,40 @@ public class GestRegistosFacade implements IGestRegistos {
         return this.entregas.getAll();
     }
 
-    //(passos de reparação e reparações expresso de um dado funcionário
-    public List<String> consultarListagemIntervencoes(String codF) {
-        List<String> l = new ArrayList<>();
+    //passos de reparação e reparações expresso de um dado funcionário
+    public Map<String, List<String>> consultarListagemIntervencoes(String codF) {
+        Map<String, List<String>> res = new HashMap<String, List<String>>();
 
+        Integer i = 0;
         for(ServicoExpresso r: this.consultarServicoExpresso()) 
-            if(r.getFuncionario().getCodigo().equals(codF)) l.add(r.toString());
+            if(r.getFuncionario().getCodigo().equals(codF)){
+                List<String> l = new ArrayList<>();
+                l.add("Serviço Expresso");
+                Integer codE = r.getEquipamento().getIdEquipamento();
+                l.add(codE.toString());
+                l.add(r.getEquipamento().getDescricao());
+                l.add(r.getEquipamento().getModelo());
+                Float f = r.getPreco();
+                l.add(f.toString());
+                res.put(i.toString(), l);
+                i++;
+            }
         
-        for(Reparacao r: this.consultarReparacoes()) 
-            if(r.getFuncionario().getCodigo().equals(codF)) l.add(r.toString());            
+        for(Reparacao r: this.consultarReparacoes())
+            if(r.getFuncionario().getCodigo().equals(codF)){
+                List<String> l = new ArrayList<>();
+                l.add("Reparação");
+                Integer codE = r.getEquipamento().getIdEquipamento();
+                l.add(codE.toString());
+                l.add(r.getEquipamento().getDescricao());
+                l.add(r.getEquipamento().getModelo());
+                Float f = r.getValor();
+                l.add(f.toString());
+                res.put(i.toString(), l);
+                i++;
+            }             
         
-        return l;
+        return res;
     }
 
     public List<Double> consultarListagemTecnicos(String codF) {
@@ -239,38 +262,22 @@ public class GestRegistosFacade implements IGestRegistos {
     }
     
 
-    public List<String> consultarListagemFuncionariosBalcao() { 
-        Map<String,List<Integer>> listagem =  new HashMap<>();
-        List<String> listagem_final = new ArrayList<>();
-        for(PedidoOrcamento p : this.consultarPedidosOrcamentos()) {
-            String codF = p.getFuncionario().getCodigo();
-            if(listagem.containsKey(codF)) {
-                int temp = listagem.get(codF).get(0);
-                listagem.get(codF).set(0,temp++);
-            } else {
-                List<Integer> temp = new ArrayList<>();
-                temp.set(0,0);
-                listagem.put(codF,temp);
-            }
-        }          
-        for(Entrega e: this.consultarEntregas()) {
-            String codF = e.getFuncionario().getCodigo();
-            if(listagem.containsKey(codF)) {
-                int temp = listagem.get(codF).get(1);
-                listagem.get(codF).set(1,temp++);
-            } else {
-                List<Integer> temp = new ArrayList<>();
-                temp.set(1,0);
-                listagem.put(codF,temp);
-            }
-        }
-        for(Map.Entry<String, List<Integer>> entry: listagem.entrySet()) {
-            String tmp = "Funcionário " + entry.getKey() + 
-                          entry.getValue().get(0) + " recepções," +
-                          entry.getValue().get(1)+ " entregas.";
-            listagem_final.add(tmp);
-        }
-        return listagem_final; 
+    public List<Integer> consultarListagemFuncionariosBalcao(String codF) { 
+       List<Integer> listagem =  new ArrayList<Integer>();
+        int pedidos = 0;
+        int entregas = 0;
+        for(PedidoOrcamento p : this.consultarPedidosOrcamentos())
+            if(p.getFuncionario().getCodigo().equals(codF))
+                pedidos++;
+                 
+        for(Entrega e: this.consultarEntregas())
+            if(e.getFuncionario().getCodigo().equals(codF))
+                entregas++;
+
+        listagem.add(pedidos);
+        listagem.add(entregas);
+        
+        return listagem; 
     }
 
     public PedidoOrcamento getPedidoOrcamentoByID(int codR) throws ObjetoNaoExistenteException {
