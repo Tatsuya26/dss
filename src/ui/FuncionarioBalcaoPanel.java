@@ -1,14 +1,7 @@
 package src.ui;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.security.spec.PKCS8EncodedKeySpec;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
-
 import src.business.EquipamentoNaoEstaProntoParaEntregaException;
 import src.business.FuncionarioTipoErradoException;
 import src.business.IGestCRLN;
@@ -28,9 +21,6 @@ public class FuncionarioBalcaoPanel {
     private JTextField Nome;
     private JTextField email;
     private JTextField numero;
-
-    private String precoSExpresso;
-    private String desc_SExpresso;
 
 
     public FuncionarioBalcaoPanel(JFrame frame, JPanel panel, IGestCRLN business) {
@@ -321,8 +311,6 @@ public class FuncionarioBalcaoPanel {
                 } catch(EquipamentoNaoEstaProntoParaEntregaException e) {
                     SignalUI.error("O equipamento não está pronto para entregar.");
                 }
-                
-
             }
             catch(NumberFormatException e) {
                 SignalUI.error("O código introduzido não é válido.");
