@@ -316,9 +316,12 @@ public class FuncionarioBalcaoPanel {
                 try {
                     this.business.registarEntrega(codigo);
                     SignalUI.sucess("O equipamento " + this.codigo_registo.getText() + " foi entregue com sucesso");
-                } catch (ObjetoNaoExistenteException | ObjetoExistenteException | FuncionarioTipoErradoException | EquipamentoNaoEstaProntoParaEntregaException e) {
+                } catch (ObjetoNaoExistenteException | ObjetoExistenteException | FuncionarioTipoErradoException e) {
                     SignalUI.error("O equipamente não existe.");
+                } catch(EquipamentoNaoEstaProntoParaEntregaException e) {
+                    SignalUI.error("O equipamento não está pronto para entregar.");
                 }
+                
 
             }
             catch(NumberFormatException e) {

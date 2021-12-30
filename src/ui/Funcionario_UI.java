@@ -29,19 +29,19 @@ public class Funcionario_UI {
 
         this.consultar_s_expresso = new JButton("Serviço Expresso");
         consultar_s_expresso.setBounds(250,600,250,25);
-        this.consultar_s_expresso.addActionListener(e->consulta(1, "Serviço Expresso"));
+        this.consultar_s_expresso.addActionListener(e->consultas(1));
 
         this.consultar_orcamento = new JButton("Orçamento");
         this.consultar_orcamento.setBounds(550,600,250,25);
-        this.consultar_orcamento.addActionListener(e->consulta(2,"Orçamento"));
+        this.consultar_orcamento.addActionListener(e->consultas(2));
 
        this.consultar_pedido_orcamento = new JButton("Pedido Orçamento");
        this.consultar_pedido_orcamento.setBounds(550,650,250,25);
-       this.consultar_pedido_orcamento.addActionListener(e->consulta(3,"Pedido Orçamento"));
+       this.consultar_pedido_orcamento.addActionListener(e->consultas(3));
 
        this.consultar_reparacao = new JButton("Reparação");
        this.consultar_reparacao.setBounds(250,650,250,25);
-       this.consultar_reparacao.addActionListener(e->consulta(4,"Reparação"));
+       this.consultar_reparacao.addActionListener(e->consultas(4));
 
        j.add(this.painel_fun_base);
        j.add(this.consultar_s_expresso);
@@ -51,53 +51,59 @@ public class Funcionario_UI {
 
     }
 
-    public void consulta(int op,String servico) {
-        JFrame f_registo = new JFrame();
-        f_registo.setBounds(0,0,500,300);
-        f_registo.setTitle("Consultar" + servico);
-        f_registo.getContentPane().setBackground(Color.gray);
-
-        JLabel background = new JLabel();
-        background.setBounds(0,0,500,300);
-        background.setBackground(Color.gray);
-        
-        JLabel codEquipamento = new JLabel("Código de " + servico);
-        codEquipamento.setBounds(50,50,300,25);
-        codEquipamento.setForeground(Color.black);
-        
-        JTextField text_codEquipamento = new JTextField(50);
-        text_codEquipamento.setBounds(50,100,165,25);
-        text_codEquipamento.setBackground(Color.white);
-        
-        JButton registar = new JButton("Consultar");
-        registar.setBounds(50,150,165,25);
-        registar.addActionListener(e -> consultas(1));
-        
-        background.add(codEquipamento);
-        background.add(text_codEquipamento);
-        background.add(registar);
-
-        f_registo.add(background);
-        f_registo.setVisible(true);
-        //efetuar logica através de op
-    }
 
     public void consultas(int consulta) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         JFrame listagem = new JFrame();
         listagem.setBounds(0,0,1000,500);
         listagem.getContentPane().setBackground(new Color(255,140,0));
+        
+        if(consulta == 1) {
+            String[] columnNames = {"Registo","DataDeCriacao","Estado","EquipamentoID", "FuncionarioID", "Descricao","Preco"};
+            String[][] data = buildDataFromMapWithLists(this.business.consultarServicoExpresso(), 6, true);
+           
+            JTable table = new JTable(data, columnNames);
+            table.setPreferredScrollableViewportSize(new Dimension(450, 350));
+            table.setFillsViewportHeight(true);
 
-        String[][] data = buildDataFromMapWithLists(this.business.consultarPedidosOrcamentos(), 4, true);
-        String[] columnNames = {"Registo","Data","Estado","EquipamentoID", "Funcionário"};
+            JScrollPane sp = new JScrollPane(table);
+            listagem.getContentPane().setBackground(Color.gray);
+            listagem.add(sp);
+        }
+        if(consulta == 2) {
+            String[] columnNames = {"Registo","DataDeCriacao", "Estado", "EquipamentoID", "FuncionarioID" , "DataLimite","Custo" ,"PlanoTrabalhosID" };
+            String[][] data = buildDataFromMapWithLists(this.business.consultarOrcamentos(),7, true);
+            
+            JTable table = new JTable(data, columnNames);
+            table.setPreferredScrollableViewportSize(new Dimension(450, 350));
+            table.setFillsViewportHeight(true);
 
-        JTable table = new JTable(data, columnNames);
-        table.setPreferredScrollableViewportSize(new Dimension(450, 350));
-        table.setFillsViewportHeight(true);
+            JScrollPane sp = new JScrollPane(table);
+            listagem.getContentPane().setBackground(Color.gray);
+            listagem.add(sp);
+        }
+        if(consulta == 3) {
+            String[] columnNames = {"Registo","DataDeCriacao", "Estado", "EquipamentoID", "FuncionarioID" };
+            String[][] data = buildDataFromMapWithLists(this.business.consultarPedidosOrcamentos(), 4, true);
+           
+            JTable table = new JTable(data, columnNames);
+            table.setPreferredScrollableViewportSize(new Dimension(450, 350));
 
-        JScrollPane sp = new JScrollPane(table);
-        listagem.getContentPane().setBackground(Color.gray);
-        listagem.add(sp);
+            JScrollPane sp = new JScrollPane(table);
+            listagem.getContentPane().setBackground(Color.gray);
+            listagem.add(sp);
+        }
+        if(consulta == 4) {
+            String[] columnNames = {"Registo","Data","Estado","EquipamentoID", "Funcionário","Custo", "PlanoTrabalhosID"};
+            String[][] data = buildDataFromMapWithLists(this.business.consultarReparacoes(), 6, true);
+            
+            JTable table = new JTable(data, columnNames);
+            table.setPreferredScrollableViewportSize(new Dimension(450, 350));
+            table.setFillsViewportHeight(true);
+
+            JScrollPane sp = new JScrollPane(table);
+            listagem.getContentPane().setBackground(Color.gray);
+            listagem.add(sp);
+        }
         listagem.setVisible(true);
     }
 

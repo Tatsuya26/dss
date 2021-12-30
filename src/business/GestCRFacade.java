@@ -313,20 +313,79 @@ public class GestCRFacade implements IGestCRLN {
         return pos_map;
     }
 
-    public List<String> consultarServicoExpresso() {
+    public Map<String,List<String>> consultarServicoExpresso() {
         List<ServicoExpresso> pos = this.gestRegistos.consultarServicoExpresso();
-        return pos.stream().map(ServicoExpresso :: toString).collect(Collectors.toList());
+        Map<String,List<String>> pos_map = new HashMap<>(); 
+        for(ServicoExpresso o: pos) {
+            String cod           = Integer.toString(o.getCodRegisto());
+            String estado        = Integer.toString(o.getEstado());
+            String data          = o.getDataCriacao().toString();
+            String equipamentoID = Integer.toString(o.getEquipamento().getIdEquipamento());
+            String funcionario   = o.getFuncionario().getCodigo();
+            String descricao     = o.getDescricao();
+            String preco         = Float.toString(o.getPreco());
+            List<String> aux     = new ArrayList<>();
+            aux.add(data);
+            aux.add(estado);
+            aux.add(equipamentoID);
+            aux.add(funcionario);
+            aux.add(descricao);
+            aux.add(preco);
+            pos_map.putIfAbsent(cod,aux);
+        }
+        return pos_map;
     }
 
-    public List<String> consultarReparacoes() {
+
+
+    public  Map<String,List<String>> consultarReparacoes() {
         List<Reparacao> pos = this.gestRegistos.consultarReparacoes();
-        return pos.stream().map(Reparacao :: toString).collect(Collectors.toList());
+        Map<String,List<String>> pos_map = new HashMap<>(); 
+        for(Reparacao o: pos) {
+            String cod           = Integer.toString(o.getCodRegisto());
+            String estado        = Integer.toString(o.getEstado());
+            String data          = o.getDataCriacao().toString();
+            String equipamentoID = Integer.toString(o.getEquipamento().getIdEquipamento());
+            String funcionario   = o.getFuncionario().getCodigo();
+            String planoT_ID     = Integer.toString(o.getPlanoTrabalhos().getCodRegisto());
+            String preco         = Float.toString(o.getValor());
+            List<String> aux     = new ArrayList<>();
+            aux.add(data);
+            aux.add(estado);
+            aux.add(equipamentoID);
+            aux.add(funcionario);
+            aux.add(preco);
+            aux.add(planoT_ID);
+            pos_map.putIfAbsent(cod,aux);
+        }
+        return pos_map;
     }
 
-    public List<String> consultarOrcamentos() {
+    public  Map<String,List<String>> consultarOrcamentos() {
         List<Orcamento> pos = this.gestRegistos.consultarOrcamentos();
-        return pos.stream().map(Orcamento :: toString).collect(Collectors.toList());
+        Map<String,List<String>> pos_map = new HashMap<>(); 
+        for(Orcamento o: pos) {
+            String cod           = Integer.toString(o.getCodRegisto());
+            String estado        = Integer.toString(o.getEstado());
+            String data          = o.getDataCriacao().toString();
+            String equipamentoID = Integer.toString(o.getEquipamento().getIdEquipamento());
+            String funcionario   = o.getFuncionario().getCodigo();
+            String planoT_ID     = Integer.toString(o.getPlanoTrabalhos().getCodRegisto());
+            String data_limite   = o.getDataEntrega().toString();
+            String preco         = Float.toString(o.getValor());
+            List<String> aux     = new ArrayList<>();
+            aux.add(data);
+            aux.add(estado);
+            aux.add(equipamentoID);
+            aux.add(funcionario);
+            aux.add(data_limite);
+            aux.add(preco);
+            aux.add(planoT_ID);
+            pos_map.putIfAbsent(cod,aux);
+        }
+        return pos_map;
     }
+
 
     public List<String> consultarEntregas() {
         List<Entrega> pos = this.gestRegistos.consultarEntregas();

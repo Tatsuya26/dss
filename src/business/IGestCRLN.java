@@ -49,11 +49,11 @@ public interface IGestCRLN {
     
     Map<String,List<String>> consultarPedidosOrcamentos();
     
-    List<String> consultarServicoExpresso();
+    Map<String,List<String>> consultarServicoExpresso();
     
-    List<String> consultarReparacoes();
+    Map<String,List<String>> consultarReparacoes();
     
-    List<String> consultarOrcamentos();
+    Map<String,List<String>> consultarOrcamentos();
 
     Map<String, String> getNomesFromFuncionariosId(Set<String> ids);
 
