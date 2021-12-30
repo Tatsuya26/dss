@@ -47,6 +47,12 @@ public interface IGestRegistos {
     Entrega getEntregaByID(int codR) throws ObjetoNaoExistenteException;
     
     ServicoExpresso getServicoExpressoByID(int codR) throws ObjetoNaoExistenteException;
+
+    List<Passo> getPassosFromReparacao(int codR) throws ObjetoNaoExistenteException;
+
+    String getClienteFromReparacao(int codR) throws ObjetoNaoExistenteException;
+
+    List<Passo> createPassosFromMap(Map<Integer, List<String>> passos, Funcionario f);
     
     List<PedidoOrcamento> consultarPedidosOrcamentos();
     

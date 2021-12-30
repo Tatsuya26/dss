@@ -78,7 +78,7 @@ public class GestRegistosFacade implements IGestRegistos {
     }
 
     public int registarOrcamento(Equipamento codE,Funcionario codF,List<Passo> passos) throws ObjetoExistenteException{
-        PlanoTrabalhos pt = new PlanoTrabalhos(LocalDateTime.now(), codE, codF, 0,passos);
+        PlanoTrabalhos pt = new PlanoTrabalhos(LocalDateTime.now(), codE, codF, 0, passos);
         Orcamento o = new Orcamento(LocalDateTime.now(),codE, codF, 0, pt.getCusto(), pt);
         try {
             this.planoTrabalhos.save(pt);
@@ -169,7 +169,7 @@ public class GestRegistosFacade implements IGestRegistos {
     }
     
     public void registaContactoCliente(Funcionario codF,Cliente codC,LocalDateTime data) {
-        Contacto c = new Contacto(codC, codF, LocalDateTime.now(), 0);
+        Contacto c = new Contacto(codC, codF, data, 0);
         try {
             this.contactos.save(c);
         } catch (IdentifierAlreadyInDBException e) {
@@ -327,6 +327,37 @@ public class GestRegistosFacade implements IGestRegistos {
             return se;
         } catch (NotFoundInDBException e) {
             throw new ObjetoNaoExistenteException("O servico expresso nao existe na BD");
+        }
+    }
+
+    public List<Passo> getPassosFromReparacao(int codR) throws ObjetoNaoExistenteException{
+        try {
+            Reparacao r = this.reparacoes.get(codR);
+            List<Passo> passos = r.getPlanoTrabalhos().getPassos();
+            return passos;
+        } catch (NotFoundInDBException e) {
+            throw new ObjetoNaoExistenteException("A reparacao nao existe na BD");
+        }
+    }
+
+    public List<Passo> createPassosFromMap(Map<Integer, List<String>> passos, Funcionario f){
+        List<Passo> res = new ArrayList<Passo>();
+        for(Map.Entry<Integer, List<String>> entry: passos.entrySet()){
+            String descricao = entry.getValue().get(0);
+            float custo = Float.parseFloat(entry.getValue().get(1));
+            int tempo = Integer.parseInt(entry.getValue().get(2));
+            Passo p = new Passo(descricao, custo, tempo, 0, f, new ArrayList<Passo>());
+            res.add(p);
+        }
+        return res;
+    }
+
+    public String getClienteFromReparacao(int codR) throws ObjetoNaoExistenteException{
+        try {
+            return this.reparacoes.get(codR).getEquipamento().getCliente().getNIF();
+        }
+        catch(NotFoundInDBException e){
+            throw new ObjetoNaoExistenteException("A reparacao nao existe na BD");
         }
     }
 }

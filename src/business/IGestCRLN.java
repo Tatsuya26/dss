@@ -24,6 +24,8 @@ public interface IGestCRLN {
     int registarPedidoOrcamento(int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException;
     
     int registarOrcamento(int codE,List<Passo> passos) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException;
+
+    int registarOrcamento(int codE,Map<Integer, List<String>> passos) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException;
     
     int aceitarOrcamento(int codO) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException;
     
@@ -31,7 +33,7 @@ public interface IGestCRLN {
 
     void arquivarOrcamento(int codO) throws ObjetoNaoExistenteException;
     
-    void atualizarReparacao(int codE,int passo,int tempo,float custo) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException;
+    void atualizarReparacao(int codR,int passo,int tempo,float custo) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException;
     
     void registarConclusaoReparacao(int codE) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException;
     
@@ -55,7 +57,13 @@ public interface IGestCRLN {
     
     Map<String,List<String>> consultarOrcamentos();
 
+    Map<Integer, List<String>> consultaPassosFromReparacao(int codR) throws ObjetoNaoExistenteException;
+
+    List<Passo> createPassosFromMap(Map<Integer, List<String>> passos);
+
     Map<String, String> getNomesFromFuncionariosId(Set<String> ids);
+
+    String getClienteFromReparacao(int codR) throws ObjetoNaoExistenteException;
 
     Map<String, Map<String, List<String>>> consultarListagemIntervencoes();
 

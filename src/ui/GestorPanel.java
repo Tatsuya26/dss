@@ -11,7 +11,6 @@ import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -147,7 +146,6 @@ public class GestorPanel implements ActionListener{
     // Consultar listagem relativa às intervenções feitas por cada técnico
     //TODO: private em vez de public quase todo o que é método de UI
     public void showListI() {
-        //TODO: show listagem intervenções UI
         JFrame frame = new JFrame();
         frame.setSize(700,600);
         frame.setResizable(false);
