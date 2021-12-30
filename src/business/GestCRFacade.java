@@ -2,6 +2,7 @@ package src.business;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -154,7 +155,18 @@ public class GestCRFacade implements IGestCRLN {
             return codR;
         }
         throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
+    }
 
+    public int registarOrcamento(int codE, Map<Integer, List<String>> passos) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException{
+        if (this.funcionario instanceof TecnicoReparacoes){
+            Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
+            List<Passo> newPassos = createPassosFromMap(passos);
+            int codR = this.gestRegistos.registarOrcamento(e, funcionario, newPassos);
+            Cliente c = e.getCliente();
+            enviarEmailOrcamento(c.getNIF(), codR);
+            return codR;
+        }
+        throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
     }
     
     public void recusarOrcamento(int codR) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException {
@@ -317,6 +329,27 @@ public class GestCRFacade implements IGestCRLN {
         return pos.stream().map(Entrega :: toString).collect(Collectors.toList());
     }
 
+    public Map<Integer, List<String>> consultaPassosFromReparacao(int codR) throws ObjetoNaoExistenteException{
+        List<Passo> passos = this.gestRegistos.getPassosFromReparacao(codR);
+        Map<Integer, List<String>> res = new HashMap<Integer, List<String>>();
+
+        for(Passo p: passos){
+            List<String> l = new ArrayList<>();
+            l.add(p.getDescricao());
+            Float custo = p.getCusto();
+            l.add(custo.toString());
+            Long horas = p.getTempo().toMinutes();
+            l.add(horas.toString());
+            res.put(p.getIdPasso(), l);
+        }
+
+        return res;
+    }
+
+    public List<Passo> createPassosFromMap(Map<Integer, List<String>> passos){
+        return this.gestRegistos.createPassosFromMap(passos, this.funcionario);
+    }
+
     public Map<String, String> getNomesFromFuncionariosId(Set<String> ids){
         Map<String, String> nomeAndId = new HashMap<String, String>();
 
@@ -366,5 +399,10 @@ public class GestCRFacade implements IGestCRLN {
             dadosFuncionario.put(nome, dados);
         }
         return dadosFuncionario;
+    }
+
+
+    public String getClienteFromReparacao(int codR) throws ObjetoNaoExistenteException{
+        return this.gestRegistos.getClienteFromReparacao(codR);
     }
 }
