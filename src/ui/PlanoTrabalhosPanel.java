@@ -27,6 +27,7 @@ public class PlanoTrabalhosPanel{
     private Color back = new Color(0, 51, 51);
     private Map<Integer, List<String>> passos;
     private Map<Integer, List<String>> subpassos;
+    private List<String> subpassosAtuais;
     private IGestCRLN business;
 
     public PlanoTrabalhosPanel(IGestCRLN business, int codEquipamento, int nrPassos){
@@ -38,6 +39,7 @@ public class PlanoTrabalhosPanel{
         this.subpassoAtual = 0;
         this.passos = new HashMap<Integer, List<String>>();
         this.subpassos = new HashMap<Integer, List<String>>();
+        this.subpassosAtuais = new ArrayList<>();
         inserirPasso();
     }
 
@@ -93,7 +95,7 @@ public class PlanoTrabalhosPanel{
         JFrame frame = new JFrame();
         frame.setSize(500, 500);
         frame.setResizable(false);
-        frame.setTitle("Registar Subpasso " + (this.subpassoAtual + 1 + " do Passo " + (this.passoAtual + 1)));
+        frame.setTitle("Registar Subpasso " + (this.subpassoAtual + 1) + " do Passo " + (this.passoAtual + 1));
         frame.setLayout(null);
         frame.getContentPane().setBackground(this.back);
 
@@ -132,6 +134,7 @@ public class PlanoTrabalhosPanel{
 
     public void selectNrSubpassos(){
         this.frame.setVisible(false);
+        this.subpassos.put(this.passoAtual, new ArrayList<>());
 
         JFrame frame = new JFrame();
         frame.setSize(500, 500);
@@ -147,7 +150,7 @@ public class PlanoTrabalhosPanel{
         JTextField passos = new JTextField(50);
         passos.setBounds(100, 195, 300, 25);
         passos.setBackground(Color.white);
-        passos.setText("Inserir número de passos a executar");
+        passos.setText("Inserir número de subpassos a executar");
 
         JButton button = new JButton();
         button.setBounds(100, 255, 300, 25);
@@ -167,6 +170,7 @@ public class PlanoTrabalhosPanel{
         JLabel erro = new JLabel();
 
         try{
+            this.subpassosAtuais = new ArrayList<>();
             int input = Integer.parseInt(userText);
             this.nrSubpassos = input;
             oldFrame.setVisible(false);
@@ -192,13 +196,17 @@ public class PlanoTrabalhosPanel{
             list.add(custo);
 
             this.passos.put(this.passoAtual, list);
+            this.subpassos.put(this.passoAtual, this.subpassosAtuais);
             this.passoAtual++;
+            this.subpassosAtuais = new ArrayList<>();
 
             this.frame.setVisible(false);
             if(this.passoAtual < this.nrPassos)
                 inserirPasso();
-            else
-                this.business.registarOrcamento(this.codEquipamento, this.passos);
+            else{
+                this.business.registarOrcamento(this.codEquipamento, this.passos, this.subpassos);
+                SignalUI.sucess("Orçamento registado com sucesso");
+            }
             
         }
         catch(NumberFormatException nfe){
@@ -232,32 +240,25 @@ public class PlanoTrabalhosPanel{
         Float.parseFloat(custo);
         Integer.parseInt(tempo);
 
-        List<String> list;
-        if((list = this.subpassos.get(this.passoAtual)) == null){
-            list = new ArrayList<>();
-        }
-
-        list.add(descricao); 
-        list.add(tempo); 
-        list.add(custo);
+        this.subpassosAtuais.add(descricao); 
+        this.subpassosAtuais.add(tempo); 
+        this.subpassosAtuais.add(custo);
 
         int i = 0;
-        for(String s: list){
+        for(String s: this.subpassosAtuais){
             System.out.println(i + ": " + s);
             i++;
         }
 
-        this.subpassos.put(this.passoAtual, list);
         this.subpassoAtual++;
 
         oldFrame.setVisible(false);
         if(this.subpassoAtual < this.nrSubpassos){
             inserirSubpasso();
-            this.frame.setVisible(true);
         }
         else{
-            this.nrSubpassos = 0;
-            //TODO: lógica de adicionar subpassos
+            this.subpassoAtual = 0;
+            this.frame.setVisible(true);
         }
     }
     catch(NumberFormatException nfe){

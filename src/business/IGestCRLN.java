@@ -25,7 +25,7 @@ public interface IGestCRLN {
     
     int registarOrcamento(int codE,List<Passo> passos) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException;
 
-    int registarOrcamento(int codE,Map<Integer, List<String>> passos) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException;
+    int registarOrcamento(int codE,Map<Integer, List<String>> passos, Map<Integer, List<String>> subpassos) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException;
     
     int aceitarOrcamento(int codO) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException;
     
@@ -59,7 +59,7 @@ public interface IGestCRLN {
 
     Map<Integer, List<String>> consultaPassosFromReparacao(int codR) throws ObjetoNaoExistenteException;
 
-    List<Passo> createPassosFromMap(Map<Integer, List<String>> passos);
+    List<Passo> createPassosFromMap(Map<Integer, List<String>> passos, Map<Integer, List<String>> subpassos);
 
     Map<String, String> getNomesFromFuncionariosId(Set<String> ids);
 

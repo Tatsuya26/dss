@@ -208,7 +208,6 @@ public class TecnicoPanel implements ActionListener{
     }
 
     public void registarOrcamento(){
-        //TODO: registar orçamento UI
         JFrame frame = new JFrame();
         frame.setSize(500, 500);
         frame.setResizable(false);
@@ -244,7 +243,6 @@ public class TecnicoPanel implements ActionListener{
     }
 
     public void registarPlano(JFrame oldFrame, String codE, String passos){
-        //TODO: registar plano de trabalhos UI
         JLabel erro = new JLabel();
         try{
             int nr_passos = Integer.parseInt(passos);
