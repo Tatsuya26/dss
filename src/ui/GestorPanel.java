@@ -96,13 +96,6 @@ public class GestorPanel implements ActionListener{
         list.setForeground(Color.black);
         list.setFont(new Font("Calibri", Font.BOLD, 20));
 
-<<<<<<< HEAD
-      
-
-        //List<String> list2 = this.business.consultarListagemFuncionariosBalcao();
-
-=======
->>>>>>> 7c93da37513d5c0c033b352e4ac00ccb8768e764
         String[] columnNames = {"Funcionário", "Recepções", "Entregas"};
         Map<String, List<Integer>> map = this.business.consultarListagemFuncionariosBalcao();
         String[][] data = buildDataFromMapWithLists(map, 2, true);
