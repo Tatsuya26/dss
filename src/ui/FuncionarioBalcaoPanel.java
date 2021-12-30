@@ -10,7 +10,6 @@ import src.business.ObjetoNaoExistenteException;
 
 public class FuncionarioBalcaoPanel {
     private JPanel funcionario_balcao;
-    private JFrame frame;
     private IGestCRLN business;
 
     private JTextField codigo_registo;
@@ -23,11 +22,14 @@ public class FuncionarioBalcaoPanel {
     private JTextField numero;
 
 
-    public FuncionarioBalcaoPanel(JFrame frame, JPanel panel, IGestCRLN business) {
-        this.frame = frame;
-        this.funcionario_balcao = panel;
+    public FuncionarioBalcaoPanel(IGestCRLN business) {
+        this.funcionario_balcao = new JPanel();
         this.business = business;
         this.codigo_registo = new JTextField(50);
+    }
+
+    public JPanel getPanel(){
+        return this.funcionario_balcao;
     }
 
     public void showFuncionarioBalcao(String codF) {
@@ -66,7 +68,6 @@ public class FuncionarioBalcaoPanel {
         this.funcionario_balcao.add(registo_equipamento);
         this.funcionario_balcao.add(registo_cliente);
         this.funcionario_balcao.add(intro);
-        this.frame.add(this.funcionario_balcao);         
     }
 
     public void criarRegistodeEntrega(String codF) {

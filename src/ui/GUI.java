@@ -54,7 +54,7 @@ public class GUI {
         frame.getContentPane().setBackground(Color.black);
 
         this.panel_operation = new JPanel(); 
-        this.fun_balcao      = new FuncionarioBalcaoPanel(this.frame,this.panel_operation, this.business);
+        this.fun_balcao      = new FuncionarioBalcaoPanel(this.business);
         this.tecnico         = new TecnicoPanel(this.business);
         this.tecnico_panel   = this.tecnico.getPanel();
         this.gestor          = new GestorPanel(this.business);
@@ -76,8 +76,9 @@ public class GUI {
             this.frame.remove(this.tecnico_panel);
             this.frame.add(this.label_Image);
             this.frame.add(this.panel_codF);
-            this.frame.repaint();
+            this.userText.setText("");
             this.frame.revalidate();
+            this.frame.repaint();
             this.tipo_funcionario = 0;
             this.business.logoutFuncionario();
         } 
@@ -91,8 +92,11 @@ public class GUI {
                 this.frame.remove(this.panel_codF);
                 this.frame.add(this.label_Image);
                 this.frame.add(this.back_Button);
-                this.fun_base     = new Funcionario_UI(this.panel_operation, this.business);
+                this.fun_balcao = new FuncionarioBalcaoPanel(this.business);
                 this.fun_balcao.showFuncionarioBalcao(this.userText.getText());
+                this.panel_operation = this.fun_balcao.getPanel();
+                this.fun_base     = new Funcionario_UI(this.panel_operation, this.business);
+                this.frame.add(this.panel_operation);
                 this.frame.revalidate();
                 this.frame.repaint();
             }
