@@ -47,7 +47,7 @@ public interface IGestCRLN {
     
     void registaContactoCliente(String codC,LocalDateTime data) throws ObjetoNaoExistenteException, FuncionarioTipoErradoException;
     
-    List<String> consultarEquipamentosCliente(String codC) throws ObjetoNaoExistenteException;
+    Map<String,List<String>> consultarEquipamentosCliente(String codC) throws ObjetoNaoExistenteException;
     
     Map<String,List<String>> consultarPedidosOrcamentos();
     

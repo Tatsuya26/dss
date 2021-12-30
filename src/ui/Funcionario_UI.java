@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import src.business.IGestCRLN;
+import src.business.ObjetoNaoExistenteException;
 
 
 public class Funcionario_UI {
@@ -16,6 +17,7 @@ public class Funcionario_UI {
     private JButton consultar_reparacao;
     private JButton consultar_orcamento;
     private JButton consultar_pedido_orcamento;
+    private JButton consultar_equipamentos;
 
     private JTextField text_codEquipamento;
 
@@ -43,6 +45,11 @@ public class Funcionario_UI {
        this.consultar_reparacao.setBounds(250,650,250,25);
        this.consultar_reparacao.addActionListener(e->consultas(4));
 
+       this.consultar_equipamentos = new JButton("Equipamentos");
+       this.consultar_equipamentos.setBounds(850,600,250,25);
+       this.consultar_equipamentos.addActionListener(e->consulta());
+       
+       j.add(this.consultar_equipamentos);
        j.add(this.painel_fun_base);
        j.add(this.consultar_s_expresso);
        j.add(this.consultar_pedido_orcamento);
@@ -51,6 +58,37 @@ public class Funcionario_UI {
 
     }
 
+
+    public void consulta() {
+        JFrame f_registo = new JFrame();
+        f_registo.setBounds(0,0,500,300);
+        f_registo.setTitle("Consultar Equipamentos");
+        f_registo.getContentPane().setBackground(Color.gray);
+
+        JLabel background = new JLabel();
+        background.setBounds(0,0,500,300);
+        background.setBackground(Color.gray);
+        
+        JLabel codEquipamento = new JLabel("NIF");
+        codEquipamento.setBounds(50,50,300,25);
+        codEquipamento.setForeground(Color.black);
+        
+        this.text_codEquipamento = new JTextField(50);
+        this.text_codEquipamento.setBounds(50,100,165,25);
+        this.text_codEquipamento.setBackground(Color.white);
+        
+        JButton registar = new JButton("Consultar");
+        registar.setBounds(50,150,165,25);
+        registar.addActionListener(e -> consultas(5));
+        
+        background.add(codEquipamento);
+        background.add(text_codEquipamento);
+        background.add(registar);
+
+        f_registo.add(background);
+        f_registo.setVisible(true);
+        //efetuar logica através de op
+    }
 
     public void consultas(int consulta) {
         JFrame listagem = new JFrame();
@@ -95,6 +133,23 @@ public class Funcionario_UI {
         if(consulta == 4) {
             String[] columnNames = {"Registo","Data","Estado","EquipamentoID", "Funcionário","Custo", "PlanoTrabalhosID"};
             String[][] data = buildDataFromMapWithLists(this.business.consultarReparacoes(), 6, true);
+            
+            JTable table = new JTable(data, columnNames);
+            table.setPreferredScrollableViewportSize(new Dimension(450, 350));
+            table.setFillsViewportHeight(true);
+
+            JScrollPane sp = new JScrollPane(table);
+            listagem.getContentPane().setBackground(Color.gray);
+            listagem.add(sp);
+        }
+        if(consulta == 5) {
+            String[] columnNames = {"EquipamentoID","Descricao","Estado" ,"Modelo" ,"DonoNIF"};
+            String[][] data = {{""}};
+            try {
+                data = buildDataFromMapWithLists(this.business.consultarEquipamentosCliente(this.text_codEquipamento.getText()), 4, true);
+            } catch (ObjetoNaoExistenteException e) {
+                SignalUI.error("O cliente não existe.");
+            }
             
             JTable table = new JTable(data, columnNames);
             table.setPreferredScrollableViewportSize(new Dimension(450, 350));

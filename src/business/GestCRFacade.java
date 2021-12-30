@@ -96,10 +96,25 @@ public class GestCRFacade implements IGestCRLN {
 
     }
 
-    public List<String> consultarEquipamentosCliente(String codC) throws ObjetoNaoExistenteException {
-        return this.gestEntidades.consultarEquipamentosCliente(codC).stream().map(Equipamento :: toString).collect(Collectors.toList());
-        
+    public Map<String,List<String>> consultarEquipamentosCliente(String codC) throws ObjetoNaoExistenteException {
+        List<Equipamento> pos = this.gestEntidades.consultarEquipamentosCliente(codC);
+        Map<String,List<String>> pos_map = new HashMap<>(); 
+        for(Equipamento o: pos) {
+            String cod           = Integer.toString(o.getIdEquipamento());
+            String estado        = Integer.toString(o.getEstado());
+            String descricao     = o.getDescricao();
+            String modelo        = o.getModelo();
+            String donoNIF       = o.getCliente().getNIF();
+            List<String> aux     = new ArrayList<>();
+            aux.add(descricao);
+            aux.add(estado);
+            aux.add(modelo);
+            aux.add(donoNIF);
+            pos_map.putIfAbsent(cod,aux);
+        }
+        return pos_map;
     }
+  
 
     public int registarEntrega (int codE) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException, EquipamentoNaoEstaProntoParaEntregaException {
         if (this.funcionario instanceof FuncionarioBalcao) {
