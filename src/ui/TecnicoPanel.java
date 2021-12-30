@@ -22,6 +22,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import src.business.IGestCRLN;
+import src.business.ObjetoExistenteException;
 import src.business.ObjetoNaoExistenteException;
 import src.business.FuncionarioTipoErradoException;
 
@@ -33,6 +34,8 @@ public class TecnicoPanel implements ActionListener{
     private JButton conclusao_expresso;
     private JButton orcamento;
     private JButton assinalar_passos;
+    private JButton aceitar_orcamento;
+    private JButton rejeitar_orcamento;
 
     public TecnicoPanel(IGestCRLN business){
         this.business = business;
@@ -58,10 +61,12 @@ public class TecnicoPanel implements ActionListener{
         this.panel.add(this.conclusao_expresso);
         this.panel.add(this.orcamento);
         this.panel.add(this.assinalar_passos);
+        this.panel.add(this.aceitar_orcamento);
+        this.panel.add(this.rejeitar_orcamento);
         this.panel.add(intro);
     }
 
-    public void createButtons(){
+    public void createButtons() {
         this.conclusao_reparacao = new JButton("Conclusão de Reparação");
         this.conclusao_reparacao.setBounds(250, 450, 250,25);
         this.conclusao_reparacao.addActionListener(this);
@@ -81,6 +86,16 @@ public class TecnicoPanel implements ActionListener{
         this.assinalar_passos.setBounds(250,500,250,25);
         this.assinalar_passos.addActionListener(this);
         this.assinalar_passos.setFocusable(false);
+
+        this.aceitar_orcamento = new JButton("Aceitar Orçamento");
+        this.aceitar_orcamento.setBounds(550,500,250,25);
+        this.aceitar_orcamento.addActionListener(this);
+        this.aceitar_orcamento.setFocusable(false);
+
+        this.rejeitar_orcamento = new JButton("Rejeitar Orçamento");
+        this.rejeitar_orcamento.setBounds(850,500,250,25);
+        this.rejeitar_orcamento.addActionListener(this);
+        this.rejeitar_orcamento.setFocusable(false);
     }
 
     @Override
@@ -96,6 +111,12 @@ public class TecnicoPanel implements ActionListener{
         }
         else if(e.getSource() == this.assinalar_passos){
             assinalarPasso();
+        }
+        else if(e.getSource() == this.aceitar_orcamento) {
+            aceitar_orcamento();
+        }
+        else if(e.getSource() == this.rejeitar_orcamento) {
+            rejeitar_orcamento();
         }
     }
 
@@ -541,6 +562,116 @@ public class TecnicoPanel implements ActionListener{
             SignalUI.error("Erro: não tem acesso a estas funcionalidades do sistema!");
         }
  
+    }
+
+    public void aceitar_orcamento(){
+        JFrame frame = new JFrame();
+        frame.setSize(500, 500);
+        frame.setResizable(false);
+        frame.setTitle("Aceitar Orçamento");
+        frame.getContentPane().setBackground(new Color(0, 51, 51));
+        frame.setLayout(null);
+
+        JLabel background = new JLabel();
+        background.setBounds(0,0,500,500);
+        background.setLayout(null);
+
+        JTextField userText = new JTextField(50);
+        userText.setBounds(100, 195, 300, 25);
+        userText.setBackground(Color.white);
+
+        JButton button = new JButton();
+        button.setBounds(100, 255, 300, 25);
+        button.setBackground(Color.white);
+        button.setText("Insira o código de orçamento");
+        button.addActionListener(e-> aceitar_Orcamento_Result(frame, userText.getText()));
+
+        background.add(button);
+        background.add(userText);
+        frame.add(background);
+        frame.setVisible(true);
+    }
+
+    private void aceitar_Orcamento_Result(JFrame oldFrame, String userText) {
+        JLabel erro = new JLabel();
+        
+        try{
+            int input = Integer.parseInt(userText);
+            this.business.aceitarOrcamento(input);
+            oldFrame.setVisible(false);
+            SignalUI.sucess("Orçamento aceite!");
+        }
+        catch(NumberFormatException nfe){
+            SignalUI.printError(erro, "Não inseriu um número inteiro", 130, 300, 240, 25, 16, new Color(0, 51, 51));
+            oldFrame.add(erro);
+            oldFrame.revalidate();
+            oldFrame.repaint();
+        }
+        catch(ObjetoNaoExistenteException onee){
+            oldFrame.setVisible(false);
+            SignalUI.error("Erro: essa orçamento não consta na base de dados!");
+            registarConclusaoReparacao();
+        }
+        catch(FuncionarioTipoErradoException ftee){
+            oldFrame.setVisible(false);
+            SignalUI.error("Erro: não tem acesso a estas funcionalidades do sistema!");
+        } catch (ObjetoExistenteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void rejeitar_orcamento(){
+        JFrame frame = new JFrame();
+        frame.setSize(500, 500);
+        frame.setResizable(false);
+        frame.setTitle("Rejeitar Orçamento");
+        frame.getContentPane().setBackground(new Color(0, 51, 51));
+        frame.setLayout(null);
+
+        JLabel background = new JLabel();
+        background.setBounds(0,0,500,500);
+        background.setLayout(null);
+
+        JTextField userText = new JTextField(50);
+        userText.setBounds(100, 195, 300, 25);
+        userText.setBackground(Color.white);
+
+        JButton button = new JButton();
+        button.setBounds(100, 255, 300, 25);
+        button.setBackground(Color.white);
+        button.setText("Insira o código de orçamento");
+        button.addActionListener(e-> rejeitar_Orcamento_Result(frame, userText.getText()));
+
+        background.add(button);
+        background.add(userText);
+        frame.add(background);
+        frame.setVisible(true);
+    }
+
+    private void rejeitar_Orcamento_Result(JFrame oldFrame, String userText) {
+        JLabel erro = new JLabel();
+        
+        try{
+            int input = Integer.parseInt(userText);
+            this.business.recusarOrcamento(input);
+            oldFrame.setVisible(false);
+            SignalUI.sucess("Orçamento rejeitado!");
+        }
+        catch(NumberFormatException nfe){
+            SignalUI.printError(erro, "Não inseriu um número inteiro", 130, 300, 240, 25, 16, new Color(0, 51, 51));
+            oldFrame.add(erro);
+            oldFrame.revalidate();
+            oldFrame.repaint();
+        }
+        catch(ObjetoNaoExistenteException onee){
+            oldFrame.setVisible(false);
+            SignalUI.error("Erro: essa orçamento não consta na base de dados!");
+            registarConclusaoReparacao();
+        }
+        catch(FuncionarioTipoErradoException ftee){
+            oldFrame.setVisible(false);
+            SignalUI.error("Erro: não tem acesso a estas funcionalidades do sistema!");
+        }
     }
 
     private String[][] buildDataFromPlanoTrabalhos(Map<Integer, List<String>> passos){
