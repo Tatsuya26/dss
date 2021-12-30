@@ -47,7 +47,8 @@ public class PlanoTrabalhoDAO implements DAO<PlanoTrabalhos>{
     public void update(PlanoTrabalhos t) throws NotFoundInDBException {
         this.s.beginTransaction();
         if (s.get(PlanoTrabalhos.class, t.getCodRegisto()) != null) {
-            s.saveOrUpdate(t);
+            s.merge(t);
+            //s.saveOrUpdate(t);
             s.getTransaction().commit();
         }
         else {
