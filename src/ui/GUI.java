@@ -93,30 +93,32 @@ public class GUI {
                 this.frame.add(this.back_Button);
                 this.fun_base     = new Funcionario_UI(this.panel_operation, this.business);
                 this.fun_balcao.showFuncionarioBalcao(this.userText.getText());
-                this.frame.repaint();
                 this.frame.revalidate();
+                this.frame.repaint();
             }
             if(this.tipo_funcionario == 2) {
                 this.frame.remove(this.panel_codF);
                 this.frame.add(this.label_Image);
                 this.frame.add(this.back_Button);
+                this.tecnico = new TecnicoPanel(this.business);
                 this.tecnico.buildPanel(this.userText.getText());
                 this.tecnico_panel = this.tecnico.getPanel();
                 this.fun_base      = new Funcionario_UI(this.tecnico_panel, this.business);
                 this.frame.add(this.tecnico_panel);
-                this.frame.repaint();
                 this.frame.revalidate();
+                this.frame.repaint();
             }
             if(this.tipo_funcionario == 3) {
                 this.frame.remove(this.panel_codF);
                 this.frame.add(this.label_Image);
                 this.frame.add(this.back_Button);
+                this.gestor = new GestorPanel(this.business);
                 this.gestor.buildPanel(this.userText.getText());
                 this.gestor_panel = this.gestor.getPanel();
                 this.fun_base     = new Funcionario_UI(this.gestor_panel, this.business);
                 this.frame.add(this.gestor_panel);
-                this.frame.repaint();
                 this.frame.revalidate();
+                this.frame.repaint();
             }
         }
     }

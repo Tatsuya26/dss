@@ -218,13 +218,13 @@ public class PlanoTrabalhosPanel{
         }
         catch(ObjetoNaoExistenteException onee){
             this.frame.setVisible(false);
-            SignalUI.error("Erro: esse equipamento não consta na base de dados!");
             inserirPasso();
+            SignalUI.error("Erro: esse equipamento não consta na base de dados!");
         }
         catch(ObjetoExistenteException oee){
             this.frame.setVisible(false);
-            SignalUI.error("Erro: esse equipamento já existe na base de dados!");
             inserirPasso();
+            SignalUI.error("Erro: esse equipamento já existe na base de dados!");
         }
         catch(FuncionarioTipoErradoException ftee){
             this.frame.setVisible(false);

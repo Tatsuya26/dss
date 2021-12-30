@@ -412,8 +412,8 @@ public class GestorPanel implements ActionListener{
         }
         catch(ObjetoExistenteException oee){
             oldFrame.setVisible(false);
-            SignalUI.error("Erro: esse funcionário já existe na base de dados!");
             addFuncionario();
+            SignalUI.error("Erro: esse funcionário já existe na base de dados!");
         }
         catch(FuncionarioTipoErradoException ftee){
             oldFrame.setVisible(false);

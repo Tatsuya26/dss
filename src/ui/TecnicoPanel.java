@@ -166,8 +166,8 @@ public class TecnicoPanel implements ActionListener{
         }
         catch(ObjetoNaoExistenteException onee){
             oldFrame.setVisible(false);
-            SignalUI.error("Erro: essa reparação não consta na nossa base de dados!");
             registarConclusaoReparacao();
+            SignalUI.error("Erro: essa reparação não consta na nossa base de dados!");
         }
         catch(FuncionarioTipoErradoException ftee){
             oldFrame.setVisible(false);
@@ -221,8 +221,8 @@ public class TecnicoPanel implements ActionListener{
         }
         catch(ObjetoNaoExistenteException onee){
             oldFrame.setVisible(false);
-            SignalUI.error("Erro: esse serviço não consta na nossa base de dados!");
             registarConclusaoExpresso();
+            SignalUI.error("Erro: esse serviço não consta na nossa base de dados!");
         }
         catch(FuncionarioTipoErradoException ftee){
             oldFrame.setVisible(false);
@@ -274,8 +274,8 @@ public class TecnicoPanel implements ActionListener{
             if(this.business.verificaEquipamento(cod))
                 new PlanoTrabalhosPanel(this.business, cod, nr_passos);
             else{
-                SignalUI.error("Erro: esse equipamento não consta na base de dados!");
                 registarOrcamento();
+                SignalUI.error("Erro: esse equipamento não consta na base de dados!");
             }
         }
         catch(NumberFormatException nfe){
@@ -338,8 +338,8 @@ public class TecnicoPanel implements ActionListener{
         }
         catch(ObjetoNaoExistenteException onee){
             oldFrame.setVisible(false);
-            SignalUI.error("Erro: essa reparação não consta na nossa base de dados!");
             assinalarPasso();
+            SignalUI.error("Erro: essa reparação não consta na nossa base de dados!");
         }
     }
 
@@ -427,8 +427,8 @@ public class TecnicoPanel implements ActionListener{
         }
         catch(ObjetoNaoExistenteException onee){
             oldFrame.setVisible(false);
-            SignalUI.error("Erro: esse passo não consta na nossa base de dados!");
             showPlanoTrabalhos(codR, passos);
+            SignalUI.error("Erro: esse passo não consta na nossa base de dados!");
         }
         catch(FuncionarioTipoErradoException ftee){
             oldFrame.setVisible(false);
@@ -609,8 +609,8 @@ public class TecnicoPanel implements ActionListener{
         }
         catch(ObjetoNaoExistenteException onee){
             oldFrame.setVisible(false);
+            aceitar_orcamento();
             SignalUI.error("Erro: essa orçamento não consta na base de dados!");
-            registarConclusaoReparacao();
         }
         catch(FuncionarioTipoErradoException ftee){
             oldFrame.setVisible(false);
@@ -665,8 +665,8 @@ public class TecnicoPanel implements ActionListener{
         }
         catch(ObjetoNaoExistenteException onee){
             oldFrame.setVisible(false);
+            rejeitar_orcamento();
             SignalUI.error("Erro: essa orçamento não consta na base de dados!");
-            registarConclusaoReparacao();
         }
         catch(FuncionarioTipoErradoException ftee){
             oldFrame.setVisible(false);
