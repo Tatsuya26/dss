@@ -1,14 +1,7 @@
 package src.ui;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.security.spec.PKCS8EncodedKeySpec;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
-
 import src.business.EquipamentoNaoEstaProntoParaEntregaException;
 import src.business.FuncionarioTipoErradoException;
 import src.business.IGestCRLN;
@@ -28,9 +21,6 @@ public class FuncionarioBalcaoPanel {
     private JTextField Nome;
     private JTextField email;
     private JTextField numero;
-
-    private String precoSExpresso;
-    private String desc_SExpresso;
 
 
     public FuncionarioBalcaoPanel(JFrame frame, JPanel panel, IGestCRLN business) {
@@ -316,13 +306,13 @@ public class FuncionarioBalcaoPanel {
                 try {
                     this.business.registarEntrega(codigo);
                     SignalUI.sucess("O equipamento " + this.codigo_registo.getText() + " foi entregue com sucesso");
-                } catch (ObjetoNaoExistenteException | ObjetoExistenteException | FuncionarioTipoErradoException e) {
+                } catch (ObjetoNaoExistenteException | ObjetoExistenteException e) {
                     SignalUI.error("O equipamente não existe.");
                 } catch(EquipamentoNaoEstaProntoParaEntregaException e) {
                     SignalUI.error("O equipamento não está pronto para entregar.");
+                } catch(FuncionarioTipoErradoException e) {
+                    SignalUI.error("Funcionário não pode fazer esta operação");
                 }
-                
-
             }
             catch(NumberFormatException e) {
                 SignalUI.error("O código introduzido não é válido.");
@@ -334,8 +324,10 @@ public class FuncionarioBalcaoPanel {
                 try {
                     int reg = this.business.registarPedidoOrcamento(codigo);
                     SignalUI.sucess("O equipamento" + this.codigo_registo.getText() + "\n" + "foi registado como pedidod orçamento\n Com codigo de registo:\n" + reg);
-                } catch (ObjetoNaoExistenteException | ObjetoExistenteException | FuncionarioTipoErradoException e) {
+                } catch (ObjetoNaoExistenteException | ObjetoExistenteException e) {
                     SignalUI.error("Código de equipamento errado.");
+                } catch( FuncionarioTipoErradoException e) {
+                    SignalUI.error("Funcionário não pode fazer esta operação");
                 }
             }
             catch(NumberFormatException e) {
@@ -350,8 +342,10 @@ public class FuncionarioBalcaoPanel {
                 try {
                     int reg = this.business.registarServicoExpresso(codigo, preco, this.descricao.getText());
                     SignalUI.sucess("O equipamento" + this.codigo_registo.getText() + "\n" + "foi registado como pedidod orçamento\n Com codigo de registo:\n" + reg);
-                } catch (ObjetoNaoExistenteException | ObjetoExistenteException | FuncionarioTipoErradoException e) {
+                } catch (ObjetoNaoExistenteException | ObjetoExistenteException e) {
                     SignalUI.error("Este código é associado a outro equipamento.");
+                } catch(FuncionarioTipoErradoException e) {
+                    SignalUI.error("Funcionário não pode fazer esta operação");
                 }
             }
             catch(NumberFormatException e) {
@@ -371,8 +365,10 @@ public class FuncionarioBalcaoPanel {
             try {
                 this.business.registarCliente(this.NIF.getText(),this.Nome.getText(),this.email.getText(),this.numero.getText());
                 SignalUI.sucess("Cliente com NIF "+ this.NIF.getText() + "registado");
-            } catch (ObjetoExistenteException | FuncionarioTipoErradoException e) {
+            } catch (ObjetoExistenteException e) {
                 SignalUI.error("Cliente já existente.");
+            } catch(FuncionarioTipoErradoException e) {
+                SignalUI.error("Funcionário não pode fazer esta operação");
             }
         }
     }

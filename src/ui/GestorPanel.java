@@ -35,31 +35,37 @@ public class GestorPanel implements ActionListener{
     public GestorPanel(IGestCRLN business){
         this.business = business;
         this.panel = new JPanel();
-        buildPanel();
     }
 
     public JPanel getPanel(){
         return this.panel;
     }
 
-    private void buildPanel(){
+    public void buildPanel(String codF){
         this.panel.setBackground(Color.BLACK);
         this.panel.setBounds(600, 600, 550, 450);
         this.panel.setLayout(null);
         this.panel.setOpaque(false);
-        
-        this.balcao = new JButton("Consultar listagem relativa aos funcionários de balcão");
-        this.balcao.setBounds(0, 100, 550, 30);
+        JLabel intro = new JLabel("Bem-vindo Gestor nº " + codF);
+        intro.setBounds(600,400,300,25);
+        intro.setForeground(Color.CYAN);
+
+        JLabel listagens = new JLabel("Consultar Listagens");
+        listagens.setBounds(600,450,300,25);
+        listagens.setForeground(Color.CYAN);
+
+        this.balcao = new JButton("Funcionários de balcão");
+        this.balcao.setBounds(250, 500, 250,25);
         this.balcao.addActionListener(this);
         this.balcao.setFocusable(false);
 
-        this.intervencoes = new JButton("Consultar listagem relativa às intervenções feitas por cada técnico");
-        this.intervencoes.setBounds(0, 200, 550, 30);
+        this.intervencoes = new JButton("Intervenções técnico");
+        this.intervencoes.setBounds(550, 500, 250,25);
         this.intervencoes.addActionListener(this);
         this.intervencoes.setFocusable(false);
 
-        this.tecnicos = new JButton("Consultar listagem relativa à performance de cada técnico");
-        this.tecnicos.setBounds(0, 300, 550, 30);
+        this.tecnicos = new JButton("Performance de cada técnico");
+        this.tecnicos.setBounds(850, 500, 250,25);
         this.tecnicos.addActionListener(this);
         this.tecnicos.setFocusable(false);
 
@@ -68,6 +74,8 @@ public class GestorPanel implements ActionListener{
         this.addFuncionario.addActionListener(this);
         this.addFuncionario.setFocusable(false);
 
+        this.panel.add(intro);
+        this.panel.add(listagens);
         this.panel.add(this.balcao);
         this.panel.add(this.intervencoes);
         this.panel.add(this.tecnicos);
@@ -96,7 +104,7 @@ public class GestorPanel implements ActionListener{
         frame.setSize(600,600);
         frame.setResizable(false);
         frame.setTitle("LISTA DOS FUNCIONÁRIOS DE BALCÃO");
-        frame.getContentPane().setBackground(new Color(255,140,0));
+        frame.getContentPane().setBackground(Color.GRAY);
         frame.setLayout(null);
 
         JPanel background = new JPanel();
@@ -129,7 +137,7 @@ public class GestorPanel implements ActionListener{
         frame.setSize(1200,600);
         frame.setResizable(false);
         frame.setTitle("LISTA DA PERFORMANCE DE CADA TÉCNICO");
-        frame.getContentPane().setBackground(new Color(255,140,0));
+        frame.getContentPane().setBackground(Color.gray);
         frame.setLayout(null);
 
         JPanel background = new JPanel();
@@ -163,7 +171,7 @@ public class GestorPanel implements ActionListener{
         frame.setSize(700,600);
         frame.setResizable(false);
         frame.setTitle("LISTA DAS INTERVENÇÕES DE CADA TÉCNICO");
-        frame.getContentPane().setBackground(new Color(255,140,0));
+        frame.getContentPane().setBackground(Color.GRAY);
         frame.setLayout(null);
 
         JPanel tabela = new JPanel();
@@ -217,7 +225,7 @@ public class GestorPanel implements ActionListener{
                 frame.setSize(1200,600);
                 frame.setResizable(false);
                 frame.setTitle("LISTA DE INTERVENÇÕES DO TÉCNICO");
-                frame.getContentPane().setBackground(new Color(255,140,0));
+                frame.getContentPane().setBackground(Color.GRAY);
                 frame.setLayout(null);
 
                 JLabel list = new JLabel("Intervenções do Técnico: " + input);

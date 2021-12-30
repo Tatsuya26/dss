@@ -7,13 +7,9 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import src.business.GestCRFacade;
 import src.business.IGestCRLN;
 import src.business.ObjetoNaoExistenteException;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Stack;
 
 public class GUI {
     private IGestCRLN business;
@@ -26,16 +22,18 @@ public class GUI {
     private JTextField userText;
     
     private JPanel panel_operation;
-    private JPanel consultas;
 
     private Funcionario_UI fun_base;
     private FuncionarioBalcaoPanel fun_balcao;
+    private GestorPanel gestor;
+    private JPanel gestor_panel;
+    private TecnicoPanel tecnico;
+    private JPanel tecnico_panel;
 
 
     private BufferedImage image ;
     private JLabel label_Image;
     
-    private String codF;
     private int tipo_funcionario;
 
 
@@ -45,19 +43,22 @@ public class GUI {
         this.business = business;
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.frame      = new JFrame();
-        this.panel_codF = new JPanel();
-        this.image      = ImageIO.read(new File("src/ui/SRGR.png"));
+        this.frame       = new JFrame();
+        this.panel_codF  = new JPanel();
+        this.image       = ImageIO.read(new File("src/ui/SRGR.png"));
         this.label_Image = new JLabel(new ImageIcon(this.image));   
         this.label_Image.setBounds(500,-50,400,500);
         frame.setBounds(0,0,screenSize.width, screenSize.height);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("Sistema Gestão Equipamentos Eletrónicos");
-        frame.getContentPane().setBackground(new Color(255,140,0));
+        frame.getContentPane().setBackground(Color.black);
 
         this.panel_operation = new JPanel(); 
-        this.fun_base = new Funcionario_UI(this.panel_operation, this.business);
-        this.fun_balcao = new FuncionarioBalcaoPanel(this.frame,this.panel_operation, this.business);
+        this.fun_balcao      = new FuncionarioBalcaoPanel(this.frame,this.panel_operation, this.business);
+        this.tecnico         = new TecnicoPanel(this.business);
+        this.tecnico_panel   = this.tecnico.getPanel();
+        this.gestor          = new GestorPanel(this.business);
+        this.gestor_panel    = this.gestor.getPanel();
 
         this.back_Button = new JButton("Back");
         this.back_Button.setBounds(600,700,165,25);
@@ -71,11 +72,14 @@ public class GUI {
     public void switchPanes(int x) {
         if (x == 0) {
             this.frame.remove(this.panel_operation);
+            this.frame.remove(this.gestor_panel);
+            this.frame.remove(this.tecnico_panel);
             this.frame.add(this.label_Image);
             this.frame.add(this.panel_codF);
             this.frame.repaint();
             this.frame.revalidate();
             this.tipo_funcionario = 0;
+            this.business.logoutFuncionario();
         } 
         if(x == 1) {
             try {
@@ -83,23 +87,38 @@ public class GUI {
             } catch (ObjetoNaoExistenteException e) {
                 msg_erro("O funcionário não existe na base de dados");
             }
-            
             if(this.tipo_funcionario == 1) {
                 this.frame.remove(this.panel_codF);
                 this.frame.add(this.label_Image);
                 this.frame.add(this.back_Button);
+                this.fun_base     = new Funcionario_UI(this.panel_operation, this.business);
                 this.fun_balcao.showFuncionarioBalcao(this.userText.getText());
                 this.frame.repaint();
                 this.frame.revalidate();
             }
             if(this.tipo_funcionario == 2) {
-                msg_erro("Ainda não está implementado");
+                this.frame.remove(this.panel_codF);
+                this.frame.add(this.label_Image);
+                this.frame.add(this.back_Button);
+                this.tecnico.buildPanel(this.userText.getText());
+                this.tecnico_panel = this.tecnico.getPanel();
+                this.fun_base      = new Funcionario_UI(this.tecnico_panel, this.business);
+                this.frame.add(this.tecnico_panel);
+                this.frame.repaint();
+                this.frame.revalidate();
             }
             if(this.tipo_funcionario == 3) {
-                msg_erro("Ainda não está implementado");
+                this.frame.remove(this.panel_codF);
+                this.frame.add(this.label_Image);
+                this.frame.add(this.back_Button);
+                this.gestor.buildPanel(this.userText.getText());
+                this.gestor_panel = this.gestor.getPanel();
+                this.fun_base     = new Funcionario_UI(this.gestor_panel, this.business);
+                this.frame.add(this.gestor_panel);
+                this.frame.repaint();
+                this.frame.revalidate();
             }
-
-        } else return;
+        }
     }
 
     public void showMainFrame() {
@@ -120,10 +139,6 @@ public class GUI {
         this.panel_codF.setBackground(Color.black);
         this.panel_codF.setOpaque(true);
         this.panel_codF.add(this.label_Image);
-
-        //TecnicoPanel p = new TecnicoPanel(this.business);
-        //GestorPanel p = new GestorPanel(this.business);
-        //this.frame.add(p.getPanel());
         
         //configurar butao
         this.button = new JButton("Login Here");

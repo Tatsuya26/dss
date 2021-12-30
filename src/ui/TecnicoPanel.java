@@ -37,44 +37,48 @@ public class TecnicoPanel implements ActionListener{
     public TecnicoPanel(IGestCRLN business){
         this.business = business;
         this.panel = new JPanel();
-        buildPanel();
     }
 
     public JPanel getPanel(){
         return this.panel;
     }
 
-    public void buildPanel(){
+    public void buildPanel(String codF){
         this.panel.setBackground(Color.BLACK);
         this.panel.setBounds(400, 400, 600, 600);
         this.panel.setLayout(null);
         this.panel.setOpaque(false);
+
+        JLabel intro = new JLabel("Bem-vindo Técnico nº " + codF);
+        intro.setBounds(600,400,300,25);
+        intro.setForeground(Color.CYAN);
 
         createButtons();
         this.panel.add(this.conclusao_reparacao);
         this.panel.add(this.conclusao_expresso);
         this.panel.add(this.orcamento);
         this.panel.add(this.assinalar_passos);
+        this.panel.add(intro);
     }
 
     public void createButtons(){
-        this.conclusao_reparacao = new JButton("Registar Conclusão de Reparação");
-        this.conclusao_reparacao.setBounds(100, 200, 250, 100);
+        this.conclusao_reparacao = new JButton("Conclusão de Reparação");
+        this.conclusao_reparacao.setBounds(250, 450, 250,25);
         this.conclusao_reparacao.addActionListener(this);
         this.conclusao_reparacao.setFocusable(false);
 
-        this.conclusao_expresso = new JButton("Registar Conclusão de Serviço Expresso");
-        this.conclusao_expresso.setBounds(100, 300, 250, 100);
+        this.conclusao_expresso = new JButton("Conclusão Serviço Expresso");
+        this.conclusao_expresso.setBounds(550,450, 250,25);
         this.conclusao_expresso.addActionListener(this);
         this.conclusao_expresso.setFocusable(false);
 
-        this.orcamento = new JButton("Registar Orçamento");
-        this.orcamento.setBounds(100, 400, 250, 100);
+        this.orcamento = new JButton("Orçamento");
+        this.orcamento.setBounds(850, 450, 250,25);
         this.orcamento.addActionListener(this);
         this.orcamento.setFocusable(false);
 
         this.assinalar_passos = new JButton("Assinalar execução de passos");
-        this.assinalar_passos.setBounds(100, 500, 250, 100);
+        this.assinalar_passos.setBounds(250,500,250,25);
         this.assinalar_passos.addActionListener(this);
         this.assinalar_passos.setFocusable(false);
     }
