@@ -123,7 +123,7 @@ public class GestorPanel implements ActionListener{
         frame.setSize(1200,600);
         frame.setResizable(false);
         frame.setTitle("LISTA DA PERFORMANCE DE CADA TÉCNICO");
-        frame.getContentPane().setBackground(new Color(255,140,0));
+        frame.getContentPane().setBackground(Color.gray);
         frame.setLayout(null);
 
         JPanel background = new JPanel();
