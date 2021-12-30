@@ -241,13 +241,6 @@ public class PlanoTrabalhosPanel{
         this.subpassosAtuais.add(descricao); 
         this.subpassosAtuais.add(tempo); 
         this.subpassosAtuais.add(custo);
-
-        int i = 0;
-        for(String s: this.subpassosAtuais){
-            System.out.println(i + ": " + s);
-            i++;
-        }
-
         this.subpassoAtual++;
 
         oldFrame.setVisible(false);

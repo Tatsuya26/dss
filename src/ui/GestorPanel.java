@@ -55,22 +55,22 @@ public class GestorPanel implements ActionListener{
         listagens.setForeground(Color.CYAN);
 
         this.balcao = new JButton("Funcionários de balcão");
-        this.balcao.setBounds(250, 500, 250,25);
+        this.balcao.setBounds(250, 500, 250, 25);
         this.balcao.addActionListener(this);
         this.balcao.setFocusable(false);
 
         this.intervencoes = new JButton("Intervenções técnico");
-        this.intervencoes.setBounds(550, 500, 250,25);
+        this.intervencoes.setBounds(550, 500, 250, 25);
         this.intervencoes.addActionListener(this);
         this.intervencoes.setFocusable(false);
 
         this.tecnicos = new JButton("Performance de cada técnico");
-        this.tecnicos.setBounds(850, 500, 250,25);
+        this.tecnicos.setBounds(850, 500, 250, 25);
         this.tecnicos.addActionListener(this);
         this.tecnicos.setFocusable(false);
 
         this.addFuncionario = new JButton("Adicionar Funcionário");
-        this.addFuncionario.setBounds(0, 350, 550, 30);
+        this.addFuncionario.setBounds(250, 400, 250, 25);
         this.addFuncionario.addActionListener(this);
         this.addFuncionario.setFocusable(false);
 
