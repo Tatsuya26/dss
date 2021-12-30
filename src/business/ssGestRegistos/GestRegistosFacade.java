@@ -68,13 +68,13 @@ public class GestRegistosFacade implements IGestRegistos {
     }
     
     public int registarPedidoOrcamento(Equipamento codE,Funcionario codF) throws ObjetoExistenteException{
-        PedidoOrcamento po = new PedidoOrcamento(LocalDateTime.now(), codE, codF, 0);
         try {
+            PedidoOrcamento po = new PedidoOrcamento(LocalDateTime.now(), codE, codF, 0);
             this.pedidosOrcamentos.save(po);
+            return po.getCodRegisto();
         } catch (IdentifierAlreadyInDBException e) {
             throw new ObjetoExistenteException("O pedido de orcamento ja existe na BD");
         }
-        return po.getCodRegisto();
     }
 
     public int registarOrcamento(Equipamento codE,Funcionario codF,List<Passo> passos) throws ObjetoExistenteException{

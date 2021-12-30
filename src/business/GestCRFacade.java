@@ -47,7 +47,7 @@ public class GestCRFacade implements IGestCRLN {
         SessionFactory sf = con.buildSessionFactory(sr);
         this.gestRegistos = new GestRegistosFacade(sf);
         this.gestEntidades = new GestEntidadesFacade(sf);
-        //FIXME: somos melhores que isto
+        //FIXME: somos melhores que isto. Isto muda-se na aplicacao final
         this.funcionario = new Gestor("Manel", "1111");
     }
 
@@ -103,7 +103,7 @@ public class GestCRFacade implements IGestCRLN {
         if (this.funcionario instanceof FuncionarioBalcao) {
             Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
             if (e.getEstado() == Equipamento.Reparado ||e.getEstado() == Equipamento.NaoAceite) {
-                e.setEstado(Equipamento.Entregue);
+                this.gestEntidades.alterarEstadoEquipamento(e.getIdEquipamento(), Equipamento.Entregue);
                 return this.gestRegistos.registarEntrega(e, funcionario);
             }
             else throw new EquipamentoNaoEstaProntoParaEntregaException();
