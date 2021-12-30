@@ -70,7 +70,7 @@ public class GestorPanel implements ActionListener{
         this.tecnicos.setFocusable(false);
 
         this.addFuncionario = new JButton("Adicionar Funcionário");
-        this.addFuncionario.setBounds(250, 400, 250, 25);
+        this.addFuncionario.setBounds(250, 550, 250, 25);
         this.addFuncionario.addActionListener(this);
         this.addFuncionario.setFocusable(false);
 
