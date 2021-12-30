@@ -173,10 +173,10 @@ public class GestCRFacade implements IGestCRLN {
         throw new FuncionarioTipoErradoException("O funcionario autenticado nao e um tecnico de reparacoes");
     }
 
-    public int registarOrcamento(int codE, Map<Integer, List<String>> passos) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException{
+    public int registarOrcamento(int codE, Map<Integer, List<String>> passos, Map<Integer, List<String>> subpassos) throws ObjetoNaoExistenteException, ObjetoExistenteException, FuncionarioTipoErradoException{
         if (this.funcionario instanceof TecnicoReparacoes){
             Equipamento e = this.gestEntidades.getEquipamentoByID(codE);
-            List<Passo> newPassos = createPassosFromMap(passos);
+            List<Passo> newPassos = createPassosFromMap(passos, subpassos);
             int codR = this.gestRegistos.registarOrcamento(e, funcionario, newPassos);
             Cliente c = e.getCliente();
             enviarEmailOrcamento(c.getNIF(), codR);
@@ -435,8 +435,8 @@ public class GestCRFacade implements IGestCRLN {
         return res;
     }
 
-    public List<Passo> createPassosFromMap(Map<Integer, List<String>> passos){
-        return this.gestRegistos.createPassosFromMap(passos, this.funcionario);
+    public List<Passo> createPassosFromMap(Map<Integer, List<String>> passos, Map<Integer, List<String>> subpassos){
+        return this.gestRegistos.createPassosFromMap(passos, subpassos, this.funcionario);
     }
 
     public Map<String, String> getNomesFromFuncionariosId(Set<String> ids){

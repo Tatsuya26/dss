@@ -340,13 +340,23 @@ public class GestRegistosFacade implements IGestRegistos {
         }
     }
 
-    public List<Passo> createPassosFromMap(Map<Integer, List<String>> passos, Funcionario f){
+    public List<Passo> createPassosFromMap(Map<Integer, List<String>> passos, Map<Integer, List<String>> subpassos, Funcionario f){
+        System.out.println("SUBPASSOS SIZE: " + subpassos.size());
         List<Passo> res = new ArrayList<Passo>();
         for(Map.Entry<Integer, List<String>> entry: passos.entrySet()){
+            List<Passo> newSubpassos = new ArrayList<>();
+            System.out.println("SIZELIST: " + subpassos.get(entry.getKey()).size());
+            for(int i = 0; i < subpassos.get(entry.getKey()).size(); i+=3){
+                String subDescricao = subpassos.get(entry.getKey()).get(i);
+                float subCusto = Float.parseFloat(subpassos.get(entry.getKey()).get(i+1));
+                int subTempo = Integer.parseInt(subpassos.get(entry.getKey()).get(i+2));
+                Passo p = new Passo(subDescricao, subCusto, subTempo, 0, f, new ArrayList<Passo>());
+                newSubpassos.add(p);
+            }
             String descricao = entry.getValue().get(0);
             float custo = Float.parseFloat(entry.getValue().get(1));
             int tempo = Integer.parseInt(entry.getValue().get(2));
-            Passo p = new Passo(descricao, custo, tempo, 0, f, new ArrayList<Passo>());
+            Passo p = new Passo(descricao, custo, tempo, 0, f, newSubpassos);
             res.add(p);
         }
         return res;

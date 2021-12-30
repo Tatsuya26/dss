@@ -52,7 +52,7 @@ public interface IGestRegistos {
 
     String getClienteFromReparacao(int codR) throws ObjetoNaoExistenteException;
 
-    List<Passo> createPassosFromMap(Map<Integer, List<String>> passos, Funcionario f);
+    List<Passo> createPassosFromMap(Map<Integer, List<String>> passos, Map<Integer, List<String>> subpassos, Funcionario f);
     
     List<PedidoOrcamento> consultarPedidosOrcamentos();
     
